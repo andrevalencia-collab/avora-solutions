@@ -5,12 +5,16 @@
 
 /* ---------- Tokens ---------- */
 :root {
-  --navy: #081444;
-  --navy-deep: #050d30;
-  --navy-raised: #0e1e5b;
+  /* Paleta Deep Twilight */
+  --navy: #00034a;                 /* fondo oscuro principal */
+  --navy-deep: #000236;
+  --navy-raised: #030756;          /* más claro no: el gris #808080 bajaría de AA */
   --bone: #f2f3f7;
-  --sky: #3fc8f0;
-  --electric: #2f6bff;
+  --royal: #000096;                /* fondo de botones principales */
+  --indigo: #4d5bff;               /* destacados grandes, bordes y decoración (3.83:1, solo texto grande) */
+  --lavender: #8a93ff;             /* texto pequeño de acento sobre oscuro */
+  --gray-dark: #808080;            /* texto secundario sobre oscuro */
+  --gray-light: #595959;           /* texto secundario sobre claro */
 
   --slope: 26.57deg;               /* ángulo del corte del logo */
   --ease: cubic-bezier(.2, .7, .2, 1);
@@ -27,26 +31,23 @@
   :root { --header-h: 76px; --gutter: clamp(2rem, 5vw, 4rem); }
 }
 
-/* Temas: solo definen variables. Oscuro = celeste; claro = azul eléctrico. */
+/* Temas: solo definen variables. --accent es decorativo o para texto grande;
+   el texto pequeño de acento usa --eyebrow. */
 .theme-dark, .site-header, .wa-float {
   --bg: var(--navy);
   --fg: var(--bone);
-  --muted: rgba(242, 243, 247, .74);
+  --muted: var(--gray-dark);
   --line: rgba(242, 243, 247, .16);
-  --accent: var(--sky);
-  --accent-hover: #74d8f5;
-  --on-accent: var(--navy);
-  --eyebrow: var(--sky);
+  --accent: var(--indigo);
+  --eyebrow: var(--lavender);
 }
 .theme-light {
   --bg: var(--bone);
   --fg: var(--navy);
-  --muted: rgba(8, 20, 68, .76);
-  --line: rgba(8, 20, 68, .14);
-  --accent: var(--electric);
-  --accent-hover: #1f56e6;
-  --on-accent: #fff;
-  --eyebrow: var(--navy);           /* el eléctrico no llega a AA en texto pequeño sobre claro */
+  --muted: var(--gray-light);
+  --line: rgba(0, 3, 74, .14);
+  --accent: var(--indigo);
+  --eyebrow: var(--royal);          /* el índigo no llega a AA en texto pequeño sobre claro */
 }
 
 /* ---------- Base ---------- */
@@ -102,7 +103,7 @@ section, footer, .pillar {
 .skip-link:focus { top: 1rem; }
 
 :focus-visible {
-  outline: 3px solid var(--accent, var(--sky));
+  outline: 3px solid var(--accent, var(--indigo));
   outline-offset: 3px;
 }
 
@@ -154,6 +155,7 @@ section, footer, .pillar {
   cursor: pointer;
   border: 0;
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--corner)), calc(100% - 2 * var(--corner)) 100%, 0 100%);
+  isolation: isolate;               /* permite pintar el relleno del primario detrás del texto */
   transition: background-color .2s var(--ease), transform .2s var(--ease);
 }
 .btn:hover { transform: translateY(-2px); }
@@ -161,9 +163,21 @@ section, footer, .pillar {
 /* clip-path recorta el outline exterior: el foco se dibuja por dentro */
 .btn:focus-visible { outline: 3px solid var(--fg); outline-offset: -6px; }
 
-.btn--primary { background: var(--accent); color: var(--on-accent); }
-.btn--primary:hover { background: var(--accent-hover); }
-.btn--primary:focus-visible { outline-color: var(--on-accent); }
+/* Primario: relleno royal con borde fino índigo. Un borde CSS no seguiría la
+   esquina recortada, así que el fondo es el borde y ::before (1px adentro,
+   mismo recorte) es el relleno. */
+.btn--primary { --btn-fill: var(--royal); background: var(--indigo); color: #fff; }
+.btn--primary::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  background: var(--btn-fill);
+  clip-path: inherit;
+  transition: background-color .2s var(--ease);
+}
+.btn--primary:hover { --btn-fill: #1a1fb8; }
+.btn--primary:focus-visible { outline-color: #fff; }
 
 .btn--ghost { background: color-mix(in srgb, var(--fg) 9%, transparent); color: var(--fg); }
 .btn--ghost:hover { background: color-mix(in srgb, var(--fg) 15%, transparent); }
@@ -183,8 +197,8 @@ section, footer, .pillar {
   transition: background-color .3s var(--ease), box-shadow .3s var(--ease);
 }
 .site-header.is-solid {
-  background: rgba(8, 20, 68, .96);
-  box-shadow: 0 1px 0 var(--line), 0 10px 30px rgba(5, 13, 48, .35);
+  background: rgba(0, 3, 74, .96);
+  box-shadow: 0 1px 0 var(--line), 0 10px 30px rgba(0, 2, 54, .35);
 }
 .site-header__inner {
   height: 100%;
@@ -313,12 +327,12 @@ section, footer, .pillar {
 }
 .hero__cut-line {
   fill: none;
-  stroke: var(--sky);
+  stroke: var(--indigo);
   stroke-width: 2px;
   vector-effect: non-scaling-stroke;
   opacity: .5;
 }
-.hero__cut-spark { fill: var(--sky); }
+.hero__cut-spark { fill: var(--indigo); }
 @keyframes draw-x { to { clip-path: inset(-5% 0 -5% 0); } }
 
 @media (max-width: 899px) {
@@ -339,10 +353,10 @@ section, footer, .pillar {
   right: -5%;
   top: 0;
   transform: translateY(-50%) rotate(-3deg);
-  background: var(--sky);
-  color: var(--navy);
+  background: var(--indigo);
+  color: #fff;
   overflow: hidden;
-  box-shadow: 0 12px 30px rgba(5, 13, 48, .25);
+  box-shadow: 0 12px 30px rgba(0, 2, 54, .25);
 }
 .ribbon__track {
   display: flex;
@@ -488,7 +502,7 @@ section, footer, .pillar {
 .pillar__tag {
   justify-self: start;
   padding: .35rem 1.1rem .35rem .8rem;
-  background: var(--electric);
+  background: var(--indigo);
   color: #fff;
   font-size: .75rem;
   font-weight: 800;
@@ -498,8 +512,8 @@ section, footer, .pillar {
 }
 .pillar__note {
   padding: 1rem 1.25rem;
-  background: rgba(47, 107, 255, .09);
-  border-left: 4px solid var(--electric);
+  background: rgba(77, 91, 255, .09);
+  border-left: 4px solid var(--indigo);
   font-weight: 600;
   max-width: 32rem;
 }
@@ -617,7 +631,7 @@ section, footer, .pillar {
   height: clamp(10px, 1.5vw, 16px);
   background: linear-gradient(#dde0e9, #a7adbf);
   border-radius: 0 0 14px 14px / 0 0 10px 10px;
-  box-shadow: 0 18px 30px -12px rgba(8, 20, 68, .45);
+  box-shadow: 0 18px 30px -12px rgba(0, 3, 74, .45);
 }
 .device__base::before {
   content: "";
@@ -643,7 +657,7 @@ section, footer, .pillar {
   aspect-ratio: 390 / 844;
   border: clamp(4px, .7vw, 7px) solid #0a0f24;
   border-radius: clamp(14px, 2.4vw, 26px);
-  box-shadow: 0 24px 40px -12px rgba(8, 20, 68, .5);
+  box-shadow: 0 24px 40px -12px rgba(0, 3, 74, .5);
 }
 .device--phone .device__screen::before {
   content: "";
@@ -703,7 +717,7 @@ section, footer, .pillar {
   width: 3rem;
   height: 2.5rem;
   margin-bottom: 1rem;
-  background: var(--electric);
+  background: var(--indigo);
   color: #fff;
   font-size: 1.25rem;
   font-weight: 800;
@@ -740,7 +754,7 @@ section, footer, .pillar {
   }
   .process__line path {
     fill: none;
-    stroke: var(--electric);
+    stroke: var(--indigo);
     stroke-width: 2px;
     opacity: .35;
   }
@@ -795,7 +809,7 @@ section, footer, .pillar {
   font-size: 1.125rem;
   font-weight: 800;
   font-stretch: 125%;
-  color: var(--accent);
+  color: var(--eyebrow);            /* texto pequeño: lavanda, el índigo no llega a AA */
 }
 .site-footer__contact { display: grid; gap: .5rem; color: var(--muted); }
 .site-footer__contact a { text-decoration: none; }
@@ -817,17 +831,26 @@ section, footer, .pillar {
   place-items: center;
   width: 58px;
   height: 58px;
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--indigo);         /* borde fino; el relleno royal va en ::before */
+  color: #fff;
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 24px) 100%, 0 100%);
-  filter: drop-shadow(0 8px 16px rgba(5, 13, 48, .35));
+  isolation: isolate;
+  filter: drop-shadow(0 8px 16px rgba(0, 2, 54, .35));
   opacity: 0;
   transform: translateY(12px) scale(.85);
   pointer-events: none;
   transition: opacity .25s var(--ease), transform .25s var(--ease);
 }
+.wa-float::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  background: var(--royal);
+  clip-path: inherit;
+}
 .wa-float .icon { width: 28px; height: 28px; }
-.wa-float:focus-visible { outline: 3px solid var(--on-accent); outline-offset: -6px; }
+.wa-float:focus-visible { outline: 3px solid #fff; outline-offset: -6px; }
 .wa-float.is-shown { opacity: 1; transform: none; pointer-events: auto; }
 @media (min-width: 900px) { .wa-float { display: none; } }
 

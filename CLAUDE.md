@@ -11,8 +11,19 @@ Landing page (página de una sola sección de venta) de mi agencia de marketing 
 
 ## Marca
 
-- **Colores base:** navy `#081444` (fondo oscuro) y hueso `#F2F3F7` (fondo claro / texto sobre oscuro).
-- **Acento actual:** celeste `#3FC8F0` (`--sky`) en el tema oscuro y azul eléctrico `#2F6BFF` (`--electric`) en el tema claro. Están definidos como variables en `css/styles.css`.
+**Paleta "Deep Twilight"** (variables en `:root` de `css/styles.css`):
+
+| Uso | Color | Variable |
+|---|---|---|
+| Fondo oscuro principal (también favicon y logos) | `#00034A` | `--navy` (variantes `--navy-deep` `#000236`, `--navy-raised` `#030756`) |
+| Fondo claro / texto sobre oscuro | `#F2F3F7` | `--bone` |
+| Botones principales: fondo, texto blanco | `#000096` | `--royal` |
+| Borde fino de botones, palabras destacadas en títulos, decoración, estela del logo | `#4D5BFF` | `--indigo` |
+| Texto pequeño de acento sobre oscuro ("REDES · PÁGINAS WEB") | `#8A93FF` | `--lavender` |
+| Texto secundario sobre oscuro | `#808080` | `--gray-dark` |
+| Texto secundario sobre claro | `#595959` | `--gray-light` |
+
+Reglas de contraste (AA): `#4D5BFF` da 3.83:1 sobre el navy, así que **solo sirve para texto grande** (24px o más, o 18.66px en negrita) y decoración, nunca para texto pequeño. `--navy-raised` no puede ser más claro, porque el gris `#808080` bajaría de 4.5:1.
 - **Tipografía:** Archivo (Google Fonts), para todo el sitio.
 
 ## Reglas de contenido
@@ -30,7 +41,7 @@ No hay paso de compilación. Abre `index.html` directo, o sirve la carpeta con u
 
 ## Arquitectura
 
-**Temas por variables.** `.theme-dark` y `.theme-light` solo redefinen variables CSS (`--bg`, `--fg`, `--muted`, `--line`, `--accent`, `--on-accent`, `--eyebrow`); los componentes leen esas variables y nunca escriben colores fijos. El tema oscuro usa `--sky` como acento y el claro usa `--electric`. En el claro, `--eyebrow` es navy porque el azul eléctrico no cumple contraste AA en texto pequeño. Una sección cambia de aspecto solo con agregarle la clase del tema (los pilares de Servicios alternan temas uno por uno).
+**Temas por variables.** `.theme-dark` y `.theme-light` solo redefinen variables CSS (`--bg`, `--fg`, `--muted`, `--line`, `--accent`, `--eyebrow`); los componentes leen esas variables y nunca escriben colores fijos. `--accent` es índigo en ambos temas (decoración y texto grande); `--eyebrow` es el color del texto pequeño de acento: lavanda en oscuro y royal en claro. Los botones primarios (`.btn--primary`, `.wa-float`) son iguales en ambos temas: el fondo del elemento es el borde índigo y un `::before` 1px adentro, con el mismo `clip-path`, es el relleno royal. Así el borde sigue también la esquina recortada. Una sección cambia de aspecto solo con agregarle la clase del tema (los pilares de Servicios alternan temas uno por uno).
 
 **El motivo del "corte" diagonal.** Todo lo visual sale de la barra diagonal del logo: pendiente 0.5 (`--slope: 26.57deg`). Aparece en la línea SVG del hero, los separadores `.cut-top`, las esquinas recortadas de los botones, la animación `wipe` (clip-path), la línea del proceso y la imagen OG. Los nuevos elementos decorativos deben reutilizar este ángulo en vez de inventar otros.
 
