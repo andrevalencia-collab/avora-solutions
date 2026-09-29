@@ -63,9 +63,11 @@
         <a href="#caso">Caso</a>
         <a href="#proceso">Proceso</a>
       </nav>
-      <a class="btn btn--primary btn--sm" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">
+      <a class="btn btn--primary btn--sm site-header__cta" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener" aria-label="Agenda tu demo por WhatsApp">
         <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
-        <span>Agenda tu demo</span>
+        <!-- En celular solo se ve "Demo" para no competir con el botón del hero -->
+        <span class="site-header__cta-long" aria-hidden="true">Agenda tu demo</span>
+        <span class="site-header__cta-short" aria-hidden="true">Demo</span>
       </a>
     </div>
   </header>
@@ -91,11 +93,13 @@
           Redes, página web y automatizaciones en un solo equipo.
         </p>
         <div class="hero__actions" data-reveal style="--i:6">
-          <a class="btn btn--primary btn--lg" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">
-            <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
-            <span>Agenda tu demo por WhatsApp</span>
-          </a>
-          <a class="btn btn--ghost btn--lg" href="#proceso">Ver cómo trabajamos</a>
+          <span class="cta-glow">
+            <a class="btn btn--primary btn--lg btn--shine" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">
+              <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+              <span>Agenda tu demo por WhatsApp</span>
+            </a>
+          </span>
+          <a class="link-arrow" href="#proceso"><span class="link-arrow__text">Ver cómo trabajamos</span><span class="link-arrow__icon" aria-hidden="true">→</span></a>
         </div>
       </div>
     </section>
@@ -254,7 +258,7 @@
           </figure>
           <figure class="device device--phone" data-reveal="from-right" style="--i:2">
             <div class="device__screen">
-              <img src="img/canal-silver-movil.png" alt="Sitio de Canal Silver en celular" width="390" height="844" loading="lazy" onerror="this.closest('.device').hidden=true">
+              <img src="img/canal-silver-movil.jpg" alt="Sitio de Canal Silver en celular" width="590" height="1277" loading="lazy" onerror="this.closest('.device').hidden=true">
             </div>
           </figure>
         </div>
@@ -315,7 +319,7 @@
       <div class="container final-cta__inner">
         <h2 class="final-cta__title" id="cta-title" data-reveal>¿Hablamos de tu negocio?</h2>
         <p class="final-cta__lead" data-reveal style="--i:1">Agenda una demo por WhatsApp y te mostramos cómo conseguir más clientes con menos trabajo manual.</p>
-        <div data-reveal style="--i:2">
+        <div class="cta-glow" data-reveal style="--i:2">
           <a class="btn btn--primary btn--lg btn--shine" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">
             <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
             <span>Agenda tu demo por WhatsApp</span>

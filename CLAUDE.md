@@ -56,9 +56,14 @@ No hay paso de compilación. Abre `index.html` directo, o sirve la carpeta con u
 
 **Los CTA son enlaces de WhatsApp** (`https://wa.me/50763288742?text=…`) con un mensaje precargado distinto según el contexto de cada botón. Al agregar un CTA (botón de llamada a la acción), escribe un mensaje que encaje con su contexto y codifícalo para URL (tildes incluidas, ej. `%C3%A1`). Los íconos son `<symbol>` SVG al final de `index.html`, usados con `<use href="#i-chat"/>`.
 
+**Jerarquía de CTA.** El botón de WhatsApp debe ser siempre lo más visible:
+- Los CTA grandes (hero y CTA final) van dentro de `.cta-glow`, un envoltorio con `filter: drop-shadow` índigo. El brillo va en el envoltorio porque el `clip-path` del `.btn` recortaría cualquier sombra del propio botón.
+- Las acciones secundarias usan `.link-arrow` (texto subrayado con flecha), no un segundo botón.
+- En celular, el CTA del header muestra solo "Demo" (`.site-header__cta-short`), con 44px de alto; el nombre completo va en `aria-label`.
+
 ## Imágenes y carpetas que no son del sitio
 
-- Los mockups del caso de estudio usan `img/canal-silver-desktop.jpg` y `img/canal-silver-movil.png`; cada `<img>` tiene un `onerror` que oculta todo su `.device` si falta el archivo (el PNG móvil todavía no está en `img/`).
+- Los mockups del caso de estudio usan `img/canal-silver-desktop.jpg` y `img/canal-silver-movil.jpg` (590×1277, recortada de la captura original del iPhone, que está en `_referencias/`, sin barras del sistema y rellenada abajo hasta la proporción 390:844 de la maqueta). Cada `<img>` tiene un `onerror` que oculta todo su `.device` si falta el archivo.
 - `_herramientas/og-image.html` es la plantilla de 1200×630 para `img/og-image.jpg` (la imagen que se ve al compartir el link), capturada con un navegador sin interfaz. Regenera el JPG si cambia la marca o el lema.
 - `_referencias/` guarda capturas de referencia de diseño. Ambas carpetas con `_` están excluidas en `robots.txt` y no forman parte del sitio.
 

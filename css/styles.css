@@ -182,6 +182,39 @@ section, footer, .pillar {
 .btn--ghost { background: color-mix(in srgb, var(--fg) 9%, transparent); color: var(--fg); }
 .btn--ghost:hover { background: color-mix(in srgb, var(--fg) 15%, transparent); }
 
+/* Brillo del CTA principal. clip-path recorta cualquier sombra del propio botón,
+   así que el brillo lo dibuja un envoltorio con drop-shadow (sigue la silueta recortada). */
+.cta-glow {
+  display: inline-flex;
+  filter: drop-shadow(0 0 14px rgba(77, 91, 255, .45)) drop-shadow(0 6px 18px rgba(0, 2, 54, .5));
+  transition: filter .25s var(--ease);
+}
+.cta-glow:hover { filter: drop-shadow(0 0 22px rgba(77, 91, 255, .7)) drop-shadow(0 6px 18px rgba(0, 2, 54, .5)); }
+
+/* Acción secundaria como enlace: no compite con el botón de WhatsApp */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  min-height: 48px;
+  padding-inline: .5rem;
+  font-weight: 700;
+  font-stretch: 110%;
+  color: var(--fg);
+  text-decoration: none;
+}
+.link-arrow__text {
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+  transition: text-decoration-color .2s var(--ease);
+}
+.link-arrow__icon { transition: transform .2s var(--ease); }
+.link-arrow:hover .link-arrow__text { text-decoration-color: var(--accent); }
+.link-arrow:hover .link-arrow__icon { transform: translateX(4px); }
+
 .btn--sm { --corner: 8px; min-height: 40px; padding: .5rem 1rem; font-size: .875rem; }
 .btn--lg { --corner: 12px; min-height: 56px; padding: 1rem 1.75rem; font-size: 1.0625rem; }
 
@@ -231,6 +264,15 @@ section, footer, .pillar {
 }
 
 .site-nav { display: none; }
+
+/* CTA del header: en celular solo "Demo", con alto táctil de 44px */
+.site-header__cta { min-height: 44px; padding-inline: .9rem; }
+.site-header__cta-long { display: none; }
+@media (min-width: 900px) {
+  .site-header__cta { min-height: 40px; padding-inline: 1rem; }
+  .site-header__cta-long { display: inline; }
+  .site-header__cta-short { display: none; }
+}
 
 @media (min-width: 900px) {
   .brand__mark { width: 40px; }
@@ -308,7 +350,9 @@ section, footer, .pillar {
   gap: .75rem;
 }
 @media (max-width: 479px) {
-  .hero__actions .btn { width: 100%; }
+  .hero__actions .cta-glow,
+  .hero__actions .btn,
+  .hero__actions .link-arrow { width: 100%; }
   .btn--lg { padding-inline: 1.25rem; font-size: 1rem; }
 }
 
@@ -790,7 +834,7 @@ section, footer, .pillar {
   transform: translateX(-120%);
   pointer-events: none;
 }
-.is-visible > .btn--shine::after { animation: shine 1.1s .7s var(--ease) forwards; }
+.is-visible .btn--shine::after { animation: shine 1.1s .7s var(--ease) forwards; }
 @keyframes shine { to { transform: translateX(120%); } }
 
 /* ---------- 9 · Footer ---------- */
@@ -903,7 +947,8 @@ section, footer, .pillar {
   .hero__cut { animation: none; clip-path: none; }
   .ribbon__track { animation: none; }
   .btn--shine::after { display: none; }
-  .btn, .wa-float { transition: none; }
+  .btn, .wa-float, .cta-glow, .link-arrow__text, .link-arrow__icon { transition: none; }
+  .link-arrow:hover .link-arrow__icon { transform: none; }
   .btn:hover { transform: none; }
   .pillar { position: relative; top: auto; }
 }
