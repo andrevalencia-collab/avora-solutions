@@ -28,27 +28,16 @@
     targetsByTrigger.forEach((_, trigger) => revealObserver.observe(trigger));
   }
 
-  // Header sólido al bajar y botón flotante fuera del hero y del CTA final
+  // Header sólido al bajar (el botón flotante ahora es Avo: js/avo.js)
   const header = document.querySelector('.site-header');
   const sentinel = document.querySelector('.hero__sentinel');
-  const hero = document.querySelector('.hero');
-  const finalCta = document.querySelector('.final-cta');
-  const floatBtn = document.querySelector('.wa-float');
 
   if (hasIO) {
-    let heroInView = true;
-    let ctaInView = false;
-    const syncFloat = () => floatBtn.classList.toggle('is-shown', !heroInView && !ctaInView);
-
     new IntersectionObserver(([entry]) => {
       header.classList.toggle('is-solid', !entry.isIntersecting);
     }).observe(sentinel);
-
-    new IntersectionObserver(([entry]) => { heroInView = entry.isIntersecting; syncFloat(); }).observe(hero);
-    new IntersectionObserver(([entry]) => { ctaInView = entry.isIntersecting; syncFloat(); }).observe(finalCta);
   } else {
     header.classList.add('is-solid');
-    floatBtn.classList.add('is-shown');
   }
 
   // Sticky stacking: si un pilar es más alto que la pantalla, se fija por su borde

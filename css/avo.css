@@ -1,0 +1,330 @@
+/* ==========================================================================
+   Avo · asistente de AVORA
+   Usa las variables de styles.css (paleta Deep Twilight, tema oscuro) y sus
+   botones .btn. El HTML lo crea js/avo.js.
+   ========================================================================== */
+
+.avo {
+  --avo-size: 64px;
+  --avo-gap: 1rem;
+  font-family: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (min-width: 900px) { .avo { --avo-gap: 1.5rem; } }
+
+/* Pixel art: sin suavizado al agrandar */
+.avo-face { image-rendering: pixelated; }
+
+.avo-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Botón flotante ---------- */
+.avo-launcher,
+.avo-bubble {
+  position: fixed;
+  right: var(--avo-gap);
+  z-index: 45;
+  transition: opacity .2s var(--ease), transform .2s var(--ease), visibility 0s;
+}
+.avo-launcher {
+  bottom: calc(var(--avo-gap) + env(safe-area-inset-bottom));
+  display: grid;
+  place-items: center;
+  width: var(--avo-size);
+  height: var(--avo-size);
+  padding: 0;
+  border: 2px solid var(--indigo);
+  border-radius: 50%;
+  background: var(--bone);
+  cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(77, 91, 255, .18), 0 10px 24px rgba(0, 2, 54, .45);
+}
+.avo-launcher:hover { box-shadow: 0 0 0 6px rgba(77, 91, 255, .28), 0 10px 24px rgba(0, 2, 54, .45); }
+/* 34px × 1.5: en pantallas de densidad 2 cada pixel del dibujo cae en 3 pixeles reales */
+.avo-launcher__img {
+  width: 51px;
+  height: 51px;
+  margin-top: 4px;
+  animation: avo-float 3s ease-in-out infinite alternate;
+}
+@keyframes avo-float { from { transform: translateY(1px); } to { transform: translateY(-3px); } }
+
+/* Burbuja "¿Te ayudo?" */
+.avo-bubble {
+  bottom: calc(var(--avo-gap) + env(safe-area-inset-bottom) + var(--avo-size) + .75rem);
+  padding: .6rem 1rem;
+  border: 0;
+  background: var(--bone);
+  color: var(--navy);
+  font: inherit;
+  font-size: .9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0, 2, 54, .35);
+  animation: avo-pop .35s var(--ease) both;
+}
+/* Colita con la pendiente del logo, apuntando a Avo */
+.avo-bubble::after {
+  content: "";
+  position: absolute;
+  right: 1.4rem;
+  bottom: -.45rem;
+  width: .9rem;
+  height: .5rem;
+  background: var(--bone);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+@keyframes avo-pop { from { opacity: 0; transform: translateY(8px) scale(.96); } }
+
+/* Se aparta cuando pasa un botón de WhatsApp de la página, y mientras el chat está abierto */
+.avo.is-ducked .avo-launcher,
+.avo.is-ducked .avo-bubble,
+.avo.is-open .avo-launcher,
+.avo.is-open .avo-bubble {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity .2s var(--ease), transform .2s var(--ease), visibility 0s linear .2s;
+}
+
+/* ---------- Panel del chat ---------- */
+.avo-panel {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: 0 -10px 40px rgba(0, 2, 54, .5);
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .22s var(--ease), transform .22s var(--ease);
+}
+.avo.is-open .avo-panel { opacity: 1; transform: none; }
+
+/* Celular: sube desde abajo y ocupa casi toda la pantalla, con el corte diagonal arriba */
+@media (max-width: 899px) {
+  .avo-panel {
+    --pcut: 1.25rem;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(100vh - 1.5rem);
+    height: calc(100dvh - 1.5rem);
+    padding-top: var(--pcut);
+    padding-bottom: env(safe-area-inset-bottom);
+    clip-path: polygon(0 var(--pcut), 100% 0, 100% 100%, 0 100%);
+  }
+  html.avo-open,
+  html.avo-open body { overflow: hidden; }
+}
+
+/* Computadora: panel de 380px abajo a la derecha, esquina recortada como los botones */
+@media (min-width: 900px) {
+  .avo-panel {
+    right: var(--avo-gap);
+    bottom: var(--avo-gap);
+    width: 380px;
+    height: min(620px, calc(100vh - 2 * var(--avo-gap) - var(--header-h)));
+    border: 1px solid var(--line);
+    clip-path: polygon(24px 0, 100% 0, 100% 100%, 0 100%, 0 12px);
+  }
+}
+
+.avo-panel__head {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .75rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.avo-panel__avatar {
+  width: 51px;
+  height: 51px;
+  flex-shrink: 0;
+  background: var(--bone);
+  border: 2px solid var(--indigo);
+  border-radius: 50%;
+  padding: 2px 0 0;
+}
+.avo-panel__who { flex: 1; min-width: 0; }
+.avo-panel__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-stretch: 125%;
+  line-height: 1.1;
+}
+.avo-panel__title:focus { outline: none; }
+.avo-panel__sub {
+  margin-top: .15rem;
+  font-size: .8125rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: var(--eyebrow);
+}
+.avo-panel__close {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+}
+.avo-panel__close svg { width: 22px; height: 22px; }
+.avo-panel__close:hover { background: color-mix(in srgb, var(--fg) 10%, transparent); }
+
+/* ---------- Conversación ---------- */
+.avo-log {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  padding: 1rem;
+  scroll-behavior: smooth;
+}
+.avo-log:focus { outline: none; }
+
+.avo-msg {
+  max-width: 88%;
+  padding: .7rem .9rem;
+  font-size: .9375rem;
+  line-height: 1.5;
+  animation: avo-in .25s var(--ease) both;
+}
+.avo-msg p + p { margin-top: .4rem; }
+/* Esquina recortada hacia quien habla */
+.avo-msg--avo {
+  align-self: flex-start;
+  background: var(--navy-raised);
+  color: var(--fg);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 16px 100%, 0 calc(100% - 8px));
+}
+.avo-msg--user {
+  align-self: flex-end;
+  background: var(--royal);
+  color: #fff;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 16px) 100%, 0 100%);
+}
+@keyframes avo-in { from { opacity: 0; transform: translateY(6px); } }
+
+/* Oferta de WhatsApp dentro de cada respuesta */
+.avo-wa {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  min-height: 40px;
+  margin-top: .7rem;
+  padding: .45rem .85rem;
+  border: 1px solid var(--indigo);
+  color: var(--fg);
+  font-size: .875rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color .2s var(--ease);
+}
+.avo-wa:hover { background: rgba(77, 91, 255, .22); }
+
+/* Respuestas rápidas */
+.avo-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  animation: avo-in .25s var(--ease) both;
+}
+.avo-chip {
+  min-height: 40px;
+  padding: .5rem .85rem;
+  border: 1px solid var(--indigo);
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  font-size: .875rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color .2s var(--ease);
+}
+.avo-chip:hover { background: rgba(77, 91, 255, .22); }
+
+/* "Avo está escribiendo…" */
+.avo-typing {
+  min-height: 1.5rem;
+  padding: 0 1rem;
+  font-size: .8125rem;
+  color: var(--muted);
+}
+.avo.is-thinking .avo-typing { animation: avo-pulse 1s ease-in-out infinite alternate; }
+@keyframes avo-pulse { to { opacity: .45; } }
+
+/* ---------- Caja de texto y botón fijo ---------- */
+.avo-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: .25rem .5rem;
+  padding: .5rem 1rem 0;
+  border-top: 1px solid var(--line);
+}
+.avo-input {
+  min-width: 0;
+  min-height: 48px;
+  padding: .7rem .85rem;
+  border: 1px solid var(--line);
+  background: var(--navy-deep);
+  color: var(--fg);
+  font: inherit;
+  font-size: 1rem;                 /* 16px: evita que el iPhone haga zoom al escribir */
+}
+.avo-input::placeholder { color: var(--muted); }
+.avo-input:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.avo-send {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid var(--indigo);
+  background: var(--royal);
+  color: #fff;
+  cursor: pointer;
+}
+.avo-send svg { width: 22px; height: 22px; }
+.avo-send:disabled { opacity: .55; cursor: default; }
+.avo-count {
+  grid-column: 1 / -1;
+  font-size: .75rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+.avo-cta {
+  margin: .5rem 1rem 1rem;
+}
+
+/* ---------- Movimiento reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .avo-launcher__img,
+  .avo-bubble,
+  .avo-msg,
+  .avo-chips,
+  .avo.is-thinking .avo-typing { animation: none; }
+  .avo-launcher,
+  .avo-bubble,
+  .avo-panel,
+  .avo-chip,
+  .avo-wa { transition: none; }
+  .avo-panel { transform: none; }
+  .avo-log { scroll-behavior: auto; }
+}

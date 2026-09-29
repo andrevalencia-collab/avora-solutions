@@ -33,7 +33,7 @@ Reglas de contraste (AA): `#4D5BFF` da 3.83:1 sobre el navy, así que **solo sir
 
 ## Stack
 
-Sitio estático simple: `index.html` + `css/styles.css` + `js/main.js`. Sin framework, sin bundler (herramienta que empaqueta código), sin `package.json`, sin tests ni linter (revisor automático de estilo).
+Sitio estático simple: `index.html` + `css/styles.css` + `js/main.js`, más el asistente Avo en archivos aparte (`css/avo.css` + `js/avo.js`). Sin framework, sin bundler (herramienta que empaqueta código), sin `package.json`, sin tests ni linter (revisor automático de estilo).
 
 ## Cómo verlo
 
@@ -41,7 +41,7 @@ No hay paso de compilación. Abre `index.html` directo, o sirve la carpeta con u
 
 ## Arquitectura
 
-**Temas por variables.** `.theme-dark` y `.theme-light` solo redefinen variables CSS (`--bg`, `--fg`, `--muted`, `--line`, `--accent`, `--eyebrow`); los componentes leen esas variables y nunca escriben colores fijos. `--accent` es índigo en ambos temas (decoración y texto grande); `--eyebrow` es el color del texto pequeño de acento: lavanda en oscuro y royal en claro. Los botones primarios (`.btn--primary`, `.wa-float`) son iguales en ambos temas: el fondo del elemento es el borde índigo y un `::before` 1px adentro, con el mismo `clip-path`, es el relleno royal. Así el borde sigue también la esquina recortada. Una sección cambia de aspecto solo con agregarle la clase del tema (los pilares de Servicios alternan temas uno por uno).
+**Temas por variables.** `.theme-dark` y `.theme-light` solo redefinen variables CSS (`--bg`, `--fg`, `--muted`, `--line`, `--accent`, `--eyebrow`); los componentes leen esas variables y nunca escriben colores fijos. `--accent` es índigo en ambos temas (decoración y texto grande); `--eyebrow` es el color del texto pequeño de acento: lavanda en oscuro y royal en claro. Los botones primarios (`.btn--primary`) son iguales en ambos temas: el fondo del elemento es el borde índigo y un `::before` 1px adentro, con el mismo `clip-path`, es el relleno royal. Así el borde sigue también la esquina recortada. Una sección cambia de aspecto solo con agregarle la clase del tema (los pilares de Servicios alternan temas uno por uno).
 
 **El motivo del "corte" diagonal.** Todo lo visual sale de la barra diagonal del logo: pendiente 0.5 (`--slope: 26.57deg`). Aparece en la línea SVG del hero, los separadores `.cut-top`, las esquinas recortadas de los botones, la animación `wipe` (clip-path), la línea del proceso y la imagen OG. Los nuevos elementos decorativos deben reutilizar este ángulo en vez de inventar otros.
 
@@ -49,7 +49,6 @@ No hay paso de compilación. Abre `index.html` directo, o sirve la carpeta con u
 
 **Sin listeners de scroll.** `main.js` usa a propósito solo IntersectionObserver y `resize`:
 - `.hero__sentinel` activa `.site-header.is-solid` (header con fondo sólido).
-- `.wa-float` (botón flotante de WhatsApp, solo en móvil) aparece solo cuando ni `.hero` ni `.final-cta` están en pantalla.
 - Los pilares de Servicios usan `position: sticky` apilados; `main.js` calcula `--sticky-top` por pilar para que uno más alto que la pantalla se fije por su borde inferior (top negativo) y se lea completo antes de que el siguiente lo tape. Se recalcula al cambiar el tamaño y después de `document.fonts.ready`.
 
 **Layout CSS.** Mobile-first (primero celular), un solo breakpoint (punto de cambio de diseño) en `min-width: 900px`, más unos pocos ajustes `max-width`. `styles.css` está dividido en secciones numeradas que coinciden con los comentarios `<!-- N · … -->` de `index.html` (1 Hero … 9 Footer).
@@ -60,6 +59,18 @@ No hay paso de compilación. Abre `index.html` directo, o sirve la carpeta con u
 - Los CTA grandes (hero y CTA final) van dentro de `.cta-glow`, un envoltorio con `filter: drop-shadow` índigo. El brillo va en el envoltorio porque el `clip-path` del `.btn` recortaría cualquier sombra del propio botón.
 - Las acciones secundarias usan `.link-arrow` (texto subrayado con flecha), no un segundo botón.
 - En celular, el CTA del header muestra solo "Demo" (`.site-header__cta-short`), con 44px de alto; el nombre completo va en `aria-label`.
+
+## Avo, el asistente (v1 sin IA)
+
+Mascota en pixel art que reemplaza al antiguo botón flotante de WhatsApp. Todo vive en `css/avo.css` y `js/avo.js`; el HTML lo crea `avo.js` al cargar, así `index.html` solo tiene el `<link>` y el `<script>`.
+
+- **Imágenes:** `img/avo/avo-capucha-{normal,parpadeo,saludo,pensando,feliz}.svg` (34×34, con `image-rendering: pixelated`). Están optimizadas: sin metadatos C2PA y con un `<path>` por color. Los originales están en `_referencias/avo-originales/`. La carpeta va en minúsculas (`avo`), porque en un servidor real `Avo` ≠ `avo`.
+- **Respuestas:** todo pasa por `getReply(mensaje)`, que devuelve `{ texto, tema }`. Hoy detecta palabras clave (sin tildes, con `` de inicio de palabra) y, si hay varios temas, gana el primero de `PRIORIDAD`: precio > caso > proceso > automatiza > convierte > atrae > general > saludo. Los textos salen solo de lo que ya dice la landing (regla de no inventar cifras).
+- **Para conectar la API de Claude:** reemplazar solo el interior de `getReply` por un `fetch` a un servidor propio que guarde la clave. La clave **nunca** va en `avo.js`, porque el navegador la expone.
+- **WhatsApp:** cada tema usa el mismo mensaje prellenado que el botón equivalente de la landing (objeto `WHATSAPP`). El botón fijo del chat cambia al tema de la última respuesta.
+- **No tapar botones:** un `IntersectionObserver` vigila la franja inferior derecha (104px); si un `.btn--primary` de la página pasa por ahí, Avo se aparta (`.is-ducked`).
+- **Accesibilidad:** `role="dialog"`, el foco no se escapa del chat abierto, Escape cierra y devuelve el foco a Avo, `role="log"` anuncia los mensajes y lo que escribe el usuario se inserta siempre con `textContent`. Con movimiento reducido: sin flotar, sin parpadeo y sin transiciones.
+- **Probarlo:** los `IntersectionObserver` no avisan si el navegador no dibuja (panel oculto, o Edge headless con `--virtual-time-budget`). Hay que probar con una ventana visible o manejando Edge por el protocolo de depuración.
 
 ## Imágenes y carpetas que no son del sitio
 
