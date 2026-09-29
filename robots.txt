@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /_referencias/
+Disallow: /_herramientas/
+
+Sitemap: https://avorasolutions.com/sitemap.xml
