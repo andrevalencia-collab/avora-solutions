@@ -8,6 +8,7 @@ Landing page (página de una sola sección de venta) de mi agencia de marketing 
 
 - **Objetivo:** que el visitante agende una demo por WhatsApp al **+507 6328-8742** (`50763288742`). Todo en la página debe empujar hacia ese paso.
 - **Lema:** "Atrae. Convierte. Automatiza."
+- **La landing sí muestra precios**, en la sección **Planes** (`#planes`), en USD. Los precios viven en tres lugares que deben coincidir: la sección Planes de `index.html`, la respuesta `precio` de Avo en `js/avo.js` y el PDF `AVORA-Planes-y-Precios-2026.pdf`. Si un precio cambia, se actualizan los tres juntos.
 
 ## Marca
 
@@ -29,6 +30,7 @@ Reglas de contraste (AA): `#4D5BFF` da 3.83:1 sobre el navy, así que **solo sir
 ## Reglas de contenido
 
 - **No inventar cifras ni testimonios.** Nada de "+200 clientes", "300 % más ventas", reseñas o nombres de clientes que yo no haya dado. Si hace falta un dato, deja un marcador visible (por ejemplo `[CIFRA PENDIENTE]`) y avísame.
+- **Precios y qué incluye cada plan:** solo los que yo haya dado (los de la sección Planes). No agregar beneficios, descuentos ni condiciones nuevas por tu cuenta.
 - Todo el texto visible, los comentarios del código y los nombres cercanos a las clases van en español (`lang="es-PA"`).
 
 ## Stack
@@ -51,7 +53,9 @@ No hay paso de compilación. Abre `index.html` directo, o sirve la carpeta con u
 - `.hero__sentinel` activa `.site-header.is-solid` (header con fondo sólido).
 - Los pilares de Servicios usan `position: sticky` apilados; `main.js` calcula `--sticky-top` por pilar para que uno más alto que la pantalla se fije por su borde inferior (top negativo) y se lea completo antes de que el siguiente lo tape. Se recalcula al cambiar el tamaño y después de `document.fonts.ready`.
 
-**Layout CSS.** Mobile-first (primero celular), un solo breakpoint (punto de cambio de diseño) en `min-width: 900px`, más unos pocos ajustes `max-width`. `styles.css` está dividido en secciones numeradas que coinciden con los comentarios `<!-- N · … -->` de `index.html` (1 Hero … 9 Footer).
+**Layout CSS.** Mobile-first (primero celular), un solo breakpoint (punto de cambio de diseño) en `min-width: 900px`, más unos pocos ajustes `max-width`. `styles.css` está dividido en secciones numeradas que coinciden con los comentarios `<!-- N · … -->` de `index.html` (1 Hero … 8 Planes, 9 CTA final, 10 Footer).
+
+**Sección Planes.** Sección oscura con fondo `--navy-deep` y tarjetas `--navy-raised`. El Sistema AVORA es la tarjeta destacada: clara (`theme-light`), con etiqueta "Recomendado" (mismo estilo que `.pillar__tag`), borde índigo hecho con el truco de `.btn--primary` (fondo índigo + `::before` 2px adentro) y brillo en su `<li>`. En computadora: fila de 3 con AVORA más ancha y más alta (margen negativo) y el Plan Atrae abajo, a lo ancho y en horizontal. En celular: una columna, con el precio siempre arriba. Ojo: `data-reveal` va en el `<li>` y el `clip-path` del corte en el `<article>` de adentro, porque con movimiento reducido el CSS quita el `clip-path` a todo `[data-reveal]` (lo mismo con la franja de Clientes Fundadores).
 
 **Los CTA son enlaces de WhatsApp** (`https://wa.me/50763288742?text=…`) con un mensaje precargado distinto según el contexto de cada botón. Al agregar un CTA (botón de llamada a la acción), escribe un mensaje que encaje con su contexto y codifícalo para URL (tildes incluidas, ej. `%C3%A1`). Los íconos son `<symbol>` SVG al final de `index.html`, usados con `<use href="#i-chat"/>`.
 
@@ -68,6 +72,7 @@ Mascota en pixel art que reemplaza al antiguo botón flotante de WhatsApp. Todo 
 - **Respuestas:** todo pasa por `getReply(mensaje)`, que devuelve `{ texto, tema }`. Hoy detecta palabras clave (sin tildes, con `` de inicio de palabra) y, si hay varios temas, gana el primero de `PRIORIDAD`: precio > caso > proceso > automatiza > convierte > atrae > general > saludo. Los textos salen solo de lo que ya dice la landing (regla de no inventar cifras).
 - **Para conectar la API de Claude:** reemplazar solo el interior de `getReply` por un `fetch` a un servidor propio que guarde la clave. La clave **nunca** va en `avo.js`, porque el navegador la expone.
 - **WhatsApp:** cada tema usa el mismo mensaje prellenado que el botón equivalente de la landing (objeto `WHATSAPP`). El botón fijo del chat cambia al tema de la última respuesta.
+- **Precios:** la respuesta `precio` menciona los planes y dice "desde $350". Además del botón de WhatsApp, lleva un enlace "Ver los planes" a `#planes` (objeto `ENLACES`, por tema). El enlace sale del tema y no del texto, así `getReply` sigue devolviendo solo `{ texto, tema }`.
 - **No tapar botones:** un `IntersectionObserver` vigila la franja inferior derecha (104px); si un `.btn--primary` de la página pasa por ahí, Avo se aparta (`.is-ducked`).
 - **Accesibilidad:** `role="dialog"`, el foco no se escapa del chat abierto, Escape cierra y devuelve el foco a Avo, `role="log"` anuncia los mensajes y lo que escribe el usuario se inserta siempre con `textContent`. Con movimiento reducido: sin flotar, sin parpadeo y sin transiciones.
 - **Probarlo:** los `IntersectionObserver` no avisan si el navegador no dibuja (panel oculto, o Edge headless con `--virtual-time-budget`). Hay que probar con una ventana visible o manejando Edge por el protocolo de depuración.

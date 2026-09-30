@@ -63,6 +63,7 @@
         <a href="#servicios">Servicios</a>
         <a href="#caso">Caso</a>
         <a href="#proceso">Proceso</a>
+        <a href="#planes">Planes</a>
       </nav>
       <a class="btn btn--primary btn--sm site-header__cta" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener" aria-label="Agenda tu demo por WhatsApp">
         <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
@@ -315,7 +316,128 @@
       </div>
     </section>
 
-    <!-- 8 · CTA FINAL -->
+    <!-- 8 · PLANES -->
+    <section class="plans theme-dark cut-top" id="planes" aria-labelledby="plans-title">
+      <div class="container">
+        <header class="plans__head">
+          <p class="eyebrow" data-reveal>Planes</p>
+          <h2 class="section-title" id="plans-title" data-reveal style="--i:1">Elige cómo quieres crecer.</h2>
+          <p class="plans__lead" data-reveal style="--i:2">Precios claros desde el inicio. Empieza con tu página y suma lo demás cuando estés listo.</p>
+        </header>
+
+        <!-- data-reveal va en el <li> y el corte (clip-path) en el <article>:
+             con movimiento reducido el CSS quita el clip-path a todo [data-reveal] -->
+        <ol class="plans__grid">
+          <li class="plans__item" data-reveal style="--i:1">
+            <article class="plan" aria-labelledby="plan1-title">
+              <div class="plan__main">
+                <h3 class="plan__name" id="plan1-title">Plan Convierte</h3>
+                <p class="plan__price"><span class="plan__currency">$</span>350</p>
+                <p class="plan__terms">Pago único</p>
+              </div>
+              <div class="plan__details">
+                <p class="plan__for">Para emprendedores y profesionales que necesitan presencia y contacto.</p>
+                <ul class="ticks">
+                  <li>Landing a medida</li>
+                  <li>Textos para vender</li>
+                  <li>SEO local</li>
+                  <li>WhatsApp con mensaje por servicio</li>
+                  <li>Entrega en 7 a 10 días hábiles</li>
+                </ul>
+                <p class="plan__fine">Mantenimiento opcional: $25/mes.</p>
+              </div>
+              <a class="btn btn--primary" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20me%20interesa%20el%20Plan%20Convierte.%20%C2%BFPodemos%20agendar%20una%20demo%3F" target="_blank" rel="noopener">
+                <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+                <span>Quiero el Plan Convierte</span>
+              </a>
+            </article>
+          </li>
+
+          <li class="plans__item" data-reveal style="--i:2">
+            <article class="plan" aria-labelledby="plan2-title">
+              <div class="plan__main">
+                <h3 class="plan__name" id="plan2-title">Plan Automatiza</h3>
+                <p class="plan__price"><span class="plan__currency">$</span>650</p>
+                <p class="plan__terms">+ $90/mes</p>
+              </div>
+              <div class="plan__details">
+                <p class="plan__for">Para negocios que pierden clientes por no responder a tiempo.</p>
+                <ul class="ticks">
+                  <li>Todo lo del Plan Convierte</li>
+                  <li>Asistente con IA en la página</li>
+                  <li>WhatsApp Business configurado</li>
+                  <li>Mantenimiento incluido</li>
+                </ul>
+              </div>
+              <a class="btn btn--primary" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20me%20interesa%20el%20Plan%20Automatiza.%20%C2%BFPodemos%20agendar%20una%20demo%3F" target="_blank" rel="noopener">
+                <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+                <span>Quiero el Plan Automatiza</span>
+              </a>
+            </article>
+          </li>
+
+          <li class="plans__item plans__item--featured" data-reveal style="--i:3">
+            <article class="plan plan--featured theme-light" aria-labelledby="plan3-title">
+              <div class="plan__main">
+                <p class="plan__tag">Recomendado</p>
+                <h3 class="plan__name" id="plan3-title">Sistema AVORA</h3>
+                <p class="plan__price"><span class="plan__currency">$</span>850</p>
+                <p class="plan__terms">+ $350/mes · pauta aparte</p>
+              </div>
+              <div class="plan__details">
+                <p class="plan__for">Anuncio, landing y WhatsApp automatizado trabajando juntos.</p>
+                <ul class="ticks">
+                  <li>Todo lo del Plan Automatiza</li>
+                  <li>Configuración de Meta</li>
+                  <li>Gestión de hasta 2 campañas</li>
+                  <li>4 diseños para anuncios al mes</li>
+                  <li>Reporte mensual</li>
+                </ul>
+                <p class="plan__fine">Mínimo 3 meses.</p>
+              </div>
+              <a class="btn btn--primary" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20me%20interesa%20el%20Sistema%20AVORA.%20%C2%BFPodemos%20agendar%20una%20demo%3F" target="_blank" rel="noopener">
+                <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+                <span>Quiero el Sistema AVORA</span>
+              </a>
+            </article>
+          </li>
+
+          <li class="plans__item plans__item--wide" data-reveal style="--i:4">
+            <article class="plan plan--wide" aria-labelledby="plan4-title">
+              <div class="plan__main">
+                <p class="plan__kicker">¿Ya tienes página?</p>
+                <h3 class="plan__name" id="plan4-title">Plan Atrae</h3>
+                <p class="plan__price"><span class="plan__currency">$</span>150</p>
+                <p class="plan__terms">de configuración + $250/mes · pauta aparte</p>
+              </div>
+              <div class="plan__details">
+                <p class="plan__for">Solo gestión de anuncios, para quien ya tiene página.</p>
+                <p class="plan__fine">Mínimo 3 meses.</p>
+              </div>
+              <a class="btn btn--primary" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20me%20interesa%20el%20Plan%20Atrae.%20%C2%BFPodemos%20agendar%20una%20demo%3F" target="_blank" rel="noopener">
+                <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+                <span>Quiero el Plan Atrae</span>
+              </a>
+            </article>
+          </li>
+        </ol>
+
+        <div class="plans__founders" data-reveal>
+          <p><strong>Clientes Fundadores:</strong> 30% de descuento en la instalación para nuestros primeros 5 clientes.</p>
+        </div>
+
+        <div class="plans__foot" data-reveal style="--i:1">
+          <p class="plans__note">Precios en USD. ITBMS no incluido, si aplica. La pauta publicitaria se paga directo a Meta.</p>
+          <a class="link-arrow" href="AVORA-Planes-y-Precios-2026.pdf" download>
+            <span class="link-arrow__text">Descargar planes en PDF</span>
+            <span class="plans__size">(1 MB)</span>
+            <span class="link-arrow__icon" aria-hidden="true">↓</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 · CTA FINAL -->
     <section class="final-cta theme-dark cut-top" aria-labelledby="cta-title">
       <div class="container final-cta__inner">
         <h2 class="final-cta__title" id="cta-title" data-reveal>¿Hablamos de tu negocio?</h2>
@@ -331,7 +453,7 @@
     </section>
   </main>
 
-  <!-- 9 · FOOTER -->
+  <!-- 10 · FOOTER -->
   <footer class="site-footer theme-dark cut-top">
     <div class="container site-footer__inner">
       <div class="site-footer__brand">

@@ -22,10 +22,18 @@
     convierte: 'Hola AVORA, me interesa una landing page para mi negocio. ¿Podemos agendar una demo?',
     automatiza: 'Hola AVORA, quiero automatizar la atención de mi negocio. ¿Podemos agendar una demo?',
     caso: 'Hola AVORA, vi el caso de Canal Silver y quiero algo así para mi negocio.',
+    precio: 'Hola AVORA, vi los planes y quiero saber cuál le conviene a mi negocio. ¿Podemos agendar una demo?',
   };
   const waLink = (tema) => WA_BASE + encodeURIComponent(WHATSAPP[tema] || WHATSAPP.general);
 
-  // Textos basados solo en lo que ya dice la landing: sin precios, cifras ni clientes inventados.
+  // Enlaces a secciones de la página según el tema. Salen del tema y no del texto,
+  // así getReply sigue devolviendo solo { texto, tema } aunque luego responda la IA.
+  const ENLACES = {
+    precio: { href: '#planes', texto: 'Ver los planes' },
+  };
+
+  // Textos basados solo en lo que ya dice la landing: sin cifras ni clientes inventados.
+  // Los precios salen solo de la sección Planes (si cambian allí, se cambian aquí).
   const RESPUESTAS = {
     saludo: '¡Hola! Cuéntame qué necesitas para tu negocio, o elige una de las opciones de abajo.',
     general: [
@@ -38,7 +46,11 @@
     atrae: 'Para que te conozcan, manejamos tus redes sociales: contenido orgánico y campañas de ads, para que las personas correctas sepan que existes.',
     convierte: 'Hacemos landing pages y sitios web pensados para una sola cosa: que quien te visita te escriba. Puedes empezar con tu página y, cuando estés listo, sumamos lo demás.',
     automatiza: 'Creamos chatbots y asistentes con IA que responden por ti, e integraciones que conectan tus herramientas para que trabajes menos. Así nadie se queda sin respuesta.',
-    precio: 'El precio depende de lo que necesite tu negocio. En la demo conversamos sobre tu caso y después te enviamos una propuesta clara, con alcance y precio definidos, para que sepas exactamente qué recibes.',
+    precio: [
+      'Tenemos planes desde $350 (pago único), con tu página lista para que te escriban por WhatsApp.',
+      'Si también quieres anuncios, el Sistema AVORA une anuncio, landing y WhatsApp automatizado trabajando juntos.',
+      'Mira todos los planes en la página o escríbenos y te ayudamos a elegir.',
+    ].join('\n'),
     proceso: [
       'Trabajamos en tres pasos, sin complicaciones:',
       '1. Conversamos sobre tu negocio: qué vendes, a quién y qué te está frenando.',
@@ -56,7 +68,7 @@
   // Palabras clave por tema, ya sin tildes y en minúsculas.
   // "\\b" = inicio de palabra: así "ia" no coincide dentro de "envía" o "media".
   const PALABRAS_CLAVE = {
-    precio: /\b(precio|costo|cuesta|cuanto|cobran|tarifa|presupuesto|valor)/,
+    precio: /\b(precio|costo|cuesta|cuanto|cobran|tarifa|presupuesto|valor|plan(es)?\b|paquete|mensualidad)/,
     caso: /\b(caso|ejemplo|portafolio|trabajos? anteriores|canal silver)/,
     proceso: /\b(proceso|pasos|como trabajan|como funciona)/,
     automatiza: /\b(chatbot|bot\b|automatiz|responder|respuesta|atencion|asistente|ia\b|integraci)/,
@@ -90,7 +102,7 @@
     return { texto: RESPUESTAS[tema], tema };
   }
 
-  const RAPIDAS = ['¿Qué hacen?', 'Quiero más clientes', 'Necesito una página web', 'Quiero automatizar mi atención', 'Ver un caso real'];
+  const RAPIDAS = ['¿Qué hacen?', '¿Cuánto cuesta?', 'Quiero más clientes', 'Necesito una página web', 'Quiero automatizar mi atención', 'Ver un caso real'];
   const BIENVENIDA = '¡Hola! Soy Avo, el asistente de AVORA. ¿En qué te ayudo con tu negocio?';
 
   /* ---------- Interfaz ---------- */
@@ -215,6 +227,20 @@
     msg.appendChild(a);
   };
 
+  // Enlace a una sección de la landing (ej. #planes). El navegador hace el salto
+  // solo, porque es un <a href="#...">; aquí decidimos qué pasa con el chat.
+  const addLink = (msg, enlace) => {
+    const a = document.createElement('a');
+    a.className = 'avo-link';
+    a.href = enlace.href;
+    a.innerHTML = '<span></span><span aria-hidden="true">↓</span>';
+    a.firstChild.textContent = enlace.texto;
+    a.addEventListener('click', () => {
+      // TODO(human): qué pasa con el chat al tocar el enlace
+    });
+    msg.appendChild(a);
+  };
+
   // Solo queda un grupo de respuestas rápidas, siempre al final de la conversación
   const addQuickReplies = () => {
     log.querySelectorAll('.avo-chips').forEach((g) => g.remove());
@@ -266,6 +292,7 @@
     root.classList.remove('is-thinking');
     const msg = addMessage('avo', respuesta.texto);
     if (respuesta.tema !== 'saludo') addWhatsApp(msg, respuesta.tema);
+    if (ENLACES[respuesta.tema]) addLink(msg, ENLACES[respuesta.tema]);
     cta.href = waLink(respuesta.tema);   // el botón fijo sigue el tema de la conversación
     setMood(respuesta.tema === 'saludo' ? 'saludo' : 'feliz', 2500);
     addQuickReplies();
