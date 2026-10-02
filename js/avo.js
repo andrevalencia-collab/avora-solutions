@@ -118,10 +118,14 @@
     <button class="avo-launcher" type="button" aria-expanded="false" aria-controls="avo-panel"
             aria-label="Chatea con Avo, el asistente de AVORA">
       <img class="avo-face avo-launcher__img" src="${img('normal')}" alt="" width="34" height="34">
+      <span class="avo-fx" aria-hidden="true"></span>
     </button>
     <section class="avo-panel" id="avo-panel" role="dialog" aria-modal="true" aria-labelledby="avo-title" hidden>
       <header class="avo-panel__head">
-        <img class="avo-face avo-panel__avatar" src="${img('normal')}" alt="" width="34" height="34">
+        <span class="avo-panel__avatar">
+          <img class="avo-face" src="${img('normal')}" alt="" width="34" height="34">
+          <span class="avo-fx" aria-hidden="true"></span>
+        </span>
         <div class="avo-panel__who">
           <h2 class="avo-panel__title" id="avo-title" tabindex="-1">Avo</h2>
           <p class="avo-panel__sub">Asistente de AVORA</p>
@@ -160,30 +164,89 @@
   const sendBtn = $('.avo-send');
   const count = $('.avo-count');
   const cta = $('.avo-cta');
+  const avatar = $('.avo-panel__avatar');
   const faces = root.querySelectorAll('.avo-face');
 
-  /* Estados de ánimo: normal, parpadeo, saludo, pensando, feliz */
-  let mood = 'normal';
-  let moodTimer = 0;
-  const showFace = (estado) => faces.forEach((f) => { f.src = img(estado); });
-  const setMood = (estado, volverEnMs) => {
-    clearTimeout(moodTimer);
-    mood = estado;
-    showFace(estado);
-    if (volverEnMs) moodTimer = setTimeout(() => setMood('normal'), volverEnMs);
+  /* ---------- Estados de Avo ----------
+     Una sola tabla decide qué cara pone, qué animación hace y cuánto dura.
+     El movimiento vive en css/avo.css: aquí solo se escriben atributos data-*
+     en .avo (data-estado, data-anim, data-fx) y el CSS reacciona a ellos.
+     Así, con movimiento reducido, el CSS apaga los saltos y las caras siguen cambiando. */
+  const ESTADOS = {
+    espera:     { cara: 'normal',   prioridad: 0 },               // respira, parpadea y mira
+    durmiendo:  { cara: 'parpadeo', prioridad: 0, fx: 'zzz' },
+    atento:     { cara: 'feliz',    prioridad: 1, anim: 'saltito', dura: 900 },
+    saludando:  { cara: 'saludo',   prioridad: 2, dura: 2000 },
+    contento:   { cara: 'feliz',    prioridad: 2, dura: 2500 },   // después de cada respuesta
+    aplastar:   { cara: 'normal',   prioridad: 3, anim: 'aplastar', dura: 600, luego: 'saludando' },
+    celebrando: { cara: 'feliz',    prioridad: 3, anim: 'celebrar', dura: 1200 },
+    bailando:   { cara: 'feliz',    prioridad: 4, anim: 'bailar', dura: 3000 },
+    pensando:   { cara: 'pensando', prioridad: 5, fx: 'puntos' },
   };
 
-  // Parpadeo cada 3 a 6 segundos, solo cuando está en reposo
-  if (!reduceMotion) {
-    const blink = () => {
-      if (mood === 'normal') {
-        showFace('parpadeo');
-        setTimeout(() => { if (mood === 'normal') showFace('normal'); }, 160);
-      }
-      setTimeout(blink, 3000 + Math.random() * 3000);
-    };
-    setTimeout(blink, 3000);
+  let estado = 'espera';
+  let estadoTimer = 0;
+  const showFace = (cara) => faces.forEach((f) => { f.src = img(cara); });
+
+  // Quitar y volver a poner data-anim reinicia la animación CSS, así el mismo
+  // saltito puede repetirse. "void offsetWidth" obliga al navegador a notar el hueco.
+  const reiniciarAnim = (anim) => {
+    delete root.dataset.anim;
+    if (!anim) return;
+    void root.offsetWidth;
+    root.dataset.anim = anim;
+  };
+
+  /**
+   * Decide si el estado "nuevo" puede interrumpir al "actual".
+   * Ambos son nombres de ESTADOS; cada uno tiene su .prioridad (0 a 5).
+   */
+  function puedeCambiar(actual, nuevo) {
+    // TODO(human)
   }
+
+  // forzar = true se salta la regla: lo usan los temporizadores y el fin de "pensando"
+  const cambiarEstado = (nombre, forzar = false) => {
+    if (!forzar && !puedeCambiar(estado, nombre)) return false;
+    const e = ESTADOS[nombre];
+    clearTimeout(estadoTimer);
+    estado = nombre;
+    showFace(e.cara);
+    root.dataset.estado = nombre;
+    if (e.fx) root.dataset.fx = e.fx; else delete root.dataset.fx;
+    reiniciarAnim(e.anim);
+    if (e.dura) estadoTimer = setTimeout(() => cambiarEstado(e.luego || 'espera', true), e.dura);
+    return true;
+  };
+  root.dataset.estado = estado;
+
+  // Parpadeo cada 3 a 6 segundos, solo en espera. Es solo un cambio de cara,
+  // por eso sigue activo con movimiento reducido.
+  const blink = () => {
+    if (estado === 'espera') {
+      showFace('parpadeo');
+      setTimeout(() => { if (estado === 'espera') showFace('normal'); }, 160);
+    }
+    setTimeout(blink, 3000 + Math.random() * 3000);
+  };
+  setTimeout(blink, 3000);
+
+  // Cada tanto se inclina un poco a un lado, como mirando (sin cambiar de estado)
+  const mirar = () => {
+    if (estado === 'espera' && !root.dataset.anim) {
+      reiniciarAnim('mirar');
+      setTimeout(() => { if (root.dataset.anim === 'mirar') delete root.dataset.anim; }, 1400);
+    }
+    setTimeout(mirar, 8000 + Math.random() * 7000);
+  };
+  setTimeout(mirar, 6000);
+
+  // Pixel art de los efectos: cada unidad del viewBox es un pixel del dibujo
+  const PUNTOS = '<svg class="avo-fx__puntos" viewBox="0 0 8 2" shape-rendering="crispEdges">'
+    + '<rect width="2" height="2"/><rect x="3" width="2" height="2"/><rect x="6" width="2" height="2"/></svg>';
+  const ZETA = '<svg class="avo-fx__z" viewBox="0 0 5 5" shape-rendering="crispEdges">'
+    + '<path d="M0 0h5v1H0zM3 1h1v1H3zM2 2h1v1H2zM1 3h1v1H1zM0 4h5v1H0z"/></svg>';
+  root.querySelectorAll('.avo-fx').forEach((fx) => { fx.innerHTML = PUNTOS + ZETA + ZETA + ZETA; });
 
   /* Burbuja "¿Te ayudo?": una sola vez por visita */
   const storage = {
@@ -235,8 +298,10 @@
     a.href = enlace.href;
     a.innerHTML = '<span></span><span aria-hidden="true">↓</span>';
     a.firstChild.textContent = enlace.texto;
+    // En celular el panel tapa toda la página: se cierra para que se vea la sección.
+    // En computadora el panel es pequeño y el chat puede seguir abierto al lado.
     a.addEventListener('click', () => {
-      // TODO(human): qué pasa con el chat al tocar el enlace
+      if (!isDesktop()) close();
     });
     msg.appendChild(a);
   };
@@ -276,7 +341,7 @@
     // Las respuestas rápidas anteriores se van; vuelven al final después de la respuesta
     log.querySelectorAll('.avo-chips').forEach((g) => g.remove());
     addMessage('user', mensaje);
-    setMood('pensando');
+    cambiarEstado('pensando', true);
     typing.textContent = 'Avo está escribiendo…';
     root.classList.add('is-thinking');
 
@@ -294,7 +359,7 @@
     if (respuesta.tema !== 'saludo') addWhatsApp(msg, respuesta.tema);
     if (ENLACES[respuesta.tema]) addLink(msg, ENLACES[respuesta.tema]);
     cta.href = waLink(respuesta.tema);   // el botón fijo sigue el tema de la conversación
-    setMood(respuesta.tema === 'saludo' ? 'saludo' : 'feliz', 2500);
+    cambiarEstado(respuesta.tema === 'saludo' ? 'saludando' : 'contento', true);
     addQuickReplies();
 
     busy = false;
@@ -323,7 +388,9 @@
     document.documentElement.classList.add('avo-open');
     launcher.setAttribute('aria-expanded', 'true');
     requestAnimationFrame(() => root.classList.add('is-open'));
-    setMood('saludo', 2000);
+    // El salto se ve en la cara del panel (el botón flotante se oculta al abrir).
+    // El panel abre igual de inmediato: la animación nunca hace esperar al chat.
+    cambiarEstado('aplastar');
 
     if (!started) {
       started = true;
@@ -345,6 +412,64 @@
   launcher.addEventListener('click', () => (panel.hidden ? open() : close()));
   bubble.addEventListener('click', open);
   closeBtn.addEventListener('click', close);
+
+  /* ---------- Reacciones ---------- */
+
+  // Pasar el mouse (o tocarlo en celular): se alegra y da un saltito
+  [launcher, avatar].forEach((el) => el.addEventListener('pointerenter', () => cambiarEstado('atento')));
+
+  // Cualquier botón de WhatsApp (de la página o del chat): celebra.
+  // El enlace abre otra pestaña o la app, así que si la página se oculta justo
+  // después, la celebración se repite una vez cuando la persona vuelve.
+  let clicWhatsApp = 0;
+  let celebrarAlVolver = false;
+  document.addEventListener('click', (e) => {
+    if (!(e.target instanceof Element) || !e.target.closest('a[href^="https://wa.me/"]')) return;
+    clicWhatsApp = Date.now();
+    cambiarEstado('celebrando');
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      celebrarAlVolver = Date.now() - clicWhatsApp < 2000;
+    } else if (celebrarAlVolver) {
+      celebrarAlVolver = false;
+      ultimaActividad = Date.now();
+      cambiarEstado('celebrando');
+    }
+  });
+
+  // Sin actividad en 30 segundos: se duerme. Los listeners solo guardan la hora
+  // (son "passive": nunca frenan el scroll). "capture" atrapa también el scroll
+  // de dentro del chat, que no sube hasta document por sí solo.
+  const DORMIR_MS = 30000;
+  let ultimaActividad = Date.now();
+  const actividad = () => {
+    ultimaActividad = Date.now();
+    if (estado === 'durmiendo') cambiarEstado('espera');
+  };
+  ['mousemove', 'scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown'].forEach((ev) => {
+    document.addEventListener(ev, actividad, { passive: true, capture: true });
+  });
+  setInterval(() => {
+    if (estado === 'espera' && Date.now() - ultimaActividad > DORMIR_MS) cambiarEstado('durmiendo');
+  }, 1000);
+
+  // Secreto: 5 clics seguidos en Avo (cada uno a menos de 800 ms del anterior) y baila.
+  // El primer clic en el botón abre el chat; los demás caen en su cara del panel.
+  const SECRETO_CLICS = 5;
+  const SECRETO_MS = 800;
+  let clics = 0;
+  let ultimoClic = 0;
+  const contarClic = () => {
+    const ahora = Date.now();
+    clics = ahora - ultimoClic < SECRETO_MS ? clics + 1 : 1;
+    ultimoClic = ahora;
+    if (clics >= SECRETO_CLICS) {
+      clics = 0;
+      cambiarEstado('bailando');
+    }
+  };
+  [launcher, avatar].forEach((el) => el.addEventListener('click', contarClic));
 
   // Escape cierra; Tab no se escapa del chat abierto
   panel.addEventListener('keydown', (e) => {

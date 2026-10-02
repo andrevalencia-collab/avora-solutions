@@ -7,12 +7,16 @@
 .avo {
   --avo-size: 64px;
   --avo-gap: 1rem;
+  --avo-px: 1.5px;          /* 1 pixel del dibujo (34px mostrados a 51px): todo se mueve en múltiplos */
   font-family: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 @media (min-width: 900px) { .avo { --avo-gap: 1.5rem; } }
 
-/* Pixel art: sin suavizado al agrandar */
-.avo-face { image-rendering: pixelated; }
+/* Pixel art: sin suavizado al agrandar. Los saltos se apoyan en los pies. */
+.avo-face {
+  image-rendering: pixelated;
+  transform-origin: 50% 100%;
+}
 
 .avo-sr-only {
   position: absolute;
@@ -51,9 +55,7 @@
   width: 51px;
   height: 51px;
   margin-top: 4px;
-  animation: avo-float 3s ease-in-out infinite alternate;
 }
-@keyframes avo-float { from { transform: translateY(1px); } to { transform: translateY(-3px); } }
 
 /* Burbuja "¿Te ayudo?" */
 .avo-bubble {
@@ -145,14 +147,25 @@
   padding: .75rem 1rem;
   border-bottom: 1px solid var(--line);
 }
+/* El círculo es el envoltorio: Avo salta dentro de él sin mover el círculo */
 .avo-panel__avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
   width: 51px;
   height: 51px;
   flex-shrink: 0;
   background: var(--bone);
   border: 2px solid var(--indigo);
   border-radius: 50%;
-  padding: 2px 0 0;
+  touch-action: manipulation;       /* 5 toques seguidos no hacen zoom en celular */
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.avo-panel__avatar .avo-face {
+  width: 44px;
+  height: 44px;
+  margin-top: 3px;
 }
 .avo-panel__who { flex: 1; min-width: 0; }
 .avo-panel__title {
@@ -330,9 +343,134 @@
   margin: .5rem 1rem 1rem;
 }
 
+/* ==========================================================================
+   Estados de Avo
+   js/avo.js escribe en .avo: data-estado (espera, durmiendo, …), data-anim
+   (el movimiento de ese momento) y data-fx (puntitos o zzz).
+   Todo se mueve con steps(1): cada fotograma salta al siguiente sin suavizar,
+   como en un videojuego de pixel art. "u" = var(--avo-px), un pixel del dibujo.
+   ========================================================================== */
+
+/* ---------- Efectos sobre la cabeza (nunca reciben clics) ---------- */
+.avo-fx {
+  --fx-u: calc(2 * var(--avo-px));  /* pixel de los efectos: un poco más grueso para que se lean */
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 0;
+  pointer-events: none;
+}
+.avo-fx svg {
+  position: absolute;
+  display: none;
+  fill: var(--indigo);
+  overflow: visible;
+}
+.avo[data-fx="puntos"] .avo-fx__puntos,
+.avo[data-fx="zzz"] .avo-fx__z { display: block; }
+
+/* Tres puntitos centrados sobre la cabeza */
+.avo-fx__puntos {
+  left: calc(50% - 4 * var(--fx-u));
+  bottom: 2px;
+  width: calc(8 * var(--fx-u));
+  height: calc(2 * var(--fx-u));
+}
+/* Z: arrancan arriba a la derecha de la cabeza */
+.avo-fx__z {
+  left: calc(50% + 2 * var(--fx-u));
+  bottom: calc(-2 * var(--fx-u));
+  width: calc(5 * var(--fx-u));
+  height: calc(5 * var(--fx-u));
+}
+/* En el botón flotante hay espacio arriba; en el panel, las Z se quedan dentro del encabezado */
+.avo-launcher .avo-fx { --z-y: 6px; }
+.avo-panel__avatar .avo-fx { --z-y: 3px; }
+
+/* Sin animaciones (movimiento reducido): una escalera quieta "Z z z" */
+.avo-fx__z:nth-of-type(3) { transform: translate(calc(3 * var(--fx-u)), calc(-3 * var(--fx-u))) scale(.8); }
+.avo-fx__z:nth-of-type(4) { transform: translate(calc(6 * var(--fx-u)), calc(-6 * var(--fx-u))) scale(.6); }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ---------- Movimientos de la cara ---------- */
+  .avo[data-estado="espera"]:not([data-anim]) .avo-face { animation: avo-respira 1.6s steps(1, end) infinite; }
+  .avo[data-anim="mirar"] .avo-face    { animation: avo-mirar 1.4s steps(1, end) both; }
+  .avo[data-anim="saltito"] .avo-face  { animation: avo-saltito .5s steps(1, end) both; }
+  .avo[data-anim="aplastar"] .avo-face { animation: avo-aplastar .6s steps(1, end) both; }
+  .avo[data-anim="celebrar"] .avo-face { animation: avo-celebrar 1.2s steps(1, end) both; }
+  .avo[data-anim="bailar"] .avo-face   { animation: avo-bailar .8s steps(1, end) infinite; }
+
+  /* ---------- Efectos ---------- */
+  .avo-fx__puntos rect { opacity: .3; animation: avo-punto .9s steps(1, end) infinite; }
+  .avo-fx__puntos rect:nth-child(2) { animation-delay: .3s; }
+  .avo-fx__puntos rect:nth-child(3) { animation-delay: .6s; }
+
+  .avo-fx__z,
+  .avo-fx__z:nth-of-type(n) { transform: none; animation: avo-z 2.4s steps(1, end) infinite backwards; }
+  .avo-fx__z:nth-of-type(3) { animation-delay: .8s; }
+  .avo-fx__z:nth-of-type(4) { animation-delay: 1.6s; }
+}
+
+/* Sube y baja 1 pixel, como respirando */
+@keyframes avo-respira {
+  50% { transform: translateY(calc(-1 * var(--avo-px))); }
+}
+/* Se inclina a un lado, se queda mirando y vuelve */
+@keyframes avo-mirar {
+  0%, 100% { transform: none; }
+  10%      { transform: translateX(calc(-1 * var(--avo-px))) rotate(-3deg); }
+  20%, 80% { transform: translateX(calc(-2 * var(--avo-px))) rotate(-6deg); }
+  90%      { transform: translateX(calc(-1 * var(--avo-px))) rotate(-3deg); }
+}
+@keyframes avo-saltito {
+  0%, 100% { transform: none; }
+  20%      { transform: translateY(calc(-2 * var(--avo-px))); }
+  40%      { transform: translateY(calc(-4 * var(--avo-px))); }
+  60%      { transform: translateY(calc(-2 * var(--avo-px))); }
+  80%      { transform: none; }
+}
+/* Aplastar y estirar: se agacha, sale estirado, llega arriba, cae y se aplasta al aterrizar */
+@keyframes avo-aplastar {
+  0%   { transform: scale(1.12, .84); }
+  20%  { transform: translateY(calc(-3 * var(--avo-px))) scale(.88, 1.16); }
+  40%  { transform: translateY(calc(-7 * var(--avo-px))); }
+  60%  { transform: translateY(calc(-3 * var(--avo-px))) scale(.92, 1.08); }
+  80%  { transform: scale(1.14, .86); }
+  100% { transform: none; }
+}
+/* Dos saltitos seguidos */
+@keyframes avo-celebrar {
+  0%, 45%, 90%, 100% { transform: none; }
+  10%, 55% { transform: translateY(calc(-3 * var(--avo-px))) scale(.94, 1.06); }
+  20%, 65% { transform: translateY(calc(-6 * var(--avo-px))); }
+  30%, 75% { transform: translateY(calc(-3 * var(--avo-px))); }
+  40%, 85% { transform: scale(1.1, .9); }
+}
+/* Baile: izquierda, centro con saltito, derecha, centro */
+@keyframes avo-bailar {
+  0%   { transform: translateX(calc(-2 * var(--avo-px))) rotate(-6deg); }
+  25%  { transform: translateY(calc(-2 * var(--avo-px))); }
+  50%  { transform: translateX(calc(2 * var(--avo-px))) rotate(6deg); }
+  75%  { transform: translateY(calc(-2 * var(--avo-px))); }
+}
+/* Los puntitos se encienden uno tras otro */
+@keyframes avo-punto {
+  0%  { opacity: 1; }
+  33% { opacity: .3; }
+}
+/* Cada Z aparece, sube en escalones hacia la derecha y se apaga */
+@keyframes avo-z {
+  0%   { opacity: 0; transform: none; }
+  15%  { opacity: 1; transform: none; }
+  40%  { opacity: 1; transform: translate(var(--fx-u), calc(-1 * var(--z-y))); }
+  65%  { opacity: 1; transform: translate(calc(2 * var(--fx-u)), calc(-2 * var(--z-y))); }
+  85%  { opacity: .5; transform: translate(calc(3 * var(--fx-u)), calc(-3 * var(--z-y))); }
+  100% { opacity: 0; transform: translate(calc(3 * var(--fx-u)), calc(-3 * var(--z-y))); }
+}
+
 /* ---------- Movimiento reducido ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .avo-launcher__img,
   .avo-bubble,
   .avo-msg,
   .avo-chips,
