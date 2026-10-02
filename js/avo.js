@@ -21,7 +21,7 @@
     atrae: 'Hola AVORA, quiero que más clientes conozcan mi negocio en redes sociales. ¿Podemos agendar una demo?',
     convierte: 'Hola AVORA, me interesa una landing page para mi negocio. ¿Podemos agendar una demo?',
     automatiza: 'Hola AVORA, quiero automatizar la atención de mi negocio. ¿Podemos agendar una demo?',
-    caso: 'Hola AVORA, vi el caso de Canal Silver y quiero algo así para mi negocio.',
+    caso: 'Hola AVORA, vi sus proyectos y quiero algo así para mi negocio.',
     precio: 'Hola AVORA, vi los planes y quiero saber cuál le conviene a mi negocio. ¿Podemos agendar una demo?',
   };
   const waLink = (tema) => WA_BASE + encodeURIComponent(WHATSAPP[tema] || WHATSAPP.general);
@@ -30,6 +30,7 @@
   // así getReply sigue devolviendo solo { texto, tema } aunque luego responda la IA.
   const ENLACES = {
     precio: { href: '#planes', texto: 'Ver los planes' },
+    caso: { href: '#proyectos', texto: 'Ver los proyectos' },
   };
 
   // Textos basados solo en lo que ya dice la landing: sin cifras ni clientes inventados.
@@ -58,9 +59,9 @@
       '3. Construimos contigo, por entregas, ajustando según tu feedback.',
     ].join('\n'),
     caso: [
-      'Te cuento el caso de Canal Silver (compra de oro, plata y joyería):',
-      'No tenían presencia digital propia y su competencia sí. Les hicimos una landing responsive enfocada en conversión, conectada a WhatsApp.',
-      'Hoy compiten en igualdad de condiciones y han llegado nuevos clientes por la página.',
+      'Te cuento dos proyectos que ya están en línea:',
+      '• Canal Silver (compra de oro, plata y joyería): no tenían presencia digital propia y su competencia sí. Les hicimos una landing enfocada en conversión, conectada a WhatsApp. Hoy compiten en igualdad de condiciones y han llegado nuevos clientes por la página.',
+      '• Distrito 507 (marca de ropa inspirada en Panamá, proyecto escolar): un lookbook digital con una historia por cada diseño. Sorprendió al grupo y a los padres de familia, y hasta generó la venta de un suéter.',
     ].join('\n'),
     'no-entiende': 'Esa pregunta la vemos mejor juntos. Escríbenos por WhatsApp y te respondemos directo.',
   };
@@ -69,7 +70,7 @@
   // "\\b" = inicio de palabra: así "ia" no coincide dentro de "envía" o "media".
   const PALABRAS_CLAVE = {
     precio: /\b(precio|costo|cuesta|cuanto|cobran|tarifa|presupuesto|valor|plan(es)?\b|paquete|mensualidad)/,
-    caso: /\b(caso|ejemplo|portafolio|trabajos? anteriores|canal silver)/,
+    caso: /\b(caso|ejemplo|portafolio|proyectos?\b|trabajos? anteriores|canal silver|distrito 507|lookbook)/,
     proceso: /\b(proceso|pasos|como trabajan|como funciona)/,
     automatiza: /\b(chatbot|bot\b|automatiz|responder|respuesta|atencion|asistente|ia\b|integraci)/,
     convierte: /\b(pagina|web|landing|sitio)/,
@@ -102,7 +103,7 @@
     return { texto: RESPUESTAS[tema], tema };
   }
 
-  const RAPIDAS = ['¿Qué hacen?', '¿Cuánto cuesta?', 'Quiero más clientes', 'Necesito una página web', 'Quiero automatizar mi atención', 'Ver un caso real'];
+  const RAPIDAS = ['¿Qué hacen?', '¿Cuánto cuesta?', 'Quiero más clientes', 'Necesito una página web', 'Quiero automatizar mi atención', 'Ver proyectos'];
   const BIENVENIDA = '¡Hola! Soy Avo, el asistente de AVORA. ¿En qué te ayudo con tu negocio?';
 
   /* ---------- Interfaz ---------- */

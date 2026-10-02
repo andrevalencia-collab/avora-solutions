@@ -543,7 +543,7 @@ section, footer, .pillar {
 .pillar__body { display: grid; gap: 1.25rem; }
 .pillar .btn { justify-self: start; margin-top: .5rem; }
 
-.pillar__tag, .plan__tag {
+.pillar__tag, .plan__tag, .project__tag {
   justify-self: start;
   padding: .35rem 1.1rem .35rem .8rem;
   background: var(--indigo);
@@ -616,40 +616,158 @@ section, footer, .pillar {
   .pillar--automatiza .btn { justify-self: end; }
 }
 
-/* ---------- 5 · Caso de estudio ---------- */
-.case { padding-bottom: calc(var(--pad-y) + var(--cut)); }
-.case__grid {
-  display: grid;
-  gap: clamp(3rem, 6vw, 5rem);
-  align-items: center;
+/* ---------- 5 · Proyectos ---------- */
+/* Dos casos que no se ven iguales: Canal Silver abierto sobre el fondo claro y
+   Distrito 507 en una franja oscura a todo el ancho, en espejo. Cada uno usa el
+   color de su marca solo como detalle (escenario, barra del nombre, comillas). */
+.projects { padding-bottom: 0; }   /* la franja de Distrito 507 cierra la sección */
+.projects__head { max-width: 46rem; }
+
+.project--canal {
+  --proyecto: #b39a6b;              /* champán de la joyería de Canal Silver */
+  --proyecto-fondo: #e9e3d8;        /* crema de su página */
 }
-.case__meta {
+.project--distrito {
+  --proyecto: #bf3a33;              /* rojo de "DISTRITO" en su logo (un poco más vivo para el navy) */
+  --proyecto-fondo: #1c1c1c;        /* carbón del fondo de su página */
+}
+
+/* Celular: nombre, capturas y después la historia. En computadora el texto
+   vuelve a su columna (ver abajo). */
+.project {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "head" "visual" "story" "quote" "actions";
+  row-gap: 2rem;
+}
+.project__copy { display: contents; }
+.project__head { grid-area: head; }
+.project__visual { grid-area: visual; }
+.project__story { grid-area: story; }
+.project__quote { grid-area: quote; }
+.project__actions { grid-area: actions; }
+
+.project--canal { margin-top: clamp(2.5rem, 6vw, 4rem); padding-bottom: calc(var(--pad-y) * .6 + var(--cut)); }
+
+/* Franja de Distrito 507: mismo corte que los separadores de sección */
+.project-band {
+  position: relative;
+  padding: calc(var(--pad-y) * .6 + var(--cut)) 0 calc(var(--pad-y) + var(--cut));
+  margin-top: calc(-1 * var(--cut));
+  background: var(--bg);
+  color: var(--fg);
+  clip-path: polygon(0 var(--cut), 100% 0, 100% 100%, 0 100%);
+}
+
+.project__tag {
+  width: fit-content;
+  max-width: 100%;
+  text-wrap: balance;
+}
+.project__name {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  font-size: clamp(2.25rem, 6.5vw, 4.25rem);
+  font-weight: 800;
+  font-stretch: 125%;
+  line-height: 1;
+  letter-spacing: -.015em;
+}
+/* Barra con la pendiente del logo, en el color del proyecto */
+.project__name::before {
+  content: "";
+  flex-shrink: 0;
+  width: .55em;
+  height: .62em;
+  background: var(--proyecto);
+  transform: skewX(calc(-1 * var(--slope)));
+}
+.project__meta {
   margin-top: .75rem;
   font-weight: 600;
   color: var(--muted);
 }
-.case__story {
-  margin-top: 2rem;
-  border-top: 1px solid var(--line);
-}
-.case__story > div {
+
+.project__story { border-top: 1px solid var(--line); }
+.project__story > div {
   padding: 1.1rem 0;
   border-bottom: 1px solid var(--line);
 }
-.case__story dt {
+.project__story dt {
   font-size: .75rem;
   font-weight: 700;
   letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--eyebrow);
 }
-.case__story dd { margin-top: .3rem; font-size: 1.125rem; }
-.case__actions {
-  margin-top: 2rem;
+.project__story dd { margin-top: .3rem; font-size: 1.125rem; }
+
+/* Resultado destacado (Distrito 507) */
+.project__story > .project__result {
+  margin-top: 1.1rem;
+  padding: 1.25rem 1.25rem 1.35rem;
+  background: color-mix(in srgb, var(--proyecto) 16%, transparent);
+  border-bottom: 0;
+  border-left: 4px solid var(--proyecto);
+}
+.project__result dd {
+  font-size: clamp(1.25rem, 2.4vw, 1.5rem);
+  font-weight: 700;
+  font-stretch: 110%;
+  line-height: 1.3;
+  text-wrap: pretty;
+}
+
+.project__quote {
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--proyecto);
+}
+.project__quote-mark { width: 2.25rem; height: auto; fill: var(--proyecto); }
+.project__quote blockquote {
+  margin-top: .75rem;
+  font-size: clamp(1.125rem, 1.8vw, 1.3rem);
+  font-weight: 500;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+.project__quote figcaption {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .1rem .6rem;
+}
+.project__quote strong { font-weight: 800; font-stretch: 112%; }
+.project__quote span { color: var(--muted); }
+
+.project__actions {
   display: flex;
   flex-wrap: wrap;
   gap: .75rem;
 }
+@media (max-width: 479px) {
+  .project__actions .btn { width: 100%; }
+}
+
+/* Escenario de las capturas: panel con el color del proyecto y las esquinas
+   cortadas con la pendiente del logo (alto c, ancho 2c) */
+.project__visual {
+  --c: clamp(1.25rem, 3vw, 2rem);
+  position: relative;
+  isolation: isolate;
+  padding: clamp(1.75rem, 5vw, 3rem) clamp(1rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 2.5rem);
+}
+.project__visual::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--proyecto-fondo);
+  clip-path: polygon(0 0, calc(100% - 2 * var(--c)) 0, 100% var(--c), 100% 100%, calc(2 * var(--c)) 100%, 0 calc(100% - var(--c)));
+}
+/* Si faltan las dos capturas, no queda un escenario vacío */
+.project__visual:not(:has(.device:not([hidden]))) { display: none; }
 
 /* Maquetas de dispositivos hechas con CSS */
 .devices {
@@ -716,35 +834,39 @@ section, footer, .pillar {
   background: #0a0f24;
   border-radius: 999px;
 }
+/* Espejo (Distrito 507): laptop a la derecha y celular a la izquierda */
+.devices--mirror .device--laptop { margin-left: auto; }
+.devices--mirror .device--phone { right: auto; left: 0; }
 
 @media (min-width: 900px) {
-  .case__grid { grid-template-columns: .9fr 1.1fr; }
+  .project {
+    grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+    grid-template-areas: "copy visual";
+    column-gap: clamp(3rem, 6vw, 5.5rem);
+    align-items: start;
+  }
+  .project--distrito {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+    grid-template-areas: "visual copy";
+  }
+  .project__copy { grid-area: copy; display: grid; row-gap: 2rem; }
+  .project__copy > * { grid-area: auto; }
+
+  /* Las capturas acompañan mientras se lee la historia */
+  .project__visual {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+    margin-top: 2.5rem;
+  }
+
+  /* Sin capturas, el texto ocupa una columna cómoda */
+  .project:not(:has(.device:not([hidden]))) {
+    grid-template-columns: minmax(0, 46rem);
+    grid-template-areas: "copy";
+  }
 }
 
-/* ---------- 6 · Testimonio ---------- */
-.quote { padding-bottom: calc(var(--pad-y) + var(--cut)); }
-.quote__figure { max-width: 58rem; margin-inline: auto; }
-.quote__mark { width: clamp(3rem, 7vw, 4.5rem); height: auto; fill: var(--accent); }
-.quote__text {
-  margin-top: 1.75rem;
-  font-size: clamp(1.5rem, 3.8vw, 2.75rem);
-  font-weight: 500;
-  line-height: 1.3;
-  letter-spacing: -.01em;
-  text-wrap: pretty;
-}
-.quote__author {
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: .15rem;
-  padding-left: 1rem;
-  border-left: 3px solid var(--accent);
-}
-.quote__author strong { font-size: 1.125rem; font-weight: 800; font-stretch: 112%; }
-.quote__author span { color: var(--muted); }
-
-/* ---------- 7 · Proceso ---------- */
+/* ---------- 6 · Proceso ---------- */
 .process { padding-bottom: calc(var(--pad-y) + var(--cut)); }
 .process__track { position: relative; margin-top: clamp(2.5rem, 6vw, 4rem); }
 .process__line { display: none; }
@@ -805,7 +927,7 @@ section, footer, .pillar {
   .step { background: var(--bg); padding-right: 1rem; }
 }
 
-/* ---------- 8 · Planes ---------- */
+/* ---------- 7 · Planes ---------- */
 .plans {
   --bg: var(--navy-deep);           /* las tarjetas usan --navy-raised y resaltan encima */
   padding-bottom: calc(var(--pad-y) + var(--cut));
@@ -954,7 +1076,7 @@ section, footer, .pillar {
   .plans__founders p { font-size: 1.25rem; padding-inline: 2.75rem; }
 }
 
-/* ---------- 9 · CTA final ---------- */
+/* ---------- 8 · CTA final ---------- */
 .final-cta { padding-bottom: calc(var(--pad-y) + var(--cut)); }
 .final-cta__inner {
   display: grid;
@@ -986,7 +1108,7 @@ section, footer, .pillar {
 .is-visible .btn--shine::after { animation: shine 1.1s .7s var(--ease) forwards; }
 @keyframes shine { to { transform: translateX(120%); } }
 
-/* ---------- 10 · Footer ---------- */
+/* ---------- 9 · Footer ---------- */
 .site-footer {
   --bg: var(--navy-deep);
   padding-bottom: 2rem;

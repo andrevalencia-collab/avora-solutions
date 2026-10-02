@@ -61,7 +61,7 @@
       </a>
       <nav class="site-nav" aria-label="Principal">
         <a href="#servicios">Servicios</a>
-        <a href="#caso">Caso</a>
+        <a href="#proyectos">Proyectos</a>
         <a href="#proceso">Proceso</a>
         <a href="#planes">Planes</a>
       </nav>
@@ -216,76 +216,143 @@
       </div>
     </section>
 
-    <!-- 5 · CASO DE ESTUDIO -->
-    <section class="case theme-light cut-top" id="caso" aria-labelledby="case-title">
-      <div class="container case__grid">
-        <div class="case__copy">
-          <p class="eyebrow" data-reveal>Caso real</p>
-          <h2 class="section-title" id="case-title" data-reveal style="--i:1">Canal Silver</h2>
-          <p class="case__meta" data-reveal style="--i:2">Compra de oro y plata y joyería · Landing page · 2026</p>
+    <!-- 5 · PROYECTOS -->
+    <section class="projects theme-light cut-top" id="proyectos" aria-labelledby="projects-title">
+      <div class="container">
+        <header class="projects__head">
+          <p class="eyebrow" data-reveal>Proyectos</p>
+          <h2 class="section-title" id="projects-title" data-reveal style="--i:1">Proyectos que ya están en línea.</h2>
+        </header>
 
-          <dl class="case__story">
-            <div data-reveal style="--i:3">
-              <dt>Problema</dt>
-              <dd>No tenían presencia digital propia y su competencia sí.</dd>
+        <!-- Caso 1 · Canal Silver: abierto sobre el fondo claro, detalle champán (su marca) -->
+        <article class="project project--canal" aria-labelledby="canal-title">
+          <div class="project__copy">
+            <div class="project__head">
+              <p class="project__tag" data-reveal>Landing de conversión</p>
+              <h3 class="project__name" id="canal-title" data-reveal style="--i:1">Canal Silver</h3>
+              <p class="project__meta" data-reveal style="--i:2">Compra de oro y plata y joyería · Landing page · 2026</p>
             </div>
-            <div data-reveal style="--i:4">
-              <dt>Solución</dt>
-              <dd>Una landing responsive enfocada en conversión, conectada a WhatsApp.</dd>
-            </div>
-            <div data-reveal style="--i:5">
-              <dt>Resultado</dt>
-              <dd>Compiten en igualdad de condiciones y han llegado nuevos clientes por la página.</dd>
-            </div>
-          </dl>
 
-          <div class="case__actions" data-reveal style="--i:6">
-            <a class="btn btn--ghost" href="https://www.canalsilver.com" target="_blank" rel="noopener">
-              <span>Ver sitio en vivo</span>
-              <svg class="icon" aria-hidden="true"><use href="#i-out"/></svg>
-            </a>
-            <a class="btn btn--primary" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20vi%20el%20caso%20de%20Canal%20Silver%20y%20quiero%20algo%20as%C3%AD%20para%20mi%20negocio." target="_blank" rel="noopener">
-              <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
-              <span>Quiero algo así</span>
-            </a>
+            <dl class="project__story">
+              <div data-reveal style="--i:3">
+                <dt>Problema</dt>
+                <dd>No tenían presencia digital propia y su competencia sí.</dd>
+              </div>
+              <div data-reveal style="--i:4">
+                <dt>Solución</dt>
+                <dd>Una landing responsive enfocada en conversión, conectada a WhatsApp.</dd>
+              </div>
+              <div data-reveal style="--i:5">
+                <dt>Resultado</dt>
+                <dd>Compiten en igualdad de condiciones y han llegado nuevos clientes por la página.</dd>
+              </div>
+            </dl>
+
+            <figure class="project__quote" data-reveal style="--i:6">
+              <svg class="project__quote-mark" viewBox="0 0 64 40" aria-hidden="true"><path d="M20 0 H32 L12 40 H0 Z M52 0 H64 L44 40 H32 Z"/></svg>
+              <blockquote>
+                <p>Trabajar con AVORA fue una experiencia brutal. Se hizo todo en base al feedback que estuvimos dando, gran atención al cliente. Sencillo y rápido!</p>
+              </blockquote>
+              <figcaption><strong>Alberto Bañón</strong> <span>CEO de Canal Silver</span></figcaption>
+            </figure>
+
+            <div class="project__actions" data-reveal style="--i:7">
+              <a class="btn btn--ghost" href="https://www.canalsilver.com" target="_blank" rel="noopener">
+                <span>Ver sitio en vivo</span>
+                <svg class="icon" aria-hidden="true"><use href="#i-out"/></svg>
+              </a>
+              <a class="btn btn--primary" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20vi%20el%20caso%20de%20Canal%20Silver%20y%20quiero%20algo%20as%C3%AD%20para%20mi%20negocio." target="_blank" rel="noopener">
+                <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+                <span>Quiero algo así</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="project__visual">
+            <div class="devices">
+              <figure class="device device--laptop" data-reveal="from-left">
+                <div class="device__screen">
+                  <img src="img/canal-silver-desktop.jpg" alt="Sitio de Canal Silver en computadora" width="1280" height="800" loading="lazy" onerror="this.closest('.device').hidden=true">
+                </div>
+                <div class="device__base" aria-hidden="true"></div>
+              </figure>
+              <figure class="device device--phone" data-reveal="from-right" style="--i:2">
+                <div class="device__screen">
+                  <img src="img/canal-silver-movil.jpg" alt="Sitio de Canal Silver en celular" width="590" height="1277" loading="lazy" onerror="this.closest('.device').hidden=true">
+                </div>
+              </figure>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Caso 2 · Distrito 507: franja oscura a todo el ancho, en espejo, con el color
+           de su marca como detalle. Cierra la sección para que el corte del Proceso se vea.
+           El corte (clip-path) va en el <article> y los data-reveal en los hijos -->
+      <article class="project-band theme-dark" aria-labelledby="distrito-title">
+        <div class="container project project--distrito">
+          <div class="project__copy">
+            <div class="project__head">
+              <p class="project__tag" data-reveal>Identidad y lookbook de marca · Proyecto escolar</p>
+              <h3 class="project__name" id="distrito-title" data-reveal style="--i:1">Distrito 507</h3>
+              <p class="project__meta" data-reveal style="--i:2">Marca de ropa inspirada en Panamá · Lookbook digital</p>
+            </div>
+
+            <dl class="project__story">
+              <div data-reveal style="--i:3">
+                <dt>Reto</dt>
+                <dd>Presentar una marca de ropa inspirada en Panamá como si fuera una tienda seria.</dd>
+              </div>
+              <div data-reveal style="--i:4">
+                <dt>Solución</dt>
+                <dd>Un lookbook digital con una historia por cada diseño, animaciones limpias y un QR para la presentación.</dd>
+              </div>
+              <div class="project__result" data-reveal style="--i:5">
+                <dt>Resultado</dt>
+                <dd>Sorprendió al grupo y a los padres de familia, y hasta generó la venta de un suéter.</dd>
+              </div>
+            </dl>
+
+            <figure class="project__quote" data-reveal style="--i:6">
+              <svg class="project__quote-mark" viewBox="0 0 64 40" aria-hidden="true"><path d="M20 0 H32 L12 40 H0 Z M52 0 H64 L44 40 H32 Z"/></svg>
+              <blockquote>
+                <p>La página fue muy interesante y dinámica, a todos les encantó. La líder del proyecto no se lo esperaba y se quedó sin palabras. ¡Y hasta se vendió un suéter gracias a la página!</p>
+              </blockquote>
+              <figcaption><strong>Isaac V. y Camila C.,</strong> <span>estudiantes de Distrito 507, junto a padres de familia del grupo</span></figcaption>
+            </figure>
+
+            <div class="project__actions" data-reveal style="--i:7">
+              <a class="btn btn--ghost" href="https://distrito507.netlify.app" target="_blank" rel="noopener">
+                <span>Ver sitio en vivo</span>
+                <svg class="icon" aria-hidden="true"><use href="#i-out"/></svg>
+              </a>
+              <a class="btn btn--primary" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20vi%20el%20proyecto%20de%20Distrito%20507%20y%20quiero%20una%20p%C3%A1gina%20as%C3%AD%20para%20mi%20marca." target="_blank" rel="noopener">
+                <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+                <span>Quiero algo así</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="project__visual">
+            <div class="devices devices--mirror">
+              <figure class="device device--laptop" data-reveal="from-right">
+                <div class="device__screen">
+                  <img src="img/distrito507-desktop.jpg" alt="Lookbook de Distrito 507 en computadora" width="1440" height="900" loading="lazy" onerror="this.closest('.device').hidden=true">
+                </div>
+                <div class="device__base" aria-hidden="true"></div>
+              </figure>
+              <figure class="device device--phone" data-reveal="from-left" style="--i:2">
+                <div class="device__screen">
+                  <img src="img/distrito507-movil.jpg" alt="Lookbook de Distrito 507 en celular" width="585" height="1266" loading="lazy" onerror="this.closest('.device').hidden=true">
+                </div>
+              </figure>
+            </div>
           </div>
         </div>
-
-        <div class="devices">
-          <figure class="device device--laptop" data-reveal="from-left">
-            <div class="device__screen">
-              <img src="img/canal-silver-desktop.jpg" alt="Sitio de Canal Silver en computadora" width="1280" height="800" loading="lazy" onerror="this.closest('.device').hidden=true">
-            </div>
-            <div class="device__base" aria-hidden="true"></div>
-          </figure>
-          <figure class="device device--phone" data-reveal="from-right" style="--i:2">
-            <div class="device__screen">
-              <img src="img/canal-silver-movil.jpg" alt="Sitio de Canal Silver en celular" width="590" height="1277" loading="lazy" onerror="this.closest('.device').hidden=true">
-            </div>
-          </figure>
-        </div>
-      </div>
+      </article>
     </section>
 
-    <!-- 6 · TESTIMONIO -->
-    <section class="quote theme-dark cut-top" aria-label="Testimonio">
-      <div class="container">
-        <figure class="quote__figure">
-          <svg class="quote__mark" viewBox="0 0 64 40" aria-hidden="true" data-reveal="wipe">
-            <path d="M20 0 H32 L12 40 H0 Z M52 0 H64 L44 40 H32 Z"/>
-          </svg>
-          <blockquote class="quote__text" data-reveal style="--i:2">
-            <p>Trabajar con AVORA fue una experiencia brutal. Se hizo todo en base al feedback que estuvimos dando, gran atención al cliente. Sencillo y rápido!</p>
-          </blockquote>
-          <figcaption class="quote__author" data-reveal style="--i:3">
-            <strong>Alberto Bañón</strong>
-            <span>CEO de Canal Silver</span>
-          </figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <!-- 7 · PROCESO -->
+    <!-- 6 · PROCESO -->
     <section class="process theme-light cut-top" id="proceso" aria-labelledby="process-title">
       <div class="container">
         <p class="eyebrow" data-reveal>Cómo trabajamos</p>
@@ -316,7 +383,7 @@
       </div>
     </section>
 
-    <!-- 8 · PLANES -->
+    <!-- 7 · PLANES -->
     <section class="plans theme-dark cut-top" id="planes" aria-labelledby="plans-title">
       <div class="container">
         <header class="plans__head">
@@ -437,7 +504,7 @@
       </div>
     </section>
 
-    <!-- 9 · CTA FINAL -->
+    <!-- 8 · CTA FINAL -->
     <section class="final-cta theme-dark cut-top" aria-labelledby="cta-title">
       <div class="container final-cta__inner">
         <h2 class="final-cta__title" id="cta-title" data-reveal>¿Hablamos de tu negocio?</h2>
@@ -453,7 +520,7 @@
     </section>
   </main>
 
-  <!-- 10 · FOOTER -->
+  <!-- 9 · FOOTER -->
   <footer class="site-footer theme-dark cut-top">
     <div class="container site-footer__inner">
       <div class="site-footer__brand">
