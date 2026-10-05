@@ -11,26 +11,31 @@ Landing page (página de una sola sección de venta) de mi agencia de marketing 
 - **La landing sí muestra precios**, en el panel **Planes** (`#planes`), en USD. Hay dos planes: **Web + Automatización** ($650 de instalación + $90/mes; solo la página, desde $350) y **A tu medida** (según evaluación). Los precios viven en dos lugares que deben coincidir: el panel Planes de `index.html` y la respuesta `precio` de Avo en `js/avo.js`. Si un precio cambia, se actualizan los dos juntos.
 - `AVORA-Planes-y-Precios-2026.pdf` está **desactualizado** (muestra los 4 planes anteriores) y la página ya no lo enlaza. Queda pendiente rehacerlo; no lo enlaces hasta entonces.
 
-## Identidad (v2, monocroma y editorial)
+## Identidad (v2, monocroma y editorial, con dos temas)
 
-Variables en `:root` de `css/styles.css`:
+Dos temas que solo cambian variables. El oscuro vive en `:root` de `css/styles.css`; el claro, en `.tema-claro`:
 
-| Uso | Color | Variable |
-|---|---|---|
-| Fondo de la página | `#0B0B0C` | `--fondo` |
-| Paneles | `#111113` | `--panel` |
-| Tarjetas dentro de un panel (capturas, planes) | `#141416` | `--superficie` |
-| Texto | `#F2F2F0` | `--texto` |
-| Texto secundario (5.8:1 sobre el panel) | `#8E8E93` | `--texto-2` |
-| Líneas divisorias y bordes de tarjetas | `rgba(242,242,240,.12)` | `--linea` |
-| Borde de los paneles | `rgba(242,242,240,.10)` | `--borde-panel` |
-| **Solo** la estela del logo y la barrita de cada panel | `#4D5BFF` | `--azul` |
-| Panel claro "A tu medida": texto secundario (8.5:1) y líneas | `#45454B`, `rgba(11,11,12,.12)` | `--claro-texto-2`, `--claro-linea` |
+| Uso | Variable | Tema oscuro | Tema claro |
+|---|---|---|---|
+| Fondo de la página / franja | `--fondo` | `#0B0B0C` | `#ECEBE7` |
+| Paneles | `--panel` | `#111113` | `#ECEBE7` |
+| Tarjetas dentro de un panel | `--superficie` | `#141416` | `#F7F6F3` |
+| Texto | `--texto` | `#F2F2F0` | `#0B0B0C` |
+| Texto secundario | `--texto-2` | `#8E8E93` (5.8:1) | `#55555B` (6.2:1) |
+| Líneas y bordes de tarjetas | `--linea` | `rgba(242,242,240,.12)` | `rgba(11,11,12,.12)` |
+| Borde de los paneles | `--borde-panel` | `rgba(242,242,240,.10)` | `rgba(11,11,12,.10)` |
+| Lo que va encima de `--texto` (botones, píldoras) | `--sobre-texto` | `#0B0B0C` | `#F2F2F0` |
+| Borde de la flecha con hover | `--linea-activa` | blanco 45 % | negro 45 % |
+| Título de servicio con hover | `--texto-hover` | `#FFFFFF` | `#2A2A2F` |
+
+- **El azul `#4D5BFF` (`--azul`)** es igual en los dos temas y solo se usa en la estela del logo y la barrita de cada panel.
+- **Botones y píldoras se invierten solos:** usan `--texto` de fondo y `--sobre-texto` encima, nunca colores fijos ni `--fondo`. En oscuro son claros con texto negro; en claro, negros con texto claro.
+- **Tarjeta negra de Planes (`.plan--oscuro`):** dentro de la franja clara, vuelve a tokens oscuros: fondo `#0B0B0C`, secundario `#A3A3A8` (7.8:1) y líneas `rgba(242,242,240,.14)`.
 
 - **Tipografía:** una sola, **Hanken Grotesk** (Google Fonts, `wght@300..800`, `display=swap`). Títulos grandes en peso 600 con interletrado negativo: H1 −0.055em, títulos de sección −0.045em, cierre −0.05em.
 - **El azul no se usa en nada más:** ni texto, ni botones, ni bordes.
 - **Prohibido:** diagonales decorativas, cortes inclinados (`clip-path` en ángulo), números entre paréntesis, fondos animados, colores fuera de esta tabla.
-- Contraste mínimo AA en todo el texto; el más justo es `--texto-2` sobre `--superficie` (5.6:1).
+- Contraste mínimo AA en todo el texto y en los dos temas; el más justo es `--texto-2` oscuro sobre `--superficie` (5.6:1).
 
 ## Reglas de contenido
 
@@ -45,11 +50,13 @@ Sitio estático simple: `index.html` + `css/styles.css` + `js/main.js`, más el 
 
 ## Cómo verlo
 
-No hay paso de compilación. Sirve la carpeta con un servidor estático (por ejemplo `python -m http.server`) para que las rutas, las fuentes y Lenis se comporten como en producción. Revisa siempre el diseño en ancho de celular (~390px) y con `prefers-reduced-motion: reduce` (ajuste del sistema para reducir animaciones): ambos son prioridad. La referencia del diseño es `_referencias/referencia-rediseno-avora.html` (fuera de Git); se puede abrir con el mismo servidor para comparar.
+No hay paso de compilación. Sirve la carpeta con un servidor estático (por ejemplo `python -m http.server`) para que las rutas, las fuentes y Lenis se comporten como en producción. Revisa siempre el diseño en ancho de celular (~390px) y con `prefers-reduced-motion: reduce` (ajuste del sistema para reducir animaciones): ambos son prioridad. La referencia del diseño es `_referencias/referencia-rediseno-avora.html` ("variante 3", con franjas claras; fuera de Git) y se puede abrir con el mismo servidor para comparar. La versión anterior, toda oscura, quedó en `_referencias/referencia-rediseno-avora-v1-oscura.html`.
 
 ## Arquitectura
 
-**Estructura (en este orden).** Header (no fijo) → panel 01 Portada (`#inicio`) → Cinta (sin panel) → panel 02 Servicios → panel 03 Proyectos → panel 04 Planes → panel 05 Contacto → Footer. `styles.css` está dividido en secciones numeradas que siguen ese orden. Mobile-first, un solo breakpoint en `min-width: 900px` (en celular el header muestra solo el logo y "Agenda tu demo").
+**Estructura (en este orden).** Header (no fijo) → panel 01 Portada (`#inicio`) → Cinta (sin panel) → panel 02 Servicios → panel 03 Proyectos → panel 04 Planes → panel 05 Contacto → Footer.
+
+**Fondos alternados.** Portada oscura, **Servicios clara**, Proyectos oscura, **Planes clara**, cierre oscuro. Servicios y Planes van dentro de `<div class="franja tema-claro">`: la franja pinta el fondo claro de lado a lado de la pantalla (no solo el panel), con `--panel-gap` de relleno arriba; el panel de adentro conserva su margen inferior. El cambio de fondo ocurre solo con el scroll: la franja no se anima. `styles.css` está dividido en secciones numeradas que siguen ese orden. Mobile-first, un solo breakpoint en `min-width: 900px` (en celular el header muestra solo el logo y "Agenda tu demo").
 
 **Paneles (`.panel`).** Cada sección vive en un panel: esquinas de 28px, borde de 1px `--borde-panel`, fondo `--panel`, separado `--panel-gap` del borde de la pantalla y de los otros paneles (16px en computadora, 8px en celular). Arriba a la izquierda, `.panel__marca` (la barrita azul del logo, 16×2px girada −26.6°); arriba a la derecha, `.panel__indice` ("01 / 05 · Inicio", en `--texto-2`, `aria-hidden`). El contenido va en `.container` (máximo 1280px, padding `clamp(20px, 5vw, 80px)`).
 
@@ -89,7 +96,8 @@ Retrasos: `--d` es el retraso base (la portada lo usa para su secuencia: header 
 
 Mascota en pixel art que reemplaza al antiguo botón flotante de WhatsApp. Todo vive en `css/avo.css` y `js/avo.js`; el HTML lo crea `avo.js` al cargar, así `index.html` solo tiene el `<link>` y el `<script>`. Usa los tokens de `styles.css`.
 
-- **Estilo v2:** botón de fondo `--fondo` con borde fino `--linea` (sin anillo de color, para no competir con la píldora blanca); al pasar el mouse el borde se ilumina como las flechas. La burbuja "¿Te ayudo?" es una píldora clara. El panel del chat es redondeado como los paneles de la página (en celular sube desde abajo con las esquinas de arriba redondeadas).
+- **Estilo v2:** botón de fondo `--fondo` con borde fino `--linea` (sin anillo de color, para no competir con la píldora del CTA); al pasar el mouse el borde se ilumina como las flechas (`--linea-activa`). La burbuja "¿Te ayudo?" es una píldora en `--texto`. El panel del chat es redondeado como los paneles de la página (en celular sube desde abajo con las esquinas de arriba redondeadas).
+- **Sobre fondos claros:** `avo.js` vigila con un `IntersectionObserver` si una `.tema-claro` pasa por la franja inferior derecha donde vive Avo; mientras pasa, agrega `.avo--sobre-claro` y el botón y la burbuja toman los tokens claros (botón `#F7F6F3`, burbuja oscura), con una transición de color de 200 ms. El chat abierto siempre es oscuro.
 - **Imágenes:** `img/avo/avo-capucha-{normal,parpadeo,saludo,pensando,feliz}.svg` (34×34, con `image-rendering: pixelated`). Están optimizadas: sin metadatos C2PA y con un `<path>` por color. Los originales están en `_referencias/avo-originales/`. La carpeta va en minúsculas (`avo`), porque en un servidor real `Avo` ≠ `avo`.
 - **Respuestas:** todo pasa por `getReply(mensaje)`, que devuelve `{ texto, tema }`. Hoy detecta palabras clave (sin tildes, con `\b` de inicio de palabra) y, si hay varios temas, gana el primero de `PRIORIDAD`: precio > caso > proceso > automatiza > convierte > atrae > general > saludo. Los textos salen solo de lo que ya dice la landing (regla de no inventar cifras).
 - **Para conectar la API de Claude:** reemplazar solo el interior de `getReply` por un `fetch` a un servidor propio que guarde la clave. La clave **nunca** va en `avo.js`, porque el navegador la expone.

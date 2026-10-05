@@ -498,8 +498,15 @@
     const covering = new Set();
     let observer = null;
 
+    // Fondo detrás de Avo: si una franja clara (Servicios, Planes) pasa por su zona,
+    // Avo usa su versión clara para no quedar como una mancha negra sobre el fondo crema.
+    const franjasClaras = [...document.querySelectorAll('.tema-claro')];
+    const encimaDeClaro = new Set();
+    let observerFondo = null;
+
     const sync = () => root.classList.toggle('is-ducked', covering.size > 0 && panel.hidden);
     const watch = () => {
+      const zona = { rootMargin: `-${Math.max(0, window.innerHeight - ZONE)}px 0px 0px 0px` };
       observer?.disconnect();
       covering.clear();
       observer = new IntersectionObserver((entries) => {
@@ -509,8 +516,16 @@
           else covering.delete(entry.target);
         });
         sync();
-      }, { rootMargin: `-${Math.max(0, window.innerHeight - ZONE)}px 0px 0px 0px` });
+      }, zona);
       pageCtas.forEach((b) => observer.observe(b));
+
+      observerFondo?.disconnect();
+      encimaDeClaro.clear();
+      observerFondo = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => (entry.isIntersecting ? encimaDeClaro.add(entry.target) : encimaDeClaro.delete(entry.target)));
+        root.classList.toggle('avo--sobre-claro', encimaDeClaro.size > 0);
+      }, zona);
+      franjasClaras.forEach((f) => observerFondo.observe(f));
     };
     watch();
     let resizeTimer = 0;

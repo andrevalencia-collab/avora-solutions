@@ -34,7 +34,8 @@
   position: fixed;
   right: var(--avo-gap);
   z-index: 45;
-  transition: opacity var(--t-hover) var(--ease), transform var(--t-hover) var(--ease), visibility 0s;
+  transition: opacity var(--t-hover) var(--ease), transform var(--t-hover) var(--ease),
+    background-color var(--t-hover) var(--ease), color var(--t-hover) var(--ease), visibility 0s;
   -webkit-tap-highlight-color: transparent;  /* responde con su propio :active */
 }
 .avo-launcher {
@@ -51,11 +52,23 @@
   box-shadow: 0 10px 24px rgba(0, 0, 0, .45);
   /* "scale" (propiedad aparte de transform) no pisa la subida de .is-elevado */
   transition: opacity var(--t-hover) var(--ease), transform var(--t-hover) var(--ease),
-    border-color var(--t-hover) var(--ease), scale var(--t-hover) var(--ease), visibility 0s;
+    background-color var(--t-hover) var(--ease), border-color var(--t-hover) var(--ease),
+    box-shadow var(--t-hover) var(--ease), scale var(--t-hover) var(--ease), visibility 0s;
 }
 @media (hover: hover) and (pointer: fine) {
-  .avo-launcher:hover { border-color: rgba(242, 242, 240, .45); }   /* igual que las flechas */
+  .avo-launcher:hover { border-color: var(--linea-activa); }   /* igual que las flechas */
 }
+
+/* Sobre una franja clara (js/avo.js agrega .avo--sobre-claro): el botón y la burbuja
+   toman los tokens del tema claro. El chat abierto sigue oscuro: es una ventana encima de todo. */
+.avo--sobre-claro .avo-launcher,
+.avo--sobre-claro .avo-bubble {
+  --fondo: #f7f6f3;
+  --texto: #0b0b0c;
+  --linea: rgba(11, 11, 12, .12);
+  --linea-activa: rgba(11, 11, 12, .45);
+}
+.avo--sobre-claro .avo-launcher { box-shadow: 0 10px 24px rgba(11, 11, 12, .16); }
 @media (prefers-reduced-motion: no-preference) {
   .avo-launcher:active { scale: .97; transition-duration: var(--t-press); }
 }
