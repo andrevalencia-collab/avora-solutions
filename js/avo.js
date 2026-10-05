@@ -406,7 +406,8 @@
     root.classList.remove('is-open');
     document.documentElement.classList.remove('avo-open');
     launcher.setAttribute('aria-expanded', 'false');
-    closeTimer = setTimeout(() => { panel.hidden = true; }, reduceMotion ? 0 : 220);
+    // Espera a que termine la transición de cierre (con movimiento reducido es solo el fundido)
+    closeTimer = setTimeout(() => { panel.hidden = true; }, reduceMotion ? 180 : 220);
     launcher.focus({ preventScroll: true });
   };
 

@@ -492,9 +492,10 @@
   .avo.is-thinking .avo-typing { animation: none; }
   .avo-launcher,
   .avo-bubble,
-  .avo-panel,
   .avo-chip,
   .avo-wa { transition: none; }
-  .avo-panel { transform: none; }
+  /* El panel no se desplaza, pero abre y cierra con un fundido corto: sin moverse,
+     se entiende igual que algo se abrió o se cerró. js/avo.js espera lo mismo al cerrar. */
+  .avo-panel { transform: none; transition: opacity 180ms var(--ease); }
   .avo-log { scroll-behavior: auto; }
 }
