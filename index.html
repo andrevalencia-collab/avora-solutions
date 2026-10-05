@@ -3,7 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>document.documentElement.classList.add('js')</script>
+  <script>
+    document.documentElement.classList.add('js');
+    // Si la persona pausó las animaciones en esta visita, quedan pausadas desde el inicio
+    try { if (sessionStorage.getItem('avora-animaciones') === 'pausadas') document.documentElement.classList.add('animaciones-pausadas'); } catch (e) {}
+  </script>
 
   <title>AVORA Solutions | Agencia de marketing digital en Panamá</title>
   <meta name="description" content="Redes sociales, páginas web y automatizaciones con IA para negocios en Panamá. Más clientes y menos trabajo manual. Agenda tu demo por WhatsApp.">
@@ -88,11 +92,11 @@
           <span class="hero__word" data-reveal="wipe" style="--i:2">Convierte.</span>
           <span class="hero__word" data-reveal="wipe" style="--i:3">Automatiza.</span>
         </h1>
-        <p class="hero__lead" data-reveal style="--i:5">
+        <p class="hero__lead" data-reveal style="--i:2">
           <strong>Más clientes y menos trabajo manual</strong> para tu negocio en Panamá.
           Redes, página web y automatizaciones en un solo equipo.
         </p>
-        <div class="hero__actions" data-reveal style="--i:6">
+        <div class="hero__actions" data-reveal style="--i:3">
           <span class="cta-glow">
             <a class="btn btn--primary btn--lg" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">
               <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
@@ -116,6 +120,11 @@
           </ul>
         </div>
       </div>
+      <!-- Pausa la cinta y el fondo animado de la portada; main.js cambia el texto -->
+      <button class="ribbon__pausa" type="button" aria-label="Pausar animaciones" title="Pausar animaciones">
+        <svg class="ribbon__icono ribbon__icono--pausa" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3h3v10H4zM9 3h3v10H9z"/></svg>
+        <svg class="ribbon__icono ribbon__icono--play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l8 5-8 5z"/></svg>
+      </button>
     </div>
 
     <!-- 3 · POR QUÉ AVORA -->

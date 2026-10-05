@@ -34,7 +34,8 @@
   position: fixed;
   right: var(--avo-gap);
   z-index: 45;
-  transition: opacity .2s var(--ease), transform .2s var(--ease), visibility 0s;
+  transition: opacity var(--t-hover) var(--ease), transform var(--t-hover) var(--ease), visibility 0s;
+  -webkit-tap-highlight-color: transparent;  /* responde con su propio :active */
 }
 .avo-launcher {
   bottom: calc(var(--avo-gap) + env(safe-area-inset-bottom));
@@ -48,8 +49,16 @@
   background: var(--bone);
   cursor: pointer;
   box-shadow: 0 0 0 4px rgba(77, 91, 255, .18), 0 10px 24px rgba(0, 2, 54, .45);
+  /* "scale" (propiedad aparte de transform) no pisa la subida de .is-elevado */
+  transition: opacity var(--t-hover) var(--ease), transform var(--t-hover) var(--ease),
+    box-shadow var(--t-hover) var(--ease), scale var(--t-hover) var(--ease), visibility 0s;
 }
-.avo-launcher:hover { box-shadow: 0 0 0 6px rgba(77, 91, 255, .28), 0 10px 24px rgba(0, 2, 54, .45); }
+@media (hover: hover) and (pointer: fine) {
+  .avo-launcher:hover { box-shadow: 0 0 0 6px rgba(77, 91, 255, .28), 0 10px 24px rgba(0, 2, 54, .45); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .avo-launcher:active { scale: .97; transition-duration: var(--t-press); }
+}
 /* 34px × 1.5: en pantallas de densidad 2 cada pixel del dibujo cae en 3 pixeles reales */
 .avo-launcher__img {
   width: 51px;
@@ -69,7 +78,8 @@
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 10px 24px rgba(0, 2, 54, .35);
-  animation: avo-pop .35s var(--ease) both;
+  transform-origin: calc(100% - 1.85rem) 100%;  /* la punta de la colita */
+  animation: avo-pop .25s var(--ease) both;
 }
 /* Colita con la pendiente del logo, apuntando a Avo */
 .avo-bubble::after {

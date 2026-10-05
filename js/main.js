@@ -57,4 +57,28 @@
   setStickyTops();
   window.addEventListener('resize', scheduleStickyTops);
   document.fonts?.ready.then(scheduleStickyTops);
+
+  // Botón de pausa de la cinta: detiene la cinta y el fondo animado de la portada.
+  // La elección dura la visita (sessionStorage); el <head> la aplica antes de pintar.
+  // js/fondo-fibras.js escucha el evento "animaciones:cambio".
+  const CLAVE_PAUSA = 'avora-animaciones';
+  const raiz = document.documentElement;
+  const botonPausa = document.querySelector('.ribbon__pausa');
+  if (botonPausa) {
+    const rotular = () => {
+      const texto = raiz.classList.contains('animaciones-pausadas') ? 'Reanudar animaciones' : 'Pausar animaciones';
+      botonPausa.setAttribute('aria-label', texto);
+      botonPausa.title = texto;
+    };
+    botonPausa.addEventListener('click', () => {
+      const pausadas = raiz.classList.toggle('animaciones-pausadas');
+      try {
+        if (pausadas) sessionStorage.setItem(CLAVE_PAUSA, 'pausadas');
+        else sessionStorage.removeItem(CLAVE_PAUSA);
+      } catch (e) { /* sin almacenamiento (modo privado): la pausa vale solo hasta recargar */ }
+      rotular();
+      document.dispatchEvent(new CustomEvent('animaciones:cambio'));
+    });
+    rotular();
+  }
 })();

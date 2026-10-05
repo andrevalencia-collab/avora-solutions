@@ -237,7 +237,10 @@ void main() {
     gl.uniform1f(uTime, transcurrido);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
-  const puedeAnimar = () => visible && paginaVisible && !contextoPerdido && !movimientoReducido.matches;
+  // "animaciones-pausadas" la pone el botón de pausa de la cinta (js/main.js)
+  const pausadoPorBoton = () => document.documentElement.classList.contains('animaciones-pausadas');
+  const puedeAnimar = () =>
+    visible && paginaVisible && !contextoPerdido && !movimientoReducido.matches && !pausadoPorBoton();
   const detener = () => {
     if (frameId) cancelAnimationFrame(frameId);
     frameId = 0;
@@ -286,6 +289,8 @@ void main() {
     actualizar();
     dibujar();
   });
+  // Pausa o reanuda con el botón; al pausar, el último cuadro queda quieto en pantalla
+  document.addEventListener('animaciones:cambio', actualizar);
   modoCelular.addEventListener('change', () => {
     ({ fps, dpr } = rendimiento());
     ajustarTamano();

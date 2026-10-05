@@ -271,6 +271,10 @@ a:focus-visible > .subrayado::after,
 a.subrayado:active::after,
 a:active > .subrayado::after { transform: scaleX(1); }
 
+/* Al tocar en celular el navegador pinta un rectángulo gris que no sigue la esquina
+   recortada; estos elementos ya responden con su propio :active */
+.btn, .link-arrow, .subrayado, .ribbon__pausa { -webkit-tap-highlight-color: transparent; }
+
 /* ---------- Sistema de hover: solo con mouse real (en celular no quedan "pegados") ---------- */
 @media (hover: hover) and (pointer: fine) {
   .btn--primary:hover { --btn-fill: var(--btn-fill-hover); }
@@ -485,10 +489,12 @@ a:active > .subrayado::after { transform: scaleX(1); }
 /* Franja recta y delgada entre la portada y "Por qué AVORA": texto pequeño en
    lavanda, líneas de 1px y el corte del logo como separador. */
 .ribbon {
+  position: relative;
   background: var(--bg);
   border-block: 1px solid var(--line);
 }
 .ribbon__band {
+  margin-right: 3rem;               /* espacio del botón de pausa: el desvanecido termina antes */
   overflow: hidden;
   /* Los rubros entran y salen desvanecidos, sin cortarse de golpe en el borde */
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
@@ -499,7 +505,11 @@ a:active > .subrayado::after { transform: scaleX(1); }
   width: max-content;
   animation: marquee 60s linear infinite;
 }
-.ribbon__band:hover .ribbon__track { animation-play-state: paused; }
+/* Pausa: con el botón (recordada en la visita) o con el mouse encima */
+.animaciones-pausadas .ribbon__track { animation-play-state: paused; }
+@media (hover: hover) and (pointer: fine) {
+  .ribbon__band:hover .ribbon__track { animation-play-state: paused; }
+}
 .ribbon__list { display: flex; }
 .ribbon__list li {
   display: flex;
@@ -522,6 +532,35 @@ a:active > .subrayado::after { transform: scaleX(1); }
   transform: rotate(calc(-1 * var(--slope)));
 }
 @keyframes marquee { to { transform: translateX(-50%); } }
+
+/* Botón de pausa: una celda al final de la cinta, separada por una línea fina */
+.ribbon__pausa {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 3rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--eyebrow);
+  cursor: pointer;
+  transition: color var(--t-hover) var(--ease);
+}
+.ribbon__pausa:focus-visible { outline-offset: -3px; color: var(--fg); }
+.ribbon__icono { width: 14px; height: 14px; fill: currentColor; transition: transform var(--t-press) var(--ease); }
+.ribbon__icono--play,
+.animaciones-pausadas .ribbon__icono--pausa { display: none; }
+.animaciones-pausadas .ribbon__icono--play { display: block; }
+@media (hover: hover) and (pointer: fine) {
+  .ribbon__pausa:hover { color: var(--fg); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ribbon__pausa:active .ribbon__icono { transform: scale(.85); }
+}
 
 /* ---------- 3 · Por qué AVORA ---------- */
 .why {
@@ -1225,6 +1264,8 @@ a:active > .subrayado::after { transform: scaleX(1); }
   }
   .hero__fibras { transition: none; }
   .ribbon__track { animation: none; }
+  .ribbon__pausa { display: none; }
+  .ribbon__band { margin-right: 0; }
   .subrayado::after { transition: none; }
   .pillar { position: relative; top: auto; }
 }
