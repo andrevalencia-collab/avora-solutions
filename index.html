@@ -3,12 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>document.documentElement.classList.add('js')</script>
+  <script>
+    document.documentElement.classList.add('js');
+    // Si la persona pausó las animaciones en esta visita, quedan pausadas desde el inicio
+    try { if (sessionStorage.getItem('avora-animaciones') === 'pausadas') document.documentElement.classList.add('animaciones-pausadas'); } catch (e) {}
+  </script>
 
   <title>AVORA Solutions | Agencia de marketing digital en Panamá</title>
   <meta name="description" content="Redes sociales, páginas web y automatizaciones con IA para negocios en Panamá. Más clientes y menos trabajo manual. Agenda tu demo por WhatsApp.">
-  <!-- Dominio provisional: reemplazar https://avorasolutions.com cuando esté definido -->
-  <link rel="canonical" href="https://avorasolutions.com/">
+  <!-- Dirección actual (Netlify): reemplazar https://avosolutions.netlify.app cuando haya dominio propio -->
+  <link rel="canonical" href="https://avosolutions.netlify.app/">
   <meta name="theme-color" content="#00034A">
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 
@@ -17,8 +21,8 @@
   <meta property="og:site_name" content="AVORA Solutions">
   <meta property="og:title" content="AVORA Solutions | Atrae. Convierte. Automatiza.">
   <meta property="og:description" content="Más clientes y menos trabajo manual para tu negocio en Panamá. Redes, página web y automatizaciones en un solo equipo.">
-  <meta property="og:url" content="https://avorasolutions.com/">
-  <meta property="og:image" content="https://avorasolutions.com/img/og-image.jpg">
+  <meta property="og:url" content="https://avosolutions.netlify.app/">
+  <meta property="og:image" content="https://avosolutions.netlify.app/img/og-image.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
@@ -36,9 +40,9 @@
     "name": "AVORA Solutions",
     "slogan": "Atrae. Convierte. Automatiza.",
     "description": "Agencia de marketing digital en Panamá: manejo de redes sociales, landing pages y sitios web, chatbots y automatizaciones con IA.",
-    "url": "https://avorasolutions.com/",
-    "logo": "https://avorasolutions.com/img/favicon.svg",
-    "image": "https://avorasolutions.com/img/og-image.jpg",
+    "url": "https://avosolutions.netlify.app/",
+    "logo": "https://avosolutions.netlify.app/img/favicon.svg",
+    "image": "https://avosolutions.netlify.app/img/og-image.jpg",
     "telephone": "+507 6328-8742",
     "email": "avorasolution@gmail.com",
     "address": { "@type": "PostalAddress", "addressCountry": "PA" },
@@ -60,10 +64,10 @@
         </span>
       </a>
       <nav class="site-nav" aria-label="Principal">
-        <a href="#servicios">Servicios</a>
-        <a href="#proyectos">Proyectos</a>
-        <a href="#proceso">Proceso</a>
-        <a href="#planes">Planes</a>
+        <a class="subrayado" href="#servicios">Servicios</a>
+        <a class="subrayado" href="#proyectos">Proyectos</a>
+        <a class="subrayado" href="#proceso">Proceso</a>
+        <a class="subrayado" href="#planes">Planes</a>
       </nav>
       <a class="btn btn--primary btn--sm site-header__cta" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener" aria-label="Agenda tu demo por WhatsApp">
         <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
@@ -79,10 +83,8 @@
     <!-- 1 · HERO -->
     <section class="hero theme-dark" id="inicio">
       <span class="hero__sentinel" aria-hidden="true"></span>
-      <svg class="hero__cut" viewBox="0 0 200 100" aria-hidden="true">
-        <path class="hero__cut-line" d="M0 100 L176 12" pathLength="1"/>
-        <path class="hero__cut-spark" d="M181 13 L179 8 L200 0 Z"/>
-      </svg>
+      <!-- Fondo animado (js/fondo-fibras.js crea el canvas). Sin WebGL2 queda un degradado fijo -->
+      <div class="hero__fondo" aria-hidden="true"></div>
       <div class="container hero__inner">
         <p class="eyebrow" data-reveal style="--i:0">Redes · Páginas web · Automatización</p>
         <h1 class="hero__title">
@@ -90,24 +92,24 @@
           <span class="hero__word" data-reveal="wipe" style="--i:2">Convierte.</span>
           <span class="hero__word" data-reveal="wipe" style="--i:3">Automatiza.</span>
         </h1>
-        <p class="hero__lead" data-reveal style="--i:5">
+        <p class="hero__lead" data-reveal style="--i:2">
           <strong>Más clientes y menos trabajo manual</strong> para tu negocio en Panamá.
           Redes, página web y automatizaciones en un solo equipo.
         </p>
-        <div class="hero__actions" data-reveal style="--i:6">
+        <div class="hero__actions" data-reveal style="--i:3">
           <span class="cta-glow">
-            <a class="btn btn--primary btn--lg btn--shine" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">
+            <a class="btn btn--primary btn--lg" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">
               <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
               <span>Agenda tu demo por WhatsApp</span>
             </a>
           </span>
-          <a class="link-arrow" href="#proceso"><span class="link-arrow__text">Ver cómo trabajamos</span><span class="link-arrow__icon" aria-hidden="true">→</span></a>
+          <a class="link-arrow" href="#proceso"><span class="link-arrow__text subrayado subrayado--base">Ver cómo trabajamos</span><span class="link-arrow__icon" aria-hidden="true">→</span></a>
         </div>
       </div>
     </section>
 
     <!-- 2 · CINTA DE RUBROS -->
-    <div class="ribbon" role="region" aria-label="Para quién trabajamos">
+    <div class="ribbon theme-dark" role="region" aria-label="Para quién trabajamos">
       <div class="ribbon__band">
         <div class="ribbon__track">
           <ul class="ribbon__list">
@@ -118,6 +120,11 @@
           </ul>
         </div>
       </div>
+      <!-- Pausa la cinta y el fondo animado de la portada; main.js cambia el texto -->
+      <button class="ribbon__pausa" type="button" aria-label="Pausar animaciones" title="Pausar animaciones">
+        <svg class="ribbon__icono ribbon__icono--pausa" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3h3v10H4zM9 3h3v10H9z"/></svg>
+        <svg class="ribbon__icono ribbon__icono--play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l8 5-8 5z"/></svg>
+      </button>
     </div>
 
     <!-- 3 · POR QUÉ AVORA -->
@@ -126,7 +133,7 @@
         <div class="why__intro">
           <p class="eyebrow" data-reveal>Por qué AVORA</p>
           <h2 class="section-title" id="why-title" data-reveal style="--i:1">Todo lo digital de tu negocio, en un solo equipo.</h2>
-          <p class="why__lead" data-reveal style="--i:2">
+          <p class="section-lead" data-reveal style="--i:2">
             Deja de coordinar entre quien maneja tus redes, quien hizo tu página y quien configuró tu chatbot.
             Con AVORA hablas con un solo equipo que conecta todo para traerte clientes.
           </p>
@@ -151,7 +158,7 @@
     <!-- 4 · SERVICIOS -->
     <section class="services theme-dark cut-top" id="servicios" aria-labelledby="services-title">
       <div class="container">
-        <header class="services__head">
+        <header class="section-head">
           <p class="eyebrow" data-reveal>Lo que hacemos</p>
           <h2 class="section-title" id="services-title" data-reveal style="--i:1">Tres pilares. Un objetivo: más clientes.</h2>
         </header>
@@ -219,7 +226,7 @@
     <!-- 5 · PROYECTOS -->
     <section class="projects theme-light cut-top" id="proyectos" aria-labelledby="projects-title">
       <div class="container">
-        <header class="projects__head">
+        <header class="section-head">
           <p class="eyebrow" data-reveal>Proyectos</p>
           <h2 class="section-title" id="projects-title" data-reveal style="--i:1">Proyectos que ya están en línea.</h2>
         </header>
@@ -270,13 +277,13 @@
 
           <div class="project__visual">
             <div class="devices">
-              <figure class="device device--laptop" data-reveal="from-left">
+              <figure class="device device--laptop" data-reveal>
                 <div class="device__screen">
                   <img src="img/canal-silver-desktop.jpg" alt="Sitio de Canal Silver en computadora" width="1280" height="800" loading="lazy" onerror="this.closest('.device').hidden=true">
                 </div>
                 <div class="device__base" aria-hidden="true"></div>
               </figure>
-              <figure class="device device--phone" data-reveal="from-right" style="--i:2">
+              <figure class="device device--phone" data-reveal style="--i:2">
                 <div class="device__screen">
                   <img src="img/canal-silver-movil.jpg" alt="Sitio de Canal Silver en celular" width="590" height="1277" loading="lazy" onerror="this.closest('.device').hidden=true">
                 </div>
@@ -335,13 +342,13 @@
 
           <div class="project__visual">
             <div class="devices devices--mirror">
-              <figure class="device device--laptop" data-reveal="from-right">
+              <figure class="device device--laptop" data-reveal>
                 <div class="device__screen">
                   <img src="img/distrito507-desktop.jpg" alt="Lookbook de Distrito 507 en computadora" width="1440" height="900" loading="lazy" onerror="this.closest('.device').hidden=true">
                 </div>
                 <div class="device__base" aria-hidden="true"></div>
               </figure>
-              <figure class="device device--phone" data-reveal="from-left" style="--i:2">
+              <figure class="device device--phone" data-reveal style="--i:2">
                 <div class="device__screen">
                   <img src="img/distrito507-movil.jpg" alt="Lookbook de Distrito 507 en celular" width="585" height="1266" loading="lazy" onerror="this.closest('.device').hidden=true">
                 </div>
@@ -355,10 +362,12 @@
     <!-- 6 · PROCESO -->
     <section class="process theme-light cut-top" id="proceso" aria-labelledby="process-title">
       <div class="container">
-        <p class="eyebrow" data-reveal>Cómo trabajamos</p>
-        <h2 class="section-title" id="process-title" data-reveal style="--i:1">Tres pasos, sin complicaciones.</h2>
+        <header class="section-head">
+          <p class="eyebrow" data-reveal>Cómo trabajamos</p>
+          <h2 class="section-title" id="process-title" data-reveal style="--i:1">Tres pasos, sin complicaciones.</h2>
+        </header>
 
-        <div class="process__track" data-reveal="line">
+        <div class="process__track">
           <svg class="process__line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
             <path d="M0 100 L100 0" pathLength="1" vector-effect="non-scaling-stroke"/>
           </svg>
@@ -386,10 +395,10 @@
     <!-- 7 · PLANES -->
     <section class="plans theme-dark cut-top" id="planes" aria-labelledby="plans-title">
       <div class="container">
-        <header class="plans__head">
+        <header class="section-head">
           <p class="eyebrow" data-reveal>Planes</p>
           <h2 class="section-title" id="plans-title" data-reveal style="--i:1">Elige cómo quieres crecer.</h2>
-          <p class="plans__lead" data-reveal style="--i:2">Precios claros desde el inicio. Empieza con tu página y suma lo demás cuando estés listo.</p>
+          <p class="section-lead" data-reveal style="--i:2">Precios claros desde el inicio. Empieza con tu página y suma lo demás cuando estés listo.</p>
         </header>
 
         <!-- data-reveal va en el <li> y el corte (clip-path) en el <article>:
@@ -479,6 +488,12 @@
               </div>
               <div class="plan__details">
                 <p class="plan__for">Solo gestión de anuncios, para quien ya tiene página.</p>
+                <ul class="ticks">
+                  <li>Configuración de cuentas y medición</li>
+                  <li>Gestión de campañas</li>
+                  <li>2 diseños para anuncios al mes</li>
+                  <li>Reporte mensual</li>
+                </ul>
                 <p class="plan__fine">Mínimo 3 meses.</p>
               </div>
               <a class="btn btn--primary" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20me%20interesa%20el%20Plan%20Atrae.%20%C2%BFPodemos%20agendar%20una%20demo%3F" target="_blank" rel="noopener">
@@ -496,7 +511,7 @@
         <div class="plans__foot" data-reveal style="--i:1">
           <p class="plans__note">Precios en USD. ITBMS no incluido, si aplica. La pauta publicitaria se paga directo a Meta.</p>
           <a class="link-arrow" href="AVORA-Planes-y-Precios-2026.pdf" download>
-            <span class="link-arrow__text">Descargar planes en PDF</span>
+            <span class="link-arrow__text subrayado subrayado--base">Descargar planes en PDF</span>
             <span class="plans__size">(1 MB)</span>
             <span class="link-arrow__icon" aria-hidden="true">↓</span>
           </a>
@@ -507,15 +522,18 @@
     <!-- 8 · CTA FINAL -->
     <section class="final-cta theme-dark cut-top" aria-labelledby="cta-title">
       <div class="container final-cta__inner">
-        <h2 class="final-cta__title" id="cta-title" data-reveal>¿Hablamos de tu negocio?</h2>
-        <p class="final-cta__lead" data-reveal style="--i:1">Agenda una demo por WhatsApp y te mostramos cómo conseguir más clientes con menos trabajo manual.</p>
-        <div class="cta-glow" data-reveal style="--i:2">
-          <a class="btn btn--primary btn--lg btn--shine" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">
+        <header class="section-head">
+          <p class="eyebrow" data-reveal>Contacto</p>
+          <h2 class="final-cta__title" id="cta-title" data-reveal style="--i:1">¿Hablamos de tu negocio?</h2>
+        </header>
+        <p class="final-cta__lead" data-reveal style="--i:2">Agenda una demo por WhatsApp y te mostramos cómo conseguir más clientes con menos trabajo manual.</p>
+        <div class="cta-glow" data-reveal style="--i:3">
+          <a class="btn btn--primary btn--lg" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">
             <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
             <span>Agenda tu demo por WhatsApp</span>
           </a>
         </div>
-        <p class="final-cta__alt" data-reveal style="--i:3">¿Prefieres correo? <a href="mailto:avorasolution@gmail.com">avorasolution@gmail.com</a></p>
+        <p class="final-cta__alt" data-reveal style="--i:4">¿Prefieres correo? <a class="subrayado subrayado--base" href="mailto:avorasolution@gmail.com">avorasolution@gmail.com</a></p>
       </div>
     </section>
   </main>
@@ -534,8 +552,8 @@
         <p class="site-footer__slogan">Atrae. Convierte. Automatiza.</p>
       </div>
       <ul class="site-footer__contact">
-        <li><a href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">WhatsApp +507 6328-8742</a></li>
-        <li><a href="mailto:avorasolution@gmail.com">avorasolution@gmail.com</a></li>
+        <li><a class="subrayado" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">WhatsApp +507 6328-8742</a></li>
+        <li><a class="subrayado" href="mailto:avorasolution@gmail.com">avorasolution@gmail.com</a></li>
         <li>Panamá</li>
       </ul>
     </div>
@@ -556,6 +574,7 @@
   </svg>
 
   <script src="js/main.js" defer></script>
+  <script src="js/fondo-fibras.js" defer></script>
   <script src="js/avo.js" defer></script>
 </body>
 </html>

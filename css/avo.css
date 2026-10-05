@@ -34,7 +34,8 @@
   position: fixed;
   right: var(--avo-gap);
   z-index: 45;
-  transition: opacity .2s var(--ease), transform .2s var(--ease), visibility 0s;
+  transition: opacity var(--t-hover) var(--ease), transform var(--t-hover) var(--ease), visibility 0s;
+  -webkit-tap-highlight-color: transparent;  /* responde con su propio :active */
 }
 .avo-launcher {
   bottom: calc(var(--avo-gap) + env(safe-area-inset-bottom));
@@ -48,8 +49,16 @@
   background: var(--bone);
   cursor: pointer;
   box-shadow: 0 0 0 4px rgba(77, 91, 255, .18), 0 10px 24px rgba(0, 2, 54, .45);
+  /* "scale" (propiedad aparte de transform) no pisa la subida de .is-elevado */
+  transition: opacity var(--t-hover) var(--ease), transform var(--t-hover) var(--ease),
+    box-shadow var(--t-hover) var(--ease), scale var(--t-hover) var(--ease), visibility 0s;
 }
-.avo-launcher:hover { box-shadow: 0 0 0 6px rgba(77, 91, 255, .28), 0 10px 24px rgba(0, 2, 54, .45); }
+@media (hover: hover) and (pointer: fine) {
+  .avo-launcher:hover { box-shadow: 0 0 0 6px rgba(77, 91, 255, .28), 0 10px 24px rgba(0, 2, 54, .45); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .avo-launcher:active { scale: .97; transition-duration: var(--t-press); }
+}
 /* 34px × 1.5: en pantallas de densidad 2 cada pixel del dibujo cae en 3 pixeles reales */
 .avo-launcher__img {
   width: 51px;
@@ -69,7 +78,8 @@
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 10px 24px rgba(0, 2, 54, .35);
-  animation: avo-pop .35s var(--ease) both;
+  transform-origin: calc(100% - 1.85rem) 100%;  /* la punta de la colita */
+  animation: avo-pop .25s var(--ease) both;
 }
 /* Colita con la pendiente del logo, apuntando a Avo */
 .avo-bubble::after {
@@ -83,6 +93,11 @@
   clip-path: polygon(0 0, 100% 0, 100% 100%);
 }
 @keyframes avo-pop { from { opacity: 0; transform: translateY(8px) scale(.96); } }
+
+/* Sube sobre la cinta de rubros cuando, arriba del todo, la cinta cae donde vive Avo
+   (js/avo.js calcula --avo-elevar). Va antes de .is-ducked para que esconderse gane. */
+.avo.is-elevado .avo-launcher,
+.avo.is-elevado .avo-bubble { transform: translateY(calc(-1 * var(--avo-elevar, 0px))); }
 
 /* Se aparta cuando pasa un botón de WhatsApp de la página, y mientras el chat está abierto */
 .avo.is-ducked .avo-launcher,
@@ -477,9 +492,10 @@
   .avo.is-thinking .avo-typing { animation: none; }
   .avo-launcher,
   .avo-bubble,
-  .avo-panel,
   .avo-chip,
   .avo-wa { transition: none; }
-  .avo-panel { transform: none; }
+  /* El panel no se desplaza, pero abre y cierra con un fundido corto: sin moverse,
+     se entiende igual que algo se abrió o se cerró. js/avo.js espera lo mismo al cerrar. */
+  .avo-panel { transform: none; transition: opacity 180ms var(--ease); }
   .avo-log { scroll-behavior: auto; }
 }
