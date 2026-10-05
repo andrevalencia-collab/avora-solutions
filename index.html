@@ -79,10 +79,8 @@
     <!-- 1 · HERO -->
     <section class="hero theme-dark" id="inicio">
       <span class="hero__sentinel" aria-hidden="true"></span>
-      <svg class="hero__cut" viewBox="0 0 200 100" aria-hidden="true">
-        <path class="hero__cut-line" d="M0 100 L176 12" pathLength="1"/>
-        <path class="hero__cut-spark" d="M181 13 L179 8 L200 0 Z"/>
-      </svg>
+      <!-- Fondo animado (js/fondo-fibras.js crea el canvas). Sin WebGL2 queda un degradado fijo -->
+      <div class="hero__fondo" aria-hidden="true"></div>
       <div class="container hero__inner">
         <p class="eyebrow" data-reveal style="--i:0">Redes · Páginas web · Automatización</p>
         <h1 class="hero__title">
@@ -562,6 +560,7 @@
   </svg>
 
   <script src="js/main.js" defer></script>
+  <script src="js/fondo-fibras.js" defer></script>
   <script src="js/avo.js" defer></script>
 </body>
 </html>
