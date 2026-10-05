@@ -84,6 +84,11 @@
 }
 @keyframes avo-pop { from { opacity: 0; transform: translateY(8px) scale(.96); } }
 
+/* Sube sobre la cinta de rubros cuando, arriba del todo, la cinta cae donde vive Avo
+   (js/avo.js calcula --avo-elevar). Va antes de .is-ducked para que esconderse gane. */
+.avo.is-elevado .avo-launcher,
+.avo.is-elevado .avo-bubble { transform: translateY(calc(-1 * var(--avo-elevar, 0px))); }
+
 /* Se aparta cuando pasa un botón de WhatsApp de la página, y mientras el chat está abierto */
 .avo.is-ducked .avo-launcher,
 .avo.is-ducked .avo-bubble,

@@ -22,6 +22,7 @@ Landing page (página de una sola sección de venta) de mi agencia de marketing 
 | Borde fino de botones, palabras destacadas en títulos, decoración, estela del logo | `#4D5BFF` | `--indigo` |
 | Texto pequeño de acento sobre oscuro ("REDES · PÁGINAS WEB") | `#8A93FF` | `--lavender` |
 | Texto secundario sobre oscuro | `#808080` | `--gray-dark` |
+| Subtítulo de la portada, sobre el efecto de fibras (7.5:1 sobre navy) | `#A3A3A3` | `--gray-soft` |
 | Texto secundario sobre claro | `#595959` | `--gray-light` |
 
 Reglas de contraste (AA): `#4D5BFF` da 3.83:1 sobre el navy, así que **solo sirve para texto grande** (24px o más, o 18.66px en negrita) y decoración, nunca para texto pequeño. `--navy-raised` no puede ser más claro, porque el gris `#808080` bajaría de 4.5:1.
@@ -79,6 +80,7 @@ Mascota en pixel art que reemplaza al antiguo botón flotante de WhatsApp. Todo 
 - **Proyectos:** la respuesta `caso` resume los dos proyectos (Canal Silver y Distrito 507) y lleva el enlace "Ver los proyectos" a `#proyectos`. Como habla de los dos, su mensaje de WhatsApp es genérico ("vi sus proyectos…") y no el de un caso puntual.
 - **Precios:** la respuesta `precio` menciona los planes y dice "desde $350". Además del botón de WhatsApp, lleva un enlace "Ver los planes" a `#planes` (objeto `ENLACES`, por tema). El enlace sale del tema y no del texto, así `getReply` sigue devolviendo solo `{ texto, tema }`.
 - **No tapar botones:** un `IntersectionObserver` vigila la franja inferior derecha (104px); si un `.btn--primary` de la página pasa por ahí, Avo se aparta (`.is-ducked`).
+- **No tapar la cinta de rubros:** si la portada mide justo lo que la pantalla, la cinta queda abajo, donde vive Avo. Mientras `.hero__sentinel` está visible (página arriba del todo), `avo.js` mide si la cinta choca con el botón y, si choca, lo sube lo justo (`.is-elevado` + `--avo-elevar`, usando `offsetTop` para medir sin el transform). Al bajar, vuelve a su lugar.
 - **Estados (personaje de videojuego):** una tabla `ESTADOS` en `avo.js` define cara, animación, duración y prioridad de cada estado (espera, durmiendo, atento, saludando, contento, aplastar, celebrando, bailando, pensando). Todo cambio pasa por `cambiarEstado(nombre, forzar)`, que consulta `puedeCambiar(actual, nuevo)`. El JS solo escribe `data-estado`, `data-anim` y `data-fx` en `.avo`; el movimiento vive en `avo.css`, siempre con `steps(1, end)` y en múltiplos de `--avo-px` (1 pixel del dibujo = 1.5px). Solo se usan las 5 caras existentes: no se dibujan nuevas.
 - **Efectos:** la capa `.avo-fx` (dentro del botón y del círculo del avatar) tiene los tres puntitos y las Z en SVG pixel art, con `pointer-events: none`, así nunca tapan ni bloquean nada.
 - **Dormir:** tras 30 s sin actividad. Los listeners de actividad (`mousemove`, `scroll`, `touchstart`…) son `passive` y solo guardan la hora; un chequeo cada segundo decide si dormir.

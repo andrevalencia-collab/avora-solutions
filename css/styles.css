@@ -14,6 +14,7 @@
   --indigo: #4d5bff;               /* destacados grandes, bordes y decoración (3.83:1, solo texto grande) */
   --lavender: #8a93ff;             /* texto pequeño de acento sobre oscuro */
   --gray-dark: #808080;            /* texto secundario sobre oscuro */
+  --gray-soft: #a3a3a3;            /* subtítulo de la portada, sobre el efecto de fibras (7.5:1 sobre navy) */
   --gray-light: #595959;           /* texto secundario sobre claro */
 
   --slope: 26.57deg;               /* ángulo del corte del logo */
@@ -339,7 +340,7 @@ section, footer, .pillar {
   margin-top: 1.75rem;
   max-width: 34rem;
   font-size: clamp(1.0625rem, 2vw, 1.3rem);
-  color: var(--muted);
+  color: var(--gray-soft);         /* más claro que --muted: el efecto de fondo le resta contraste */
 }
 .hero__lead strong { color: var(--fg); font-weight: 700; }
 

@@ -515,4 +515,29 @@
     window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(watch, 150); });
     launcher.addEventListener('focus', () => root.classList.remove('is-ducked'));
   }
+
+  /* No tapar la cinta de rubros al cargar. Si la portada mide justo lo que la
+     pantalla, la cinta queda abajo, donde vive Avo: mientras la página está arriba
+     del todo, Avo sube lo justo para quedar encima de ella. Al bajar, vuelve. */
+  const cinta = document.querySelector('.ribbon__band');
+  const centinela = document.querySelector('.hero__sentinel');
+  if (cinta && centinela && 'IntersectionObserver' in window) {
+    let arriba = true;
+    const elevar = () => {
+      // offsetTop ignora el transform: es la posición base, sin subida ni transición a medias
+      const avoArriba = launcher.offsetTop;
+      const avoAbajo = avoArriba + launcher.offsetHeight;
+      const franja = cinta.getBoundingClientRect(); // caja de la cinta girada: su lado derecho es el más alto
+      const choca = arriba && franja.top < avoAbajo && franja.bottom > avoArriba;
+      const alto = choca ? Math.min(Math.ceil(avoAbajo - franja.top + 12), 160) : 0;
+      root.style.setProperty('--avo-elevar', `${alto}px`);
+      root.classList.toggle('is-elevado', alto > 0);
+    };
+    new IntersectionObserver(([entrada]) => {
+      arriba = entrada.isIntersecting;
+      elevar();
+    }).observe(centinela);
+    window.addEventListener('resize', elevar);
+    document.fonts?.ready.then(elevar);
+  }
 })();
