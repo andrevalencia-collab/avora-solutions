@@ -1,59 +1,36 @@
 /* ==========================================================================
-   AVORA Solutions · Landing
-   Mobile-first. Hilo visual: el corte diagonal del logo (pendiente 0.5 ≈ 26.57°).
+   AVORA Solutions · Landing v2
+   Monocromo y editorial: cada sección vive en un panel redondeado sobre el
+   fondo casi negro. El azul solo aparece en la estela del logo y en la
+   barrita de cada panel. Mobile-first, un breakpoint en 900px.
    ========================================================================== */
 
 /* ---------- Tokens ---------- */
 :root {
-  /* Paleta Deep Twilight */
-  --navy: #00034a;                 /* fondo oscuro principal */
-  --navy-deep: #000236;
-  --navy-raised: #030756;          /* más claro no: el gris #808080 bajaría de AA */
-  --bone: #f2f3f7;
-  --royal: #000096;                /* fondo de botones principales */
-  --indigo: #4d5bff;               /* destacados grandes, bordes y decoración (3.83:1, solo texto grande) */
-  --lavender: #8a93ff;             /* texto pequeño de acento sobre oscuro */
-  --gray-dark: #808080;            /* texto secundario sobre oscuro */
-  --gray-soft: #a3a3a3;            /* subtítulo de la portada, sobre el efecto de fibras (7.5:1 sobre navy) */
-  --gray-light: #595959;           /* texto secundario sobre claro */
+  --fondo: #0b0b0c;
+  --panel: #111113;
+  --superficie: #141416;           /* tarjetas dentro de un panel (capturas, planes) */
+  --texto: #f2f2f0;
+  --texto-2: #8e8e93;              /* secundario: 5.8:1 sobre el panel */
+  --linea: rgba(242, 242, 240, .12);
+  --borde-panel: rgba(242, 242, 240, .10);
+  --azul: #4d5bff;                 /* solo la estela del logo y la barrita de cada panel */
 
-  --slope: 26.57deg;               /* ángulo del corte del logo */
-  /* Movimiento: una sola curva de salida y tres duraciones para toda la página */
-  --ease: cubic-bezier(.23, 1, .32, 1);
-  --t-press: 150ms;                /* presionar */
-  --t-hover: 200ms;                /* hover y foco */
-  --t-reveal: 300ms;               /* aparecer al hacer scroll */
+  /* Panel claro ("A tu medida") */
+  --claro-texto-2: #45454b;        /* 8.5:1 sobre #F2F2F0 */
+  --claro-linea: rgba(11, 11, 12, .12);
 
-  --header-h: 64px;
-  --gutter: 1rem;
-  --pad-y: clamp(4.5rem, 10vw, 8rem);
-  --cut: clamp(2.5rem, 6vw, 5.5rem);
-  --head-gap: clamp(2.5rem, 6vw, 4rem);   /* del encabezado de sección a su contenido */
+  --gutter: clamp(20px, 5vw, 80px);
+  --panel-gap: clamp(8px, 1.2vw, 16px);   /* 8px en celular, 16px en computadora */
+  --header-h: 98px;                /* lo usa css/avo.css para el alto del chat */
 
-  --fs-title: clamp(2rem, 5.6vw, 3.75rem);
-}
-
-@media (min-width: 900px) {
-  :root { --header-h: 76px; --gutter: clamp(2rem, 5vw, 4rem); }
-}
-
-/* Temas: solo definen variables. --accent es decorativo o para texto grande;
-   el texto pequeño de acento usa --eyebrow. */
-.theme-dark, .site-header {
-  --bg: var(--navy);
-  --fg: var(--bone);
-  --muted: var(--gray-dark);
-  --line: rgba(242, 243, 247, .16);
-  --accent: var(--indigo);
-  --eyebrow: var(--lavender);
-}
-.theme-light {
-  --bg: var(--bone);
-  --fg: var(--navy);
-  --muted: var(--gray-light);
-  --line: rgba(0, 3, 74, .14);
-  --accent: var(--indigo);
-  --eyebrow: var(--royal);          /* el índigo no llega a AA en texto pequeño sobre claro */
+  /* Movimiento: calmado, editorial */
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  --t-press: 150ms;
+  --t-hover: 200ms;
+  --t-aparecer: 800ms;
+  --t-linea: 900ms;
+  --escalon: 120ms;
 }
 
 /* ---------- Base ---------- */
@@ -61,62 +38,42 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  background: var(--fondo);
   overflow-x: clip;
 }
+/* Sin Lenis (celular, táctil), el scroll a las secciones es nativo y suave */
 @media (prefers-reduced-motion: no-preference) {
-  html { scroll-behavior: smooth; }
+  html:not(.lenis) { scroll-behavior: smooth; }
 }
 
 body {
   margin: 0;
-  font-family: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: "Hanken Grotesk", "Helvetica Neue", system-ui, sans-serif;
   font-size: 1rem;
   line-height: 1.6;
-  background: var(--navy);
-  color: var(--bone);
+  background: var(--fondo);
+  color: var(--texto);
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
-@media (min-width: 900px) { body { font-size: 1.0625rem; } }
 
-h1, h2, h3, p, ul, ol, dl, dd, figure, blockquote { margin: 0; }
+h1, h2, h3, p, ul, ol, figure, blockquote { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
 img, svg { display: block; max-width: 100%; }
 a { color: inherit; }
 [hidden] { display: none !important; }
-[id] { scroll-margin-top: calc(var(--header-h) + 1rem); }
+[id] { scroll-margin-top: 16px; }
 
-section, footer, .pillar {
-  background: var(--bg);
-  color: var(--fg);
-}
+.claro { color: var(--texto); }
 
-/* Tarjetas (pilares, escenario de proyectos, planes): borde de 1px que sigue la
-   esquina recortada. Igual que en .btn--primary, el fondo del elemento es el borde
-   y ::before (1px adentro, mismo clip-path) es el relleno. Con hover se aclara. */
-.pillar, .project__visual, .plan {
-  --borde: color-mix(in srgb, var(--fg) 12%, transparent);
-  --borde-activo: color-mix(in srgb, var(--indigo) 65%, transparent);
-  background: var(--borde);
-  isolation: isolate;
-  transition: background-color var(--t-hover) var(--ease);
-}
-.pillar::before, .project__visual::before, .plan::before {
-  content: "";
+.sr-only {
   position: absolute;
-  inset: 1px;
-  z-index: -1;
-  background: var(--bg);
-  clip-path: inherit;
-}
-.pillar:focus-within, .project__visual:focus-within, .plan:focus-within { --borde: var(--borde-activo); }
-@media (hover: hover) and (pointer: fine) {
-  .pillar:hover, .project__visual:hover, .plan:hover { --borde: var(--borde-activo); }
-}
-
-.container {
-  width: min(100% - 2 * var(--gutter), 75rem);
-  margin-inline: auto;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .skip-link {
@@ -125,1152 +82,575 @@ section, footer, .pillar {
   top: -4rem;
   z-index: 100;
   padding: .75rem 1rem;
-  background: var(--bone);
-  color: var(--navy);
-  font-weight: 700;
+  border-radius: 999px;
+  background: var(--texto);
+  color: var(--fondo);
+  font-weight: 600;
 }
 .skip-link:focus { top: 1rem; }
 
 :focus-visible {
-  outline: 3px solid var(--accent, var(--indigo));
+  outline: 2px solid var(--texto);
   outline-offset: 3px;
 }
+/* Las secciones reciben el foco al usar un enlace interno, pero no son controles */
+[tabindex="-1"]:focus { outline: none; }
 
-/* ---------- Tipografía compartida ---------- */
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: .6rem;
-  font-size: .8125rem;
-  font-weight: 700;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--eyebrow);
-}
-.eyebrow::before {
-  content: "";
-  width: 1.1rem;
-  height: .5rem;
-  background: var(--accent);
-  transform: skewX(calc(-1 * var(--slope)));
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
 
-.section-title {
-  margin-top: .9rem;
-  font-size: var(--fs-title);
-  font-weight: 800;
-  font-stretch: 125%;
-  line-height: 1.04;
-  letter-spacing: -.01em;
-  text-wrap: balance;
-}
+/* Lenis (scroll con inercia, solo computadora con mouse): reglas base de la librería */
+html.lenis, html.lenis body { height: auto; }
+.lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
+.lenis [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
 
-/* Encabezado de sección: etiqueta, título y texto. Igual en todas las secciones */
-.section-head { max-width: 46rem; }
-.section-lead {
-  margin-top: 1.25rem;
-  max-width: 34rem;
-  font-size: 1.125rem;
-  color: var(--muted);
-}
+/* ---------- Componentes ---------- */
 
-/* ---------- Botones: esquina recortada con la pendiente del logo ---------- */
-.btn {
-  --corner: 10px;
+/* Panel: cada sección. Barrita azul del logo arriba a la izquierda y su índice a la derecha */
+.panel {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: .6rem;
-  min-height: 48px;
-  padding: .75rem 1.5rem;
-  font: inherit;
-  font-weight: 700;
-  font-stretch: 110%;
-  line-height: 1.15;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  border: 0;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--corner)), calc(100% - 2 * var(--corner)) 100%, 0 100%);
-  isolation: isolate;               /* permite pintar el relleno del primario detrás del texto */
-  transition: transform var(--t-hover) var(--ease), background-color var(--t-hover) var(--ease);
+  margin: 0 var(--panel-gap) var(--panel-gap);
+  border: 1px solid var(--borde-panel);
+  border-radius: 28px;
+  background: var(--panel);
+  overflow: hidden;
 }
-.btn .icon { transition: transform var(--t-hover) var(--ease); }
-/* clip-path recorta el outline exterior: el foco se dibuja por dentro */
-.btn:focus-visible { outline: 3px solid var(--fg); outline-offset: -6px; }
-
-/* Primario: relleno royal con borde fino índigo. Un borde CSS no seguiría la
-   esquina recortada, así que el fondo es el borde y ::before (1px adentro,
-   mismo recorte) es el relleno. */
-.btn--primary {
-  --btn-fill: var(--royal);
-  --btn-fill-hover: color-mix(in srgb, var(--royal) 85%, var(--indigo));
-  background: var(--indigo);
-  color: #fff;
-}
-.btn--primary::before {
-  content: "";
+.panel__marca {
   position: absolute;
-  inset: 1px;
-  z-index: -1;
-  background: var(--btn-fill);
-  clip-path: inherit;
-  transition: background-color var(--t-hover) var(--ease);
-}
-.btn--primary:focus-visible { outline-color: #fff; }
-
-.btn--ghost { background: color-mix(in srgb, var(--fg) 9%, transparent); color: var(--fg); }
-
-/* Brillo fijo del CTA principal. clip-path recorta cualquier sombra del propio botón,
-   así que el brillo lo dibuja un envoltorio con drop-shadow (sigue la silueta recortada). */
-.cta-glow {
-  display: inline-flex;
-  filter: drop-shadow(0 0 14px rgba(77, 91, 255, .45)) drop-shadow(0 6px 18px rgba(0, 2, 54, .5));
-}
-
-/* Acción secundaria como enlace: no compite con el botón de WhatsApp */
-.link-arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: .5rem;
-  min-height: 48px;
-  padding-inline: .5rem;
-  font-weight: 700;
-  font-stretch: 110%;
-  color: var(--fg);
-  text-decoration: none;
-}
-.link-arrow__icon { transition: transform var(--t-hover) var(--ease); }
-
-/* Enlaces de texto: una línea de acento que crece de izquierda a derecha.
-   .subrayado--base agrega una línea tenue fija, para que se note que es enlace sin mouse. */
-.subrayado {
-  position: relative;
-  padding-bottom: .2em;
-  text-decoration: none;
-}
-.subrayado--base {
-  background: linear-gradient(var(--line), var(--line)) 0 100% / 100% 2px no-repeat;
-}
-.subrayado::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 30px;
+  left: 30px;
+  width: 16px;
   height: 2px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
+  background: var(--azul);
+  transform: rotate(-26.6deg);
+}
+.panel__indice {
+  position: absolute;
+  top: 22px;
+  right: 28px;
+  font-size: 13px;
+  color: var(--texto-2);
+}
+.panel__cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  padding-top: 104px;
+  padding-bottom: 40px;
+}
+.panel__cuerpo:has(> .servicios) { gap: 48px; }
+
+/* Encabezado de sección: etiqueta con punto a la izquierda y título gigante */
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 24px 64px;
+}
+.section-head__etiqueta {
+  flex: 0 0 200px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 18px;
+  font-size: 14px;
+}
+.section-head__etiqueta::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--texto);
+}
+.section-title {
+  font-weight: 600;
+  font-size: clamp(56px, 8vw, 120px);
+  line-height: .95;
+  letter-spacing: -.045em;
+}
+
+/* Títulos línea por línea: cada línea es una máscara y su texto sube desde abajo.
+   El padding inferior evita que la máscara corte las letras que bajan (g, p). */
+.linea {
+  display: block;
+  overflow: hidden;
+  padding-bottom: .1em;
+  margin-bottom: -.1em;
+}
+.linea > span { display: block; }
+
+/* Botón principal: píldora clara con la flecha dentro de un círculo oscuro.
+   Avo vigila .btn--primary para no taparlo (js/avo.js). */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   transition: transform var(--t-hover) var(--ease);
 }
-a.subrayado:focus-visible::after,
-a:focus-visible > .subrayado::after,
-a.subrayado:active::after,
-a:active > .subrayado::after { transform: scaleX(1); }
-
-/* Al tocar en celular el navegador pinta un rectángulo gris que no sigue la esquina
-   recortada; estos elementos ya responden con su propio :active */
-.btn, .link-arrow, .subrayado, .ribbon__pausa { -webkit-tap-highlight-color: transparent; }
-
-/* ---------- Sistema de hover: solo con mouse real (en celular no quedan "pegados") ---------- */
-@media (hover: hover) and (pointer: fine) {
-  .btn--primary:hover { --btn-fill: var(--btn-fill-hover); }
-  .btn--ghost:hover { background: color-mix(in srgb, var(--fg) 15%, transparent); }
-  .site-nav a:hover { color: var(--fg); }
-  a.subrayado:hover::after,
-  a:hover > .subrayado::after { transform: scaleX(1); }
+.btn--primary {
+  padding: 12px 12px 12px 20px;
+  background: var(--texto);
+  color: var(--fondo);
+  font-size: 15px;
 }
-/* El movimiento (elevar, desplazar, presionar) solo si el sistema no pide reducirlo */
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .btn:hover { transform: translateY(-1px); }
-  .btn:hover .icon { transform: translateX(2px); }
-  .link-arrow:hover .link-arrow__icon { transform: translateX(3px); }
+.btn--lg { padding: 16px 16px 16px 26px; font-size: 17px; }
+.btn__circulo {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: var(--fondo);
+  color: var(--texto);
 }
-@media (prefers-reduced-motion: no-preference) {
-  .btn:active { transform: scale(.97); transition-duration: var(--t-press); }
+.btn__circulo svg { width: 16px; height: 16px; transition: transform var(--t-hover) var(--ease); }
+.btn .icon { width: 1.2em; height: 1.2em; flex-shrink: 0; }   /* ícono del botón del chat de Avo */
+
+/* Flecha en círculo (filas de servicios) */
+.flecha {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--linea);
+  border-radius: 999px;
+  color: var(--texto);
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--t-hover) var(--ease), transform var(--t-hover) var(--ease);
 }
-/* Al tocar (celular), el mismo cambio de color que el hover */
-.btn--primary:active { --btn-fill: var(--btn-fill-hover); }
+.flecha svg { width: 18px; height: 18px; transition: transform var(--t-hover) var(--ease); }
 
-.btn--sm { --corner: 8px; min-height: 40px; padding: .5rem 1rem; font-size: .875rem; }
-.btn--lg { --corner: 12px; min-height: 56px; padding: 1rem 1.75rem; font-size: 1.0625rem; }
+/* Enlace de texto */
+.enlace {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;                /* área de toque cómoda sin cambiar cómo se ve */
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--texto);
+  text-underline-offset: 6px;
+  -webkit-tap-highlight-color: transparent;
+  transition: color var(--t-hover) var(--ease);
+}
+.enlace--flecha { gap: 10px; }
+.enlace--flecha svg { width: 16px; height: 16px; transition: transform var(--t-hover) var(--ease); }
 
-.icon { width: 1.25em; height: 1.25em; flex-shrink: 0; }
+/* Píldoras de texto */
+.pildoras { display: flex; flex-wrap: wrap; gap: 8px; }
+.pildora {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--texto);
+  color: var(--fondo);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.pildora--contorno { background: transparent; border: 1px solid var(--linea); color: var(--texto); }
 
 /* ---------- Header ---------- */
 .site-header {
-  position: fixed;
-  inset: 0 0 auto;
-  z-index: 50;
-  height: var(--header-h);
-  color: var(--fg);
-  transition: background-color var(--t-hover) var(--ease), box-shadow var(--t-hover) var(--ease);
-}
-.site-header.is-solid {
-  background: rgba(0, 3, 74, .96);
-  box-shadow: 0 1px 0 var(--line), 0 10px 30px rgba(0, 2, 54, .35);
-}
-.site-header__inner {
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 16px;
+  padding-block: 28px;
 }
-
-.brand {
-  display: inline-flex;
+.marca {
+  display: flex;
   align-items: center;
-  gap: .6rem;
+  gap: 10px;
+  min-height: 44px;
   text-decoration: none;
 }
-.brand__mark { width: 34px; height: auto; }
-.brand__text { display: flex; flex-direction: column; line-height: 1; }
-.brand__name {
-  font-size: 1.15rem;
-  font-weight: 800;
-  font-stretch: 125%;
-  letter-spacing: .02em;
-}
-.brand__sub {
-  margin-top: .3rem;
-  font-size: .5rem;
-  font-weight: 600;
-  letter-spacing: .38em;
-  opacity: .8;
-}
+.marca__logo { width: 33px; height: 28px; color: var(--texto); }
+.marca__nombre { font-weight: 700; font-size: 19px; letter-spacing: .02em; }
 
 .site-nav { display: none; }
-
-/* CTA del header: en celular solo "Demo", con alto táctil de 44px */
-.site-header__cta { min-height: 44px; padding-inline: .9rem; }
-.site-header__cta-long { display: none; }
 @media (min-width: 900px) {
-  .site-header__cta { min-height: 40px; padding-inline: 1rem; }
-  .site-header__cta-long { display: inline; }
-  .site-header__cta-short { display: none; }
-}
-
-@media (min-width: 900px) {
-  .brand__mark { width: 40px; }
-  .brand__name { font-size: 1.3rem; }
-  .brand__sub { font-size: .56rem; }
-
   .site-nav {
     display: flex;
-    gap: 2rem;
+    gap: 28px;
     margin-left: auto;
-    margin-right: 1rem;
+    margin-right: 12px;
+    font-size: 15px;
   }
   .site-nav a {
-    font-size: .9375rem;
-    font-weight: 600;
-    color: var(--muted);
+    color: var(--texto-2);
+    text-decoration: none;
     transition: color var(--t-hover) var(--ease);
   }
-  .site-nav a:focus-visible { color: var(--fg); }
+  .site-nav a:focus-visible { color: var(--texto); }
 }
 
-/* ---------- 1 · Hero ---------- */
-.hero {
-  position: relative;
-  min-height: min(100svh, 60rem);
-  display: grid;
-  align-items: center;
-  padding: calc(var(--header-h) + 3rem) 0 calc(var(--pad-y) + 1.5rem);
-  overflow: hidden;
-}
-.hero__sentinel {
+/* ---------- 1 · Portada ---------- */
+.hero__sentinel {                  /* js/avo.js sabe con él si la página está arriba del todo */
   position: absolute;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 1px;
   height: 40px;
 }
-.hero__inner { position: relative; }
-
-.hero__title {
-  margin-top: 1.25rem;
-  font-size: clamp(2.2rem, 10vw, 7.25rem);
-  font-weight: 800;
-  font-stretch: 125%;
-  line-height: .98;
-  letter-spacing: -.015em;
+.hero__cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-top: clamp(48px, 8vw, 120px);
+  padding-bottom: 72px;
 }
-.hero__word { display: block; }
-.hero__word:last-child { color: var(--accent); }
-
-.hero__lead {
-  margin-top: 1.75rem;
-  max-width: 34rem;
-  font-size: clamp(1.0625rem, 2vw, 1.3rem);
-  color: var(--gray-soft);         /* más claro que --muted: el efecto de fondo le resta contraste */
-}
-.hero__lead strong { color: var(--fg); font-weight: 700; }
-
-.hero__actions {
-  margin-top: 2.25rem;
+.hero__meta {
   display: flex;
   flex-wrap: wrap;
-  gap: .75rem;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 15px;
+  color: var(--texto-2);
 }
-@media (max-width: 479px) {
-  .hero__actions .cta-glow,
-  .hero__actions .btn,
-  .hero__actions .link-arrow { width: 100%; }
-  .btn--lg { padding-inline: 1.25rem; font-size: 1rem; }
+.hero__meta-claro { color: var(--texto); }
+.hero__title {
+  font-weight: 600;
+  font-size: clamp(64px, 11vw, 168px);
+  line-height: .9;
+  letter-spacing: -.055em;
 }
+.hero__pie {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 32px;
+  padding-top: 32px;
+  border-top: 1px solid var(--linea);
+}
+.hero__lead {
+  max-width: 520px;
+  font-size: 20px;
+  line-height: 1.55;
+  color: var(--texto-2);
+}
+.hero__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+}
+.hero__acciones .enlace { font-size: 16px; }
 
-/* Fondo animado de fibras (js/fondo-fibras.js). Debajo del canvas va un degradado
-   fijo con la paleta: es lo que se ve sin JavaScript, sin WebGL2 o mientras carga.
-   En computadora el brillo vive a la derecha y en celular abajo, lejos del texto. */
-.hero__fondo {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(42% 60% at 80% 52%, color-mix(in srgb, var(--indigo) 22%, transparent), transparent 70%),
-    radial-gradient(70% 85% at 82% 50%, color-mix(in srgb, var(--royal) 75%, transparent), transparent 72%),
-    var(--navy);
-}
-.hero__fibras {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 1.2s var(--ease);
-}
-.hero__fibras.is-ready { opacity: 1; }
-
-/* Degradado encima del efecto: oscurece detrás del titular y los botones, tapa el
-   header transparente y se funde con --navy al final de la portada, sin borde. */
-.hero__fondo::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(to bottom,
-      var(--navy) 0,
-      var(--navy) var(--header-h),
-      transparent calc(var(--header-h) + 5rem),
-      transparent 62%,
-      var(--navy) 100%),
-    radial-gradient(64% 50% at 28% 56%,
-      color-mix(in srgb, var(--navy) 96%, transparent) 0%,
-      color-mix(in srgb, var(--navy) 95%, transparent) 72%,
-      transparent 100%);
-}
-
-@media (max-width: 899px) {
-  /* En celular el espacio libre bajo los botones es donde se ve el efecto */
-  .hero { padding-bottom: 12rem; }
-  .hero__fondo {
-    background:
-      radial-gradient(70% 30% at 50% 88%, color-mix(in srgb, var(--indigo) 22%, transparent), transparent 70%),
-      radial-gradient(110% 45% at 50% 90%, color-mix(in srgb, var(--royal) 75%, transparent), transparent 72%),
-      var(--navy);
-  }
-  .hero__fondo::after {
-    background: linear-gradient(to bottom,
-      var(--navy) 0,
-      color-mix(in srgb, var(--navy) 93%, transparent) calc(var(--header-h) + 2rem),
-      color-mix(in srgb, var(--navy) 93%, transparent) calc(100% - 17rem),
-      color-mix(in srgb, var(--navy) 15%, transparent) calc(100% - 10rem),
-      color-mix(in srgb, var(--navy) 15%, transparent) calc(100% - 6rem),
-      var(--navy) 100%);
-  }
-}
-
-/* ---------- 2 · Cinta de rubros ---------- */
-/* Franja recta y delgada entre la portada y "Por qué AVORA": texto pequeño en
-   lavanda, líneas de 1px y el corte del logo como separador. */
+/* ---------- 2 · Cinta ---------- */
+/* Lineal y continua; nunca se pausa (salvo con movimiento reducido). Avo usa
+   .ribbon__band para no taparla. */
 .ribbon {
-  position: relative;
-  background: var(--bg);
-  border-block: 1px solid var(--line);
+  margin: 0 0 var(--panel-gap);
+  padding: 20px 0;
+  border-block: 1px solid var(--linea);
+  line-height: 1.4;
+  overflow: hidden;
 }
 .ribbon__band {
-  margin-right: 3rem;               /* espacio del botón de pausa: el desvanecido termina antes */
-  overflow: hidden;
-  /* Los rubros entran y salen desvanecidos, sin cortarse de golpe en el borde */
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 .ribbon__track {
   display: flex;
   width: max-content;
-  animation: marquee 60s linear infinite;
-}
-/* Pausa: con el botón (recordada en la visita) o con el mouse encima */
-.animaciones-pausadas .ribbon__track { animation-play-state: paused; }
-@media (hover: hover) and (pointer: fine) {
-  .ribbon__band:hover .ribbon__track { animation-play-state: paused; }
+  animation: marquee 40s linear infinite;
 }
 .ribbon__list { display: flex; }
 .ribbon__list li {
   display: flex;
   align-items: center;
-  gap: 1.75rem;
-  padding: .85rem 0 .85rem 1.75rem;
-  font-size: .75rem;
-  font-weight: 700;
-  letter-spacing: .2em;
-  text-transform: uppercase;
+  padding-left: 28px;
+  font-size: 16px;
   white-space: nowrap;
-  color: var(--eyebrow);            /* lavanda: ~7:1 sobre navy */
 }
-/* Separador: el corte del logo, una barra fina con su pendiente */
 .ribbon__list li::after {
-  content: "";
-  width: .9rem;
-  height: 2px;
-  background: var(--accent);
-  transform: rotate(calc(-1 * var(--slope)));
+  content: "/";
+  margin-left: 28px;
+  color: var(--texto-2);
 }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
-/* Botón de pausa: una celda al final de la cinta, separada por una línea fina */
-.ribbon__pausa {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 3rem;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  border-left: 1px solid var(--line);
-  background: var(--bg);
-  color: var(--eyebrow);
-  cursor: pointer;
-  transition: color var(--t-hover) var(--ease);
-}
-.ribbon__pausa:focus-visible { outline-offset: -3px; color: var(--fg); }
-.ribbon__icono { width: 14px; height: 14px; fill: currentColor; transition: transform var(--t-press) var(--ease); }
-.ribbon__icono--play,
-.animaciones-pausadas .ribbon__icono--pausa { display: none; }
-.animaciones-pausadas .ribbon__icono--play { display: block; }
-@media (hover: hover) and (pointer: fine) {
-  .ribbon__pausa:hover { color: var(--fg); }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .ribbon__pausa:active .ribbon__icono { transform: scale(.85); }
-}
-
-/* ---------- 3 · Por qué AVORA ---------- */
-.why {
-  padding: var(--pad-y) 0 calc(var(--pad-y) + var(--cut));
-}
-.why__grid {
-  display: grid;
-  gap: 3rem;
-}
-.why__list { border-top: 1px solid var(--line); }
-.why__item {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: 1rem;
-  padding: 1.5rem 0;
-  border-bottom: 1px solid var(--line);
-}
-.why__item::before {
-  content: "";
-  grid-row: span 2;
-  width: .75rem;
-  height: 1.4rem;
-  margin-top: .2rem;
-  background: var(--accent);
-  transform: skewX(calc(-1 * var(--slope)));
-}
-.why__item h3 {
-  font-size: 1.25rem;
-  font-weight: 800;
-  font-stretch: 115%;
-  line-height: 1.25;
-}
-.why__item p { margin-top: .35rem; color: var(--muted); }
-
-@media (min-width: 900px) {
-  .why__grid {
-    grid-template-columns: 1.15fr .85fr;
-    gap: clamp(3rem, 7vw, 7rem);
-    align-items: end;
-  }
-  .why__list { margin-bottom: .5rem; }
-}
-
-/* ---------- Divisores diagonales ----------
-   Cada sección recorta su propio borde superior y se sube sobre la anterior:
-   así el orden de pintado del DOM deja ver la sección previa en el triángulo. */
-.cut-top {
-  position: relative;
-  margin-top: calc(-1 * var(--cut));
-  padding-top: calc(var(--pad-y) + var(--cut));
-  clip-path: polygon(0 var(--cut), 100% 0, 100% 100%, 0 100%);
-}
-
-/* ---------- 4 · Servicios (sticky stacking) ---------- */
-.services { padding-bottom: calc(var(--pad-y) + var(--cut)); }
-
-.pillars {
-  margin-top: var(--head-gap);
-  display: grid;
-  gap: 1.25rem;
-}
-
-.pillar {
-  --pcut: 1.75rem;
-  position: sticky;
-  /* main.js ajusta --sticky-top para que un panel más alto que la pantalla
-     se lea completo antes de que el siguiente lo cubra */
-  top: var(--sticky-top, calc(var(--header-h) + 1rem + var(--i) * .9rem));
-  display: grid;
-  grid-template-columns: 1fr;
-  align-content: start;
-  gap: 1rem;
-  padding: calc(var(--pcut) + 2rem) clamp(1.25rem, 4vw, 3.5rem) clamp(2rem, 4vw, 3.25rem);
-  clip-path: polygon(0 var(--pcut), 100% 0, 100% 100%, 0 100%);
-}
-.pillar { --borde: color-mix(in srgb, var(--bone) 12%, transparent); }
-.pillar--atrae { --bg: var(--navy-raised); }
-.pillar--automatiza { --bg: var(--navy-deep); }
-
-.pillar__num {
-  position: absolute;
-  top: calc(var(--pcut) + .75rem);
-  right: clamp(1.25rem, 4vw, 3.5rem);
-  font-size: clamp(2.75rem, 8vw, 6rem);
-  font-weight: 800;
-  font-stretch: 125%;
-  line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--accent);
-  opacity: .8;
-}
-.pillar__kicker {
-  font-size: .8125rem;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--eyebrow);
-}
-.pillar__word {
-  font-size: clamp(2.3rem, 10vw, 9rem);
-  font-weight: 800;
-  font-stretch: 125%;
-  line-height: .92;
-  letter-spacing: -.02em;
-}
-.pillar__text { font-size: 1.0625rem; color: var(--muted); max-width: 32rem; }
-.pillar__body { display: grid; gap: 1.25rem; }
-.pillar .btn { justify-self: start; margin-top: .5rem; }
-
-.pillar__tag, .plan__tag, .project__tag {
-  justify-self: start;
-  padding: .35rem 1.1rem .35rem .8rem;
-  background: var(--indigo);
-  color: #fff;
-  font-size: .75rem;
-  font-weight: 800;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  clip-path: polygon(0 0, 100% 0, calc(100% - .6rem) 100%, 0 100%);
-}
-.pillar__note {
-  padding: 1rem 1.25rem;
-  background: rgba(77, 91, 255, .09);
-  border-left: 4px solid var(--indigo);
-  font-weight: 600;
-  max-width: 32rem;
-}
-
-.ticks { display: grid; gap: .55rem; }
-.ticks li {
-  display: flex;
-  align-items: center;
-  gap: .8rem;
-  font-weight: 600;
-}
-.ticks li::before {
-  content: "";
-  flex-shrink: 0;
-  width: .7rem;
-  height: .7rem;
-  background: var(--accent);
-  transform: skewX(calc(-1 * var(--slope)));
-}
-
-/* Tres composiciones distintas en escritorio */
-@media (min-width: 900px) {
-  .pillar {
-    --pcut: 3rem;
-    column-gap: clamp(2rem, 5vw, 5rem);
-    row-gap: 1.25rem;
-    min-height: min(calc(100svh - var(--header-h) - 6rem), 34rem);
-  }
-  .pillar__body { grid-template-columns: 1.2fr .8fr; align-items: start; gap: 2rem; }
-
-  /* 01: palabra a la izquierda, número arriba a la derecha */
-  .pillar--atrae { grid-template-columns: 1fr; }
-
-  /* 02: destacado claro, nota al lado del contenido */
-  .pillar--convierte {
-    grid-template-columns: 1.3fr .7fr;
-    grid-template-areas:
-      "tag    tag"
-      "kicker kicker"
-      "word   word"
-      "body   note"
-      "btn    note";
-  }
-  .pillar--convierte .pillar__tag { grid-area: tag; }
-  .pillar--convierte .pillar__kicker { grid-area: kicker; }
-  .pillar--convierte .pillar__word { grid-area: word; }
-  .pillar--convierte .pillar__body { grid-area: body; grid-template-columns: 1fr 1fr; }
-  .pillar--convierte .pillar__note { grid-area: note; align-self: end; font-size: 1.125rem; }
-  .pillar--convierte .btn { grid-area: btn; }
-
-  /* 03: espejo, todo alineado a la derecha y el número a la izquierda */
-  .pillar--automatiza { justify-items: end; text-align: right; }
-  .pillar--automatiza .pillar__num { right: auto; left: clamp(1.25rem, 4vw, 3.5rem); }
-  .pillar--automatiza .pillar__body { grid-template-columns: .8fr 1.2fr; }
-  .pillar--automatiza .pillar__body .ticks { order: -1; justify-items: start; text-align: left; }
-  .pillar--automatiza .btn { justify-self: end; }
-}
-
-/* ---------- 5 · Proyectos ---------- */
-/* Dos casos que no se ven iguales: Canal Silver abierto sobre el fondo claro y
-   Distrito 507 en una franja oscura a todo el ancho, en espejo. Cada uno usa el
-   color de su marca solo como detalle (escenario, barra del nombre, comillas). */
-.projects { padding-bottom: 0; }   /* la franja de Distrito 507 cierra la sección */
-
-.project--canal {
-  --proyecto: #b39a6b;              /* champán de la joyería de Canal Silver */
-  --proyecto-fondo: #e9e3d8;        /* crema de su página */
-}
-.project--distrito {
-  --proyecto: #bf3a33;              /* rojo de "DISTRITO" en su logo (un poco más vivo para el navy) */
-  --proyecto-fondo: #1c1c1c;        /* carbón del fondo de su página */
-}
-
-/* Celular: nombre, capturas y después la historia. En computadora el texto
-   vuelve a su columna (ver abajo). */
-.project {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "head" "visual" "story" "quote" "actions";
-  row-gap: 2rem;
-}
-.project__copy { display: contents; }
-.project__head { grid-area: head; }
-.project__visual { grid-area: visual; }
-.project__story { grid-area: story; }
-.project__quote { grid-area: quote; }
-.project__actions { grid-area: actions; }
-
-.project--canal { margin-top: var(--head-gap); padding-bottom: calc(var(--pad-y) * .6 + var(--cut)); }
-
-/* Franja de Distrito 507: mismo corte que los separadores de sección */
-.project-band {
-  position: relative;
-  padding: calc(var(--pad-y) * .6 + var(--cut)) 0 calc(var(--pad-y) + var(--cut));
-  margin-top: calc(-1 * var(--cut));
-  background: var(--bg);
-  color: var(--fg);
-  clip-path: polygon(0 var(--cut), 100% 0, 100% 100%, 0 100%);
-}
-
-.project__tag {
-  width: fit-content;
-  max-width: 100%;
-  text-wrap: balance;
-}
-.project__name {
-  margin-top: 1rem;
-  display: flex;
-  align-items: center;
-  gap: .9rem;
-  font-size: clamp(2.25rem, 6.5vw, 4.25rem);
-  font-weight: 800;
-  font-stretch: 125%;
-  line-height: 1;
-  letter-spacing: -.015em;
-}
-/* Barra con la pendiente del logo, en el color del proyecto */
-.project__name::before {
-  content: "";
-  flex-shrink: 0;
-  width: .55em;
-  height: .62em;
-  background: var(--proyecto);
-  transform: skewX(calc(-1 * var(--slope)));
-}
-.project__meta {
-  margin-top: .75rem;
-  font-weight: 600;
-  color: var(--muted);
-}
-
-.project__story { border-top: 1px solid var(--line); }
-.project__story > div {
-  padding: 1.1rem 0;
-  border-bottom: 1px solid var(--line);
-}
-.project__story dt {
-  font-size: .75rem;
-  font-weight: 700;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--eyebrow);
-}
-.project__story dd { margin-top: .3rem; font-size: 1.125rem; }
-
-/* Resultado destacado (Distrito 507) */
-.project__story > .project__result {
-  margin-top: 1.1rem;
-  padding: 1.25rem 1.25rem 1.35rem;
-  background: color-mix(in srgb, var(--proyecto) 16%, transparent);
-  border-bottom: 0;
-  border-left: 4px solid var(--proyecto);
-}
-.project__result dd {
-  font-size: clamp(1.25rem, 2.4vw, 1.5rem);
-  font-weight: 700;
-  font-stretch: 110%;
-  line-height: 1.3;
-  text-wrap: pretty;
-}
-
-.project__quote {
-  padding-left: 1.25rem;
-  border-left: 3px solid var(--proyecto);
-}
-.project__quote-mark { width: 2.25rem; height: auto; fill: var(--proyecto); }
-.project__quote blockquote {
-  margin-top: .75rem;
-  font-size: clamp(1.125rem, 1.8vw, 1.3rem);
-  font-weight: 500;
-  line-height: 1.45;
-  text-wrap: pretty;
-}
-.project__quote figcaption {
-  margin-top: 1rem;
+/* ---------- 3 · Servicios ---------- */
+.servicio {
   display: flex;
   flex-wrap: wrap;
-  gap: .1rem .6rem;
+  align-items: flex-start;
+  gap: 20px 64px;
+  padding: 40px 0;
+  border-top: 1px solid var(--linea);
 }
-.project__quote strong { font-weight: 800; font-stretch: 112%; }
-.project__quote span { color: var(--muted); }
-
-.project__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .75rem;
-}
-@media (max-width: 479px) {
-  .project__actions .btn { width: 100%; }
-}
-
-/* Escenario de las capturas: panel con el color del proyecto y las esquinas
-   cortadas con la pendiente del logo (alto c, ancho 2c) */
-.project__visual {
-  --c: clamp(1.25rem, 3vw, 2rem);
-  position: relative;
-  --bg: var(--proyecto-fondo);
-  padding: clamp(1.75rem, 5vw, 3rem) clamp(1rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 2.5rem);
-  clip-path: polygon(0 0, calc(100% - 2 * var(--c)) 0, 100% var(--c), 100% 100%, calc(2 * var(--c)) 100%, 0 calc(100% - var(--c)));
-}
-/* Si faltan las dos capturas, no queda un escenario vacío */
-.project__visual:not(:has(.device:not([hidden]))) { display: none; }
-
-/* Maquetas de dispositivos hechas con CSS */
-.devices {
-  position: relative;
-  padding-bottom: 6%;
-}
-.device { margin: 0; }
-.device__screen { overflow: hidden; background: var(--navy-deep); }
-.device__screen img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-
-.device--laptop { width: 86%; }
-.devices:has(.device--phone[hidden]) .device--laptop { width: 100%; }
-.device--laptop .device__screen {
-  aspect-ratio: 16 / 10;
-  border: clamp(6px, 1.1vw, 12px) solid #0a0f24;
-  border-bottom-width: clamp(10px, 1.6vw, 18px);
-  border-radius: 14px 14px 0 0;
-}
-.device__base {
-  position: relative;
-  width: 114%;
-  margin-left: -7%;
-  height: clamp(10px, 1.5vw, 16px);
-  background: linear-gradient(#dde0e9, #a7adbf);
-  border-radius: 0 0 14px 14px / 0 0 10px 10px;
-  box-shadow: 0 18px 30px -12px rgba(0, 3, 74, .45);
-}
-.device__base::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 0;
-  width: 16%;
-  height: 40%;
-  transform: translateX(-50%);
-  background: #8f96ab;
-  border-radius: 0 0 8px 8px;
-}
-
-.device--phone {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 25%;
-  min-width: 92px;
-}
-.device--phone .device__screen {
-  position: relative;
-  aspect-ratio: 390 / 844;
-  border: clamp(4px, .7vw, 7px) solid #0a0f24;
-  border-radius: clamp(14px, 2.4vw, 26px);
-  box-shadow: 0 24px 40px -12px rgba(0, 3, 74, .5);
-}
-.device--phone .device__screen::before {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  top: 5px;
-  left: 50%;
-  width: 34%;
-  height: 4%;
-  max-height: 16px;
-  transform: translateX(-50%);
-  background: #0a0f24;
-  border-radius: 999px;
-}
-/* Espejo (Distrito 507): laptop a la derecha y celular a la izquierda */
-.devices--mirror .device--laptop { margin-left: auto; }
-.devices--mirror .device--phone { right: auto; left: 0; }
-
-@media (min-width: 900px) {
-  .project {
-    grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
-    grid-template-areas: "copy visual";
-    column-gap: clamp(3rem, 6vw, 5.5rem);
-    align-items: start;
-  }
-  .project--distrito {
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
-    grid-template-areas: "visual copy";
-  }
-  .project__copy { grid-area: copy; display: grid; row-gap: 2rem; }
-  .project__copy > * { grid-area: auto; }
-
-  /* Las capturas acompañan mientras se lee la historia */
-  .project__visual {
-    position: sticky;
-    top: calc(var(--header-h) + 2rem);
-    margin-top: 2.5rem;
-  }
-
-  /* Sin capturas, el texto ocupa una columna cómoda */
-  .project:not(:has(.device:not([hidden]))) {
-    grid-template-columns: minmax(0, 46rem);
-    grid-template-areas: "copy";
-  }
-}
-
-/* ---------- 6 · Proceso ---------- */
-.process { padding-bottom: calc(var(--pad-y) + var(--cut)); }
-.process__track { position: relative; margin-top: var(--head-gap); }
-.process__line { display: none; }
-
-.process__steps {
-  display: grid;
-  gap: 2rem;
-  counter-reset: step;
-}
-.step { position: relative; max-width: 22rem; }
-.step__num {
-  display: inline-grid;
-  place-items: center;
-  width: 3rem;
-  height: 2.5rem;
-  margin-bottom: 1rem;
-  background: var(--indigo);
-  color: #fff;
-  font-size: 1.25rem;
-  font-weight: 800;
-  font-stretch: 125%;
-  clip-path: polygon(.6rem 0, 100% 0, calc(100% - .6rem) 100%, 0 100%);
-}
-.step h3 {
-  font-size: 1.3rem;
-  font-weight: 800;
-  font-stretch: 115%;
-  line-height: 1.2;
-}
-.step p { margin-top: .5rem; color: var(--muted); }
-
-@media (min-width: 900px) {
-  .process__steps {
-    grid-template-columns: repeat(3, 1fr);
-    gap: clamp(2rem, 4vw, 4rem);
-    align-items: start;
-  }
-  /* Escalera ascendente, como el corte del logo */
-  .step:nth-child(1) { margin-top: 8rem; }
-  .step:nth-child(2) { margin-top: 4rem; }
-
-  .process__line {
-    display: block;
-    position: absolute;
-    left: 0;
-    top: .5rem;
-    width: 100%;
-    height: 10rem;
-    overflow: visible;
-    pointer-events: none;
-  }
-  .process__line path {
-    fill: none;
-    stroke: var(--indigo);
-    stroke-width: 2px;
-    opacity: .35;
-  }
-  .step { background: var(--bg); padding-right: 1rem; }
-}
-
-/* ---------- 7 · Planes ---------- */
-.plans {
-  --bg: var(--navy-deep);           /* las tarjetas usan --navy-raised y resaltan encima */
-  padding-bottom: calc(var(--pad-y) + var(--cut));
-}
-
-.plans__grid {
-  margin-top: var(--head-gap);
-  display: grid;
-  gap: 1.25rem;
-}
-/* El <li> lleva la animación; la tarjeta de adentro, el corte */
-.plans__item { display: grid; }
-
-.plan {
-  --bg: var(--navy-raised);
-  --c: 1.25rem;                     /* alto del corte; el ancho es el doble (pendiente 0.5) */
-  position: relative;
+.servicio__texto {
+  flex: 1 1 360px;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 2rem clamp(1.25rem, 4vw, 2rem) 1.75rem;
-  color: var(--fg);
-  clip-path: polygon(0 0, calc(100% - 2 * var(--c)) 0, 100% var(--c), 100% 100%, 0 100%);
+  gap: 12px;
+  max-width: 460px;
 }
-.plan__main { display: grid; justify-items: start; }
-.plan__tag { margin-bottom: 1rem; }
-.plan__kicker {
-  margin-bottom: .5rem;
-  font-size: .8125rem;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--eyebrow);
-}
-.plan__name {
-  font-size: 1.375rem;
-  font-weight: 800;
-  font-stretch: 115%;
+.servicio__nombre {
+  font-weight: 500;
+  font-size: 30px;
   line-height: 1.2;
-}
-.plan__price {
-  margin-top: .75rem;
-  font-size: clamp(2.75rem, 5vw, 3.5rem);
-  font-weight: 800;
-  font-stretch: 125%;
-  line-height: 1;
   letter-spacing: -.02em;
+  transition: color var(--t-hover) var(--ease);
 }
-.plan__currency { margin-right: .08em; font-size: .5em; vertical-align: .8em; }
-.plan__terms { margin-top: .5rem; font-weight: 700; }
-
-.plan__details {
-  display: grid;
-  align-content: start;
-  gap: 1.25rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--line);
+.servicio__texto p { font-size: 16px; color: var(--texto-2); }
+.servicio__incluye {
+  flex: 1 1 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
-.plan__for { color: var(--muted); }
-.plan__fine { font-size: .9375rem; color: var(--muted); }
-.plan .btn { margin-top: auto; width: 100%; padding-inline: 1rem; font-size: .9375rem; }
+.servicio__label { font-size: 13px; color: var(--texto-2); }
 
-/* Sistema AVORA: tarjeta clara con borde índigo de 2px, que con hover se aclara hacia lavanda */
-.plan--featured {
-  --bg: var(--bone);
-  --c: 1.5rem;
-  --borde: var(--indigo);
-  --borde-activo: color-mix(in srgb, var(--indigo) 55%, var(--lavender));
-  clip-path: polygon(0 0, calc(100% - 2 * var(--c)) 0, 100% var(--c), 100% 100%, calc(2 * var(--c)) 100%, 0 calc(100% - var(--c)));
+/* ---------- 4 · Proyectos ---------- */
+.proyectos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
 }
-.plan--featured::before { inset: 2px; }
-/* clip-path recorta la sombra de la tarjeta: el brillo va en el <li> */
-.plans__item--featured { filter: drop-shadow(0 0 22px rgba(77, 91, 255, .45)); }
-
-/* Aviso de Clientes Fundadores: franja índigo con extremos diagonales */
-.plans__founders { margin-top: clamp(2.5rem, 5vw, 3.5rem); }
-.plans__founders p {
-  padding: 1.1rem 2.25rem;
-  background: var(--indigo);
-  color: #fff;                      /* 4.9:1 sobre índigo */
-  font-size: 1.0625rem;
+.proyecto {
+  flex: 1 1 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+}
+.proyecto__captura {
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--linea);
+  border-radius: 20px;
+  background: var(--superficie);
+  overflow: hidden;
+}
+.proyecto__captura img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+.proyecto__titulo {
   font-weight: 600;
-  clip-path: polygon(1.25rem 0, 100% 0, calc(100% - 1.25rem) 100%, 0 100%);
+  font-size: 40px;
+  line-height: 1.1;
+  letter-spacing: -.03em;
 }
-.plans__founders strong { font-weight: 800; font-stretch: 115%; }
-
-.plans__foot {
-  margin-top: 1.25rem;
+.proyecto__resultado { font-size: 17px; }
+.proyecto__cita blockquote { font-size: 16px; color: var(--texto-2); }
+.proyecto__cita figcaption { margin-top: 10px; font-size: 14px; }
+.proyecto__enlaces {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: .5rem 2rem;
-}
-.plans__note { font-size: .875rem; color: var(--muted); }
-.plans__foot .link-arrow { margin-left: -.5rem; }
-.plans__size { font-weight: 500; color: var(--muted); }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .plans__foot .link-arrow:hover .link-arrow__icon { transform: translateY(3px); }
+  gap: 12px 28px;
 }
 
-/* Computadora: fila de tres con el Sistema AVORA más ancho y más alto,
-   y Atrae (solo anuncios) abajo, a lo ancho y en horizontal */
-@media (min-width: 900px) {
-  .plans__grid {
-    grid-template-columns: 1fr 1fr 1.2fr;
-    column-gap: 1.25rem;
-    row-gap: 3rem;
-    padding-top: 1.5rem;
-  }
-  .plans__item--featured { margin-block: -1.5rem; }
-  .plan--featured { --c: 1.75rem; padding: 2.5rem 2.25rem 2.25rem; }
-  .plan--featured .plan__price { font-size: 4.25rem; }
-
-  .plans__item--wide { grid-column: 1 / -1; }
-  .plan--wide {
-    display: grid;
-    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) auto;
-    align-items: center;
-    column-gap: clamp(2rem, 4vw, 4rem);
-    padding: 2rem clamp(2rem, 4vw, 3rem);
-  }
-  .plan--wide .plan__details {
-    padding: 0 0 0 clamp(2rem, 4vw, 4rem);
-    border-top: 0;
-    border-left: 1px solid var(--line);
-  }
-  .plan--wide .btn { margin-top: 0; width: auto; }
-
-  .plans__founders p { font-size: 1.25rem; padding-inline: 2.75rem; }
+/* ---------- 5 · Planes ---------- */
+.planes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
 }
-
-/* ---------- 8 · CTA final ---------- */
-.final-cta { padding-bottom: calc(var(--pad-y) + var(--cut)); }
-.final-cta__inner {
-  display: grid;
-  justify-items: center;
-  gap: 1.25rem;
-  text-align: center;
+.plan {
+  flex: 1 1 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+  padding: clamp(28px, 4vw, 40px);
+  border: 1px solid var(--linea);
+  border-radius: 24px;
+  background: var(--superficie);
 }
-.final-cta__title {
-  margin-top: .9rem;                /* misma distancia etiqueta → título que .section-title */
-  font-size: clamp(2.25rem, 7.5vw, 5.25rem);
-  font-weight: 800;
-  font-stretch: 125%;
+.plan__nombre {
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -.03em;
+}
+.plan__desc { font-size: 16px; color: var(--texto-2); }
+.plan__precio {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+}
+.plan__monto {
+  font-weight: 600;
+  font-size: 64px;
   line-height: 1;
-  letter-spacing: -.015em;
-  text-wrap: balance;
+  letter-spacing: -.04em;
 }
-.final-cta__lead { max-width: 34rem; font-size: 1.125rem; color: var(--muted); }
-.final-cta__alt { color: var(--muted); }
-.final-cta__alt a { color: var(--fg); font-weight: 600; }
+.plan__monto--texto { font-size: clamp(36px, 4vw, 44px); letter-spacing: -.03em; }
+.plan__terminos { font-size: 16px; color: var(--texto-2); }
+.plan__lista li {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--linea);
+  font-size: 16px;
+}
+.plan__lista li::before { content: "—"; color: var(--texto-2); }
+.plan__nota { font-size: 15px; color: var(--texto-2); }
+.plan .btn { align-self: flex-start; }
 
-/* ---------- 9 · Footer ---------- */
+/* A tu medida: panel claro con los colores invertidos */
+.plan--claro {
+  border-color: transparent;
+  background: var(--texto);
+  color: var(--fondo);
+}
+.plan--claro .plan__desc,
+.plan--claro .plan__nota { color: var(--claro-texto-2); }
+.plan--claro .plan__lista li { border-top-color: var(--claro-linea); }
+.plan--claro .plan__lista li::before { color: var(--claro-texto-2); }
+.plan--claro .pildora { background: var(--fondo); color: var(--texto); }
+.plan--claro .btn--primary { background: var(--fondo); color: var(--texto); }
+.plan--claro .btn__circulo { background: var(--texto); color: var(--fondo); }
+.plan--claro :focus-visible { outline-color: var(--fondo); }
+
+.planes__fundadores { font-size: 15px; color: var(--texto-2); }
+
+/* ---------- 6 · Contacto ---------- */
+.contacto .panel__cuerpo {
+  gap: 48px;
+  padding-top: 120px;
+  padding-bottom: 80px;
+}
+.contacto__title {
+  font-weight: 600;
+  font-size: clamp(56px, 10vw, 150px);
+  line-height: .92;
+  letter-spacing: -.05em;
+}
+.pasos { display: flex; flex-wrap: wrap; }
+.paso {
+  flex: 1 1 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 28px 28px 28px 0;
+  border-top: 1px solid var(--linea);
+}
+.paso__nombre { font-size: 22px; font-weight: 500; line-height: 1.3; }
+.paso p { font-size: 15px; line-height: 1.5; color: var(--texto-2); }
+.contacto__pie {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding-top: 32px;
+  border-top: 1px solid var(--linea);
+}
+.contacto__lead {
+  max-width: 480px;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--texto-2);
+}
+
+/* ---------- 7 · Footer ---------- */
 .site-footer {
-  --bg: var(--navy-deep);
-  padding-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding-top: 40px;
+  padding-bottom: 48px;
+  border-top: 1px solid var(--linea);
+  font-size: 14px;
+  color: var(--texto-2);
 }
-.site-footer__inner {
-  display: grid;
-  gap: 2rem;
-  padding-bottom: 2.5rem;
-  border-bottom: 1px solid var(--line);
+.site-footer__marca { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+.site-footer__logo { width: 23px; height: 20px; color: var(--texto); }
+.site-footer a {
+  text-decoration: none;
+  transition: color var(--t-hover) var(--ease);
 }
-.site-footer__slogan {
-  margin-top: 1rem;
-  font-size: 1.125rem;
-  font-weight: 800;
-  font-stretch: 125%;
-  color: var(--eyebrow);            /* texto pequeño: lavanda, el índigo no llega a AA */
-}
-.site-footer__contact { display: grid; gap: .5rem; color: var(--muted); }
-.site-footer__contact a { transition: color var(--t-hover) var(--ease); }
-.site-footer__contact a:focus-visible { color: var(--fg); }
-@media (hover: hover) and (pointer: fine) {
-  .site-footer__contact a:hover { color: var(--fg); }
-}
-.site-footer__legal { padding-top: 1.5rem; font-size: .875rem; color: var(--muted); }
-
-@media (min-width: 900px) {
-  .site-footer__inner { grid-template-columns: 1fr auto; align-items: end; }
-  .site-footer__contact { text-align: right; }
-}
+.site-footer a:focus-visible { color: var(--texto); }
 
 /* ==========================================================================
-   Revelado al hacer scroll (solo con JS; sin JS todo es visible)
+   Hover: solo con mouse real (en celular no se queda "pegado"). 200 ms, sutil.
+   El movimiento, además, solo si el sistema no pide reducirlo.
    ========================================================================== */
-.js [data-reveal=""] {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity var(--t-reveal) var(--ease), transform var(--t-reveal) var(--ease);
-  transition-delay: calc(var(--i, 0) * 50ms);
+@media (hover: hover) and (pointer: fine) {
+  .site-nav a:hover,
+  .site-footer a:hover { color: var(--texto); }
+  .enlace:hover { color: var(--texto-2); }
+  .servicio:hover .flecha,
+  .flecha:hover { border-color: rgba(242, 242, 240, .45); }
+  .servicio:hover .servicio__nombre { color: #fff; }
 }
-
-/* Única excepción: el barrido diagonal del titular de la portada (al cargar, una vez).
-   El borde de avance tiene la inclinación del logo. */
-.js [data-reveal="wipe"] {
-  clip-path: polygon(0 -30%, 0 -30%, -40% 130%, -40% 130%);
-  transition: clip-path 450ms var(--ease);
-  transition-delay: calc(var(--i, 0) * 80ms);
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .btn:hover .btn__circulo svg,
+  .flecha:hover svg,
+  .servicio:hover .flecha svg,
+  .enlace--flecha:hover svg { transform: translateX(3px); }
 }
-
-.js [data-reveal].is-visible { opacity: 1; transform: none; }
-.js [data-reveal="wipe"].is-visible { clip-path: polygon(0 -30%, 140% -30%, 100% 130%, -40% 130%); }
+/* Al presionar (también al tocar en celular): una leve reducción de escala */
+@media (prefers-reduced-motion: no-preference) {
+  .btn:active,
+  .flecha:active { transform: scale(.97); transition-duration: var(--t-press); }
+}
 
 /* ==========================================================================
-   Movimiento reducido
+   Apariciones (solo con JS; sin JS todo es visible). js/main.js agrega
+   .is-visible con un solo IntersectionObserver, una vez por elemento.
+   --d = retraso base · --i = posición en el escalonado (120 ms) · --n = línea (90 ms)
+   ========================================================================== */
+.js [data-reveal=""],
+.js [data-reveal="panel"] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity var(--t-aparecer) var(--ease), transform var(--t-aparecer) var(--ease);
+  transition-delay: calc(var(--d, 0ms) + var(--i, 0) * var(--escalon));
+}
+.js [data-reveal="panel"] { transform: translateY(16px); }
+.js [data-reveal="fundido"] {
+  opacity: 0;
+  transition: opacity var(--t-aparecer) var(--ease);
+}
+.js [data-reveal="lineas"] .linea > span {
+  transform: translateY(105%);
+  transition: transform var(--t-linea) var(--ease);
+  transition-delay: calc(var(--d, 0ms) + var(--n, 0) * 90ms);
+}
+.js [data-reveal].is-visible { opacity: 1; transform: none; }
+.js [data-reveal="lineas"].is-visible .linea > span { transform: none; }
+
+/* ==========================================================================
+   Movimiento reducido: todo aparece de inmediato y la cinta queda quieta
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  .js [data-reveal] {
+  .js [data-reveal],
+  .js [data-reveal] .linea > span {
     opacity: 1 !important;
     transform: none !important;
-    clip-path: none !important;
     transition: none !important;
   }
-  .hero__fibras { transition: none; }
   .ribbon__track { animation: none; }
-  .ribbon__pausa { display: none; }
-  .ribbon__band { margin-right: 0; }
-  .subrayado::after { transition: none; }
-  .pillar { position: relative; top: auto; }
-}
-
-/* Pantallas muy bajas: sin apilado */
-@media (max-height: 560px) {
-  .pillar { position: relative; top: auto; }
 }

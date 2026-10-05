@@ -1,84 +1,69 @@
-/* AVORA Solutions · interacciones ligeras (sin librerías).
-   Nada aquí escucha el evento scroll: todo usa IntersectionObserver o resize. */
+/* AVORA Solutions · interacciones de la página (sin librerías propias).
+   Nada escucha el evento scroll: las apariciones usan un solo IntersectionObserver.
+   Lenis (scroll con inercia) se descarga solo en computadora con mouse. */
 (() => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const hasIO = 'IntersectionObserver' in window;
 
-  // Revelado al entrar en pantalla (una sola vez por elemento).
-  // Los barridos "wipe" empiezan con un clip-path de área cero, y el observer nunca
-  // los vería intersectar: para esos se observa al padre, que sí ocupa espacio.
-  const revealables = document.querySelectorAll('[data-reveal]');
-  if (reduceMotion || !hasIO) {
-    revealables.forEach((el) => el.classList.add('is-visible'));
+  // Apariciones: cada elemento con data-reveal recibe .is-visible una sola vez,
+  // cuando entra un 15 % en pantalla. El CSS hace el resto (fundido, subida o
+  // líneas que suben dentro de su máscara). Lo que ya está en pantalla al cargar
+  // (header y portada) aparece en secuencia gracias a sus retrasos --d.
+  const elementos = document.querySelectorAll('[data-reveal]');
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    elementos.forEach((el) => el.classList.add('is-visible'));
   } else {
-    const targetsByTrigger = new Map();
-    revealables.forEach((el) => {
-      const trigger = el.dataset.reveal === 'wipe' ? el.parentElement : el;
-      if (!targetsByTrigger.has(trigger)) targetsByTrigger.set(trigger, []);
-      targetsByTrigger.get(trigger).push(el);
-    });
-
-    const revealObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        targetsByTrigger.get(entry.target).forEach((el) => el.classList.add('is-visible'));
-        observer.unobserve(entry.target);
+    const observador = new IntersectionObserver((entradas, obs) => {
+      entradas.forEach((entrada) => {
+        if (!entrada.isIntersecting) return;
+        entrada.target.classList.add('is-visible');
+        obs.unobserve(entrada.target);
       });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.15 });
-    targetsByTrigger.forEach((_, trigger) => revealObserver.observe(trigger));
+    }, { threshold: 0.15 });
+    elementos.forEach((el) => observador.observe(el));
   }
 
-  // Header sólido al bajar (el botón flotante ahora es Avo: js/avo.js)
-  const header = document.querySelector('.site-header');
-  const sentinel = document.querySelector('.hero__sentinel');
-
-  if (hasIO) {
-    new IntersectionObserver(([entry]) => {
-      header.classList.toggle('is-solid', !entry.isIntersecting);
-    }).observe(sentinel);
-  } else {
-    header.classList.add('is-solid');
-  }
-
-  // Sticky stacking: si un pilar es más alto que la pantalla, se fija por su borde
-  // inferior (top negativo) para que se lea completo antes de que el siguiente lo cubra.
-  const pillars = document.querySelectorAll('.pillar');
-  let frame = 0;
-  const setStickyTops = () => {
-    frame = 0;
-    const base = header.offsetHeight + 16;
-    pillars.forEach((pillar, i) => {
-      const top = Math.min(base + i * 14, window.innerHeight - pillar.offsetHeight - 16);
-      pillar.style.setProperty('--sticky-top', `${top}px`);
-    });
-  };
-  const scheduleStickyTops = () => { if (!frame) frame = requestAnimationFrame(setStickyTops); };
-
-  setStickyTops();
-  window.addEventListener('resize', scheduleStickyTops);
-  document.fonts?.ready.then(scheduleStickyTops);
-
-  // Botón de pausa de la cinta: detiene la cinta y el fondo animado de la portada.
-  // La elección dura la visita (sessionStorage); el <head> la aplica antes de pintar.
-  // js/fondo-fibras.js escucha el evento "animaciones:cambio".
-  const CLAVE_PAUSA = 'avora-animaciones';
-  const raiz = document.documentElement;
-  const botonPausa = document.querySelector('.ribbon__pausa');
-  if (botonPausa) {
-    const rotular = () => {
-      const texto = raiz.classList.contains('animaciones-pausadas') ? 'Reanudar animaciones' : 'Pausar animaciones';
-      botonPausa.setAttribute('aria-label', texto);
-      botonPausa.title = texto;
+  // Scroll con inercia, suave y ligero, SOLO en computadora con mouse: en celular,
+  // en pantallas táctiles y con movimiento reducido ni siquiera se descarga.
+  const conMouse = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const tactil = window.matchMedia('(any-pointer: coarse)').matches;
+  if (conMouse && !tactil && !reduceMotion) {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js';
+    // Huella del archivo: si el CDN lo cambiara, el navegador no lo ejecuta
+    script.integrity = 'sha384-jqpi9VmOdhyLoLURgjCn7EpnG9BbnHW57ibIZoeaIU+erWDH3k8fQQg0xH2ySjnw';
+    script.crossOrigin = 'anonymous';
+    script.onload = () => {
+      if (!window.Lenis) return;
+      window.lenis = new window.Lenis({
+        autoRaf: true,
+        lerp: 0.12,                  // más alto = frena antes (ligero, sin sensación pesada)
+      });
     };
-    botonPausa.addEventListener('click', () => {
-      const pausadas = raiz.classList.toggle('animaciones-pausadas');
-      try {
-        if (pausadas) sessionStorage.setItem(CLAVE_PAUSA, 'pausadas');
-        else sessionStorage.removeItem(CLAVE_PAUSA);
-      } catch (e) { /* sin almacenamiento (modo privado): la pausa vale solo hasta recargar */ }
-      rotular();
-      document.dispatchEvent(new CustomEvent('animaciones:cambio'));
-    });
-    rotular();
+    document.head.appendChild(script);
   }
+
+  // Enlaces internos (Servicios, Proyectos, Planes…). Se manejan aquí por dos motivos:
+  // Lenis no cancela el salto nativo (los dos se pisan), y una sección que todavía no
+  // apareció conserva su desplazamiento de animación, que movería el destino.
+  // offsetTop mide la posición real, sin ese desplazamiento. Como el navegador, se
+  // actualiza la dirección y el foco pasa a la sección (teclado y lectores de pantalla).
+  const posicionReal = (el) => {
+    let y = 0;
+    for (let nodo = el; nodo; nodo = nodo.offsetParent) y += nodo.offsetTop;
+    return y - (parseFloat(getComputedStyle(el).scrollMarginTop) || 0);
+  };
+  document.addEventListener('click', (e) => {
+    const enlace = e.target instanceof Element && e.target.closest('a[href^="#"]');
+    if (!enlace || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    const hash = enlace.getAttribute('href');
+    const destino = hash.length > 1 && document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (!destino) return;
+    e.preventDefault();
+    const y = posicionReal(destino);
+    if (window.lenis) window.lenis.scrollTo(y);
+    else window.scrollTo({ top: y, behavior: reduceMotion ? 'auto' : 'smooth' });
+    history.pushState(null, '', hash);
+    if (!destino.hasAttribute('tabindex')) destino.setAttribute('tabindex', '-1');
+    destino.focus({ preventScroll: true });
+  });
 })();
