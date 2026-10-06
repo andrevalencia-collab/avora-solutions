@@ -86,109 +86,16 @@
     elementos.forEach((el) => observador.observe(el));
   }
 
-  /* ---------- Botones principales: relleno y efecto magnético ----------
-     El relleno (capa .btn__relleno) recorre el botón con hover, en CSS.
-     El imán solo existe con mouse real y sin movimiento reducido. El <a> (.btn--magnetico)
-     NO se mueve: es el área que detecta el mouse (con 12px extra en CSS) y se mide en
-     cada movimiento, así la medida siempre es la real, también después de un scroll.
-     Lo que se desplaza es su .btn__cuerpo, hasta 8px hacia el cursor; el círculo se
-     corre un poco más, solo en horizontal (queda alineado con el texto), y la flecha
-     gira levemente. Cada movimiento fija un destino y una transición de 150 ms lo
-     persigue desde donde va (efecto resorte); al soltar vuelve en 400 ms.
-     Se suelta al salir el mouse, al perder el foco, cuando un scroll aleja el botón
-     del cursor y al cambiar de pestaña o de ventana: nunca queda movido. */
-  const botones = [...document.querySelectorAll('.btn--primary')].filter((b) => !b.closest('.avo'));
-  botones.forEach((btn) => {
+  /* ---------- Botones principales: relleno ----------
+     Cada botón principal recibe una capa .btn__relleno; con hover (solo con mouse),
+     el CSS la hace recorrer el botón de izquierda a derecha. */
+  document.querySelectorAll('.btn--primary').forEach((btn) => {
+    if (btn.closest('.avo')) return;
     const relleno = document.createElement('span');
     relleno.className = 'btn__relleno';
     relleno.setAttribute('aria-hidden', 'true');
-    (btn.querySelector('.btn__cuerpo') || btn).prepend(relleno);
+    btn.prepend(relleno);
   });
-
-  if (conMouse && !reduceMotion) {
-    const MAX_CUERPO = 8;
-    const EXTRA_CIRCULO = 3;
-    const GIRO = 12;
-    const AREA_EXTRA = 12;                       // igual que el ::before de .btn--magnetico en el CSS
-    const soltadores = [];
-
-    document.querySelectorAll('.btn--magnetico').forEach((btn) => {
-      const cuerpo = btn.querySelector('.btn__cuerpo');
-      if (!cuerpo) return;
-      const circulo = cuerpo.querySelector('.btn__circulo');
-      const flecha = circulo?.querySelector('svg');
-      let activo = false;
-      let ultimoX = 0;                           // última posición conocida del cursor
-      let ultimoY = 0;
-      let cuadro = 0;
-
-      const soltar = () => {
-        if (!activo) return;
-        activo = false;
-        window.removeEventListener('scroll', alHacerScroll);
-        cancelAnimationFrame(cuadro);
-        cuadro = 0;
-        btn.classList.remove('es-magnetico');
-        cuerpo.style.translate = '';
-        if (circulo) circulo.style.translate = '';
-        if (flecha) flecha.style.rotate = '';
-      };
-      soltadores.push(soltar);
-
-      // Acerca el cuerpo al cursor según la caja actual del <a>, que no se mueve
-      const seguir = (cx, cy, caja) => {
-        // Posición del cursor respecto al centro, de -1 a 1 (el área extra queda en el borde)
-        let x = (cx - (caja.left + caja.width / 2)) / (caja.width / 2);
-        let y = (cy - (caja.top + caja.height / 2)) / (caja.height / 2);
-        x = Math.max(-1, Math.min(1, x));
-        y = Math.max(-1, Math.min(1, y));
-        // Que en diagonal tampoco pase de 8px
-        const largo = Math.hypot(x, y);
-        const escala = largo > 1 ? 1 / largo : 1;
-        cuerpo.style.translate = `${(x * escala * MAX_CUERPO).toFixed(2)}px ${(y * escala * MAX_CUERPO).toFixed(2)}px`;
-        if (circulo) circulo.style.translate = `${(x * EXTRA_CIRCULO).toFixed(2)}px 0px`;
-        if (flecha) flecha.style.rotate = `${(y * GIRO).toFixed(1)}deg`;
-      };
-
-      // Con Lenis, el scroll sigue moviéndose suave casi un segundo después de la
-      // rueda: llegan muchos eventos seguidos. Soltar en cada uno hacía que el botón
-      // saltara entre su lugar y el cursor (temblaba). Ahora, una vez por cuadro, se
-      // mira dónde quedó el cursor: si sigue sobre el botón (o su área extra), el cuerpo
-      // solo se reacomoda; si el scroll alejó el botón del cursor, recién ahí se suelta.
-      const alHacerScroll = () => {
-        if (cuadro) return;
-        cuadro = requestAnimationFrame(() => {
-          cuadro = 0;
-          if (!activo) return;
-          const caja = btn.getBoundingClientRect();
-          const dentro = ultimoX >= caja.left - AREA_EXTRA && ultimoX <= caja.right + AREA_EXTRA
-            && ultimoY >= caja.top - AREA_EXTRA && ultimoY <= caja.bottom + AREA_EXTRA;
-          if (dentro) seguir(ultimoX, ultimoY, caja);
-          else soltar();
-        });
-      };
-
-      btn.addEventListener('pointermove', (e) => {
-        if (e.pointerType !== 'mouse') return;
-        ultimoX = e.clientX;
-        ultimoY = e.clientY;
-        if (!activo) {
-          activo = true;
-          btn.classList.add('es-magnetico');
-          // Solo mientras el imán está activo
-          window.addEventListener('scroll', alHacerScroll, { passive: true });
-        }
-        seguir(ultimoX, ultimoY, btn.getBoundingClientRect());
-      });
-      btn.addEventListener('pointerleave', soltar);
-      btn.addEventListener('pointercancel', soltar);
-      btn.addEventListener('blur', soltar);
-    });
-
-    const soltarTodos = () => soltadores.forEach((soltar) => soltar());
-    window.addEventListener('blur', soltarTodos);
-    document.addEventListener('visibilitychange', () => { if (document.hidden) soltarTodos(); });
-  }
 
   /* ---------- Scroll con inercia y profundidad ----------
      Lenis, suave y ligero, SOLO en computadora con mouse: en celular, en pantallas
