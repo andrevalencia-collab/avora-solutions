@@ -14,11 +14,12 @@
   --texto: #f2f2f0;
   --texto-2: #8e8e93;              /* secundario: 5.8:1 sobre el panel */
   --linea: rgba(242, 242, 240, .12);
-  --borde-panel: rgba(242, 242, 240, .10);
+  --borde-panel: rgba(242, 242, 240, .20);
   --azul: #4d5bff;                 /* solo la estela del logo y la barrita de cada panel */
   --sobre-texto: #0b0b0c;          /* lo que va encima de --texto: botones y píldoras se invierten solos */
   --linea-activa: rgba(242, 242, 240, .45);   /* borde de la flecha con hover */
   --texto-hover: #fff;             /* el título de un servicio "se aclara apenas" con hover */
+  --palabra-fondo: rgba(242, 242, 240, .04);   /* AVORA gigante detrás del título de la portada */
 
   --gutter: clamp(20px, 5vw, 80px);
   --panel-gap: clamp(8px, 1.2vw, 16px);   /* 8px en celular, 16px en computadora */
@@ -31,6 +32,8 @@
   --t-aparecer: 800ms;
   --t-linea: 900ms;
   --escalon: 120ms;
+  --t-sigue: 150ms;                /* botón magnético mientras sigue al mouse */
+  --t-vuelta: 400ms;               /* botón magnético al volver a su lugar */
 }
 
 /* Tema claro: Servicios y Planes. Solo redefine variables; los componentes leen
@@ -42,7 +45,7 @@
   --texto: #0b0b0c;
   --texto-2: #55555b;
   --linea: rgba(11, 11, 12, .12);
-  --borde-panel: rgba(11, 11, 12, .10);
+  --borde-panel: rgba(11, 11, 12, .18);
   --sobre-texto: #f2f2f0;
   --linea-activa: rgba(11, 11, 12, .45);
   --texto-hover: #2a2a2f;
@@ -143,6 +146,34 @@ html.lenis, html.lenis body { height: auto; }
   background: var(--panel);
   overflow: hidden;
 }
+/* Con JS, el borde de CSS queda transparente (conserva su espacio) y lo reemplaza
+   .panel__borde: 4 tramos rectos que crecen con scaleX/scaleY y 4 esquinas que
+   aparecen con opacity. main.js calcula --ret (retraso) y --dur (duración) de cada
+   pieza para que la línea recorra el contorno en 900 ms con la curva --ease. */
+.js .panel { border-color: transparent; }
+.panel__borde {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 27px;
+  pointer-events: none;
+}
+.panel__borde > span {
+  position: absolute;
+  transition: transform var(--dur, 0ms) linear var(--ret, 0ms), opacity var(--dur, 0ms) linear var(--ret, 0ms);
+}
+.borde-tramo { background: var(--borde-panel); }
+.borde-arriba    { top: 0; left: 27px; right: 27px; height: 1px; transform: scaleX(0); transform-origin: left; }
+.borde-derecha   { right: 0; top: 27px; bottom: 27px; width: 1px; transform: scaleY(0); transform-origin: top; }
+.borde-abajo     { bottom: 0; left: 27px; right: 27px; height: 1px; transform: scaleX(0); transform-origin: right; }
+.borde-izquierda { left: 0; top: 27px; bottom: 27px; width: 1px; transform: scaleY(0); transform-origin: bottom; }
+.borde-esquina { width: 27px; height: 27px; border: 0 solid var(--borde-panel); opacity: 0; }
+.borde-esquina--1 { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; border-top-left-radius: 27px; }
+.borde-esquina--2 { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; border-top-right-radius: 27px; }
+.borde-esquina--3 { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; border-bottom-right-radius: 27px; }
+.borde-esquina--4 { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; border-bottom-left-radius: 27px; }
+.panel.is-visible .panel__borde > span { transform: none; opacity: 1; }
+
 .panel__marca {
   position: absolute;
   top: 30px;
@@ -207,6 +238,18 @@ html.lenis, html.lenis body { height: auto; }
 }
 .linea > span { display: block; }
 
+/* Línea divisoria: arriba de su contenedor (que va con position: relative).
+   Dentro de un grupo se dibuja de izquierda a derecha. */
+.divisoria {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--linea);
+  transform-origin: left;
+}
+
 /* Botón principal: píldora clara con la flecha dentro de un círculo oscuro.
    Avo vigila .btn--primary para no taparlo (js/avo.js). */
 .btn {
@@ -226,10 +269,34 @@ html.lenis, html.lenis body { height: auto; }
   transition: transform var(--t-hover) var(--ease);
 }
 .btn--primary {
+  --btn-relleno: color-mix(in srgb, var(--texto) 90%, var(--sobre-texto));
+  position: relative;
+  isolation: isolate;              /* el relleno queda detrás del texto, delante del fondo */
   padding: 12px 12px 12px 20px;
   background: var(--texto);
   color: var(--sobre-texto);
   font-size: 15px;
+  /* translate (el imán) va aparte de transform (presionar): no se pisan */
+  transition: transform var(--t-hover) var(--ease), translate var(--t-vuelta) var(--ease);
+}
+.btn--primary.es-magnetico { transition: transform var(--t-hover) var(--ease), translate var(--t-sigue) var(--ease); }
+/* Relleno que recorre el botón de izquierda a derecha (main.js agrega la capa) */
+.btn__relleno {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+.btn__relleno::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--btn-relleno);
+  transform: scaleX(0);
+  transform-origin: right;         /* al salir se vacía hacia la derecha */
+  transition: transform 500ms var(--ease);
 }
 .btn--lg { padding: 16px 16px 16px 26px; font-size: 17px; }
 .btn__circulo {
@@ -243,7 +310,14 @@ html.lenis, html.lenis body { height: auto; }
   background: var(--sobre-texto);
   color: var(--texto);
 }
-.btn__circulo svg { width: 16px; height: 16px; transition: transform var(--t-hover) var(--ease); }
+.btn--primary .btn__circulo { transition: translate var(--t-vuelta) var(--ease); }
+.btn--primary.es-magnetico .btn__circulo { transition-duration: var(--t-sigue); }
+.btn__circulo svg {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--t-hover) var(--ease), rotate var(--t-vuelta) var(--ease);
+}
+.btn--primary.es-magnetico .btn__circulo svg { transition: transform var(--t-hover) var(--ease), rotate var(--t-sigue) var(--ease); }
 .btn .icon { width: 1.2em; height: 1.2em; flex-shrink: 0; }   /* ícono del botón del chat de Avo */
 
 /* Flecha en círculo (filas de servicios) */
@@ -337,7 +411,28 @@ html.lenis, html.lenis body { height: auto; }
   width: 1px;
   height: 40px;
 }
+/* AVORA gigante, rellena y casi invisible, cortada por el borde inferior del panel.
+   El exterior se mueve más lento que el scroll en computadora (main.js, con Lenis). */
+.hero__palabra {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -.38em;                  /* casi la mitad queda bajo el borde del panel */
+  z-index: 0;
+  font-size: 28vw;
+  font-weight: 800;
+  line-height: .8;
+  letter-spacing: -.04em;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--palabra-fondo);
+  pointer-events: none;
+  user-select: none;
+}
+.hero__palabra-texto { display: block; }
 .hero__cuerpo {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -365,8 +460,8 @@ html.lenis, html.lenis body { height: auto; }
   justify-content: space-between;
   align-items: flex-end;
   gap: 32px;
+  position: relative;
   padding-top: 32px;
-  border-top: 1px solid var(--linea);
 }
 .hero__lead {
   max-width: 520px;
@@ -422,8 +517,8 @@ html.lenis, html.lenis body { height: auto; }
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 20px 64px;
+  position: relative;
   padding: 40px 0;
-  border-top: 1px solid var(--linea);
 }
 .servicio__texto {
   flex: 1 1 360px;
@@ -437,8 +532,10 @@ html.lenis, html.lenis body { height: auto; }
   font-size: 30px;
   line-height: 1.2;
   letter-spacing: -.02em;
-  transition: color var(--t-hover) var(--ease);
 }
+/* El color del hover va en el span: el h3 ya usa transition para aparecer */
+.servicio__nombre > span { transition: color var(--t-hover) var(--ease); }
+.servicio__accion { flex: 0 0 auto; }
 .servicio__texto p { font-size: 16px; color: var(--texto-2); }
 .servicio__incluye {
   flex: 1 1 280px;
@@ -449,45 +546,36 @@ html.lenis, html.lenis body { height: auto; }
 .servicio__label { font-size: 13px; color: var(--texto-2); }
 
 /* ---------- 4 · Proyectos ---------- */
+/* Sin capturas: etiquetas, nombre grande, resultado, testimonio y enlaces, con aire */
 .proyectos {
   display: flex;
   flex-wrap: wrap;
-  gap: 40px;
+  gap: 56px clamp(40px, 6vw, 96px);
 }
 .proyecto {
-  flex: 1 1 520px;
+  flex: 1 1 420px;
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 24px;
   min-width: 0;
+  padding-top: 40px;
 }
-.proyecto__captura {
-  aspect-ratio: 16 / 10;
-  border: 1px solid var(--linea);
-  border-radius: 20px;
-  background: var(--superficie);
-  overflow: hidden;
-}
-.proyecto__captura img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
-}
-.proyecto__titulo {
+.proyecto__nombre {
   font-weight: 600;
-  font-size: 40px;
-  line-height: 1.1;
-  letter-spacing: -.03em;
+  font-size: clamp(44px, 5vw, 72px);
+  line-height: 1;
+  letter-spacing: -.045em;
 }
-.proyecto__resultado { font-size: 17px; }
+.proyecto__resultado { max-width: 34rem; font-size: 19px; line-height: 1.55; }
+.proyecto__cita { max-width: 34rem; }
 .proyecto__cita blockquote { font-size: 16px; color: var(--texto-2); }
 .proyecto__cita figcaption { margin-top: 10px; font-size: 14px; }
 .proyecto__enlaces {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 28px;
+  gap: 4px 28px;
 }
 
 /* ---------- 5 · Planes ---------- */
@@ -538,7 +626,7 @@ html.lenis, html.lenis body { height: auto; }
 }
 .plan__lista li::before { content: "—"; color: var(--texto-2); }
 .plan__nota { font-size: 15px; color: var(--texto-2); }
-.plan .btn { align-self: flex-start; }
+.plan__accion { align-self: flex-start; }
 
 /* A tu medida: tarjeta negra dentro de la franja clara. Vuelve a los tokens
    oscuros, así su texto, líneas, píldora y botón se invierten solos */
@@ -571,8 +659,8 @@ html.lenis, html.lenis body { height: auto; }
   display: flex;
   flex-direction: column;
   gap: 10px;
+  position: relative;
   padding: 28px 28px 28px 0;
-  border-top: 1px solid var(--linea);
 }
 .paso__nombre { font-size: 22px; font-weight: 500; line-height: 1.3; }
 .paso p { font-size: 15px; line-height: 1.5; color: var(--texto-2); }
@@ -582,8 +670,8 @@ html.lenis, html.lenis body { height: auto; }
   justify-content: space-between;
   align-items: center;
   gap: 24px;
+  position: relative;
   padding-top: 32px;
-  border-top: 1px solid var(--linea);
 }
 .contacto__lead {
   max-width: 480px;
@@ -623,13 +711,15 @@ html.lenis, html.lenis body { height: auto; }
   .enlace:hover { color: var(--texto-2); }
   .servicio:hover .flecha,
   .flecha:hover { border-color: var(--linea-activa); }
-  .servicio:hover .servicio__nombre { color: var(--texto-hover); }
+  .servicio:hover .servicio__nombre > span { color: var(--texto-hover); }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .btn:hover .btn__circulo svg,
   .flecha:hover svg,
   .servicio:hover .flecha svg,
   .enlace--flecha:hover svg { transform: translateX(3px); }
+  /* Relleno del botón: entra desde la izquierda y sale hacia la derecha */
+  .btn--primary:hover .btn__relleno::before { transform: scaleX(1); transform-origin: left; }
 }
 /* Al presionar (también al tocar en celular): una leve reducción de escala */
 @media (prefers-reduced-motion: no-preference) {
@@ -642,35 +732,73 @@ html.lenis, html.lenis body { height: auto; }
    .is-visible con un solo IntersectionObserver, una vez por elemento.
    --d = retraso base · --i = posición en el escalonado (120 ms) · --n = línea (90 ms)
    ========================================================================== */
-.js [data-reveal=""],
-.js [data-reveal="panel"] {
+.js [data-reveal=""] {
   opacity: 0;
   transform: translateY(12px);
   transition: opacity var(--t-aparecer) var(--ease), transform var(--t-aparecer) var(--ease);
   transition-delay: calc(var(--d, 0ms) + var(--i, 0) * var(--escalon));
 }
-.js [data-reveal="panel"] { transform: translateY(16px); }
+/* Panel: fundido y escala muy leve, al mismo tiempo que se dibuja su borde (900 ms) */
+.js [data-reveal="panel"] {
+  opacity: 0;
+  transform: scale(.98);
+  transition: opacity var(--t-linea) var(--ease), transform var(--t-linea) var(--ease);
+}
 .js [data-reveal="fundido"] {
   opacity: 0;
   transition: opacity var(--t-aparecer) var(--ease);
 }
 .js [data-reveal="lineas"] .linea > span {
-  transform: translateY(105%);
+  /* 150 %: con interlineado menor que 1 las letras altas sobresalen de su línea;
+     con menos distancia se asomaban por el margen inferior de la máscara */
+  transform: translateY(150%);
   transition: transform var(--t-linea) var(--ease);
   transition-delay: calc(var(--d, 0ms) + var(--n, 0) * 90ms);
 }
 .js [data-reveal].is-visible { opacity: 1; transform: none; }
 .js [data-reveal="lineas"].is-visible .linea > span { transform: none; }
 
+/* Grupo: se observa el contenedor y sus [data-paso] aparecen en cascada.
+   data-sube hace que el contenedor también suba (proyectos y tarjetas). */
+.js [data-reveal="grupo"] { opacity: 1; transform: none; }
+.js [data-reveal="grupo"][data-sube] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity var(--t-aparecer) var(--ease), transform var(--t-aparecer) var(--ease);
+  transition-delay: var(--d, 0ms);
+}
+.js [data-reveal="grupo"] [data-paso] {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity var(--t-aparecer) var(--ease), transform var(--t-aparecer) var(--ease);
+  transition-delay: calc(var(--d, 0ms) + var(--i, 0) * var(--escalon));
+}
+/* La línea se dibuja de izquierda a derecha */
+.js [data-reveal="grupo"] [data-paso="linea"] {
+  opacity: 1;
+  transform: scaleX(0);
+  transition-duration: var(--t-linea);
+}
+/* El precio llega al final, con un pequeño énfasis (sin rebote) */
+.js [data-reveal="grupo"] [data-paso="enfasis"] {
+  transform: translateY(8px) scale(.94);
+  transform-origin: left bottom;
+}
+.js [data-reveal="grupo"].is-visible,
+.js [data-reveal="grupo"].is-visible [data-paso] { opacity: 1; transform: none; }
+
 /* ==========================================================================
    Movimiento reducido: todo aparece de inmediato y la cinta queda quieta
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
   .js [data-reveal],
-  .js [data-reveal] .linea > span {
+  .js [data-reveal] .linea > span,
+  .js [data-reveal] [data-paso],
+  .panel__borde > span {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
   }
   .ribbon__track { animation: none; }
+  .btn__relleno { display: none; }
 }

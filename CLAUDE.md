@@ -23,10 +23,11 @@ Dos temas que solo cambian variables. El oscuro vive en `:root` de `css/styles.c
 | Texto | `--texto` | `#F2F2F0` | `#0B0B0C` |
 | Texto secundario | `--texto-2` | `#8E8E93` (5.8:1) | `#55555B` (6.2:1) |
 | Líneas y bordes de tarjetas | `--linea` | `rgba(242,242,240,.12)` | `rgba(11,11,12,.12)` |
-| Borde de los paneles | `--borde-panel` | `rgba(242,242,240,.10)` | `rgba(11,11,12,.10)` |
+| Borde de los paneles | `--borde-panel` | `rgba(242,242,240,.20)` | `rgba(11,11,12,.18)` |
 | Lo que va encima de `--texto` (botones, píldoras) | `--sobre-texto` | `#0B0B0C` | `#F2F2F0` |
 | Borde de la flecha con hover | `--linea-activa` | blanco 45 % | negro 45 % |
 | Título de servicio con hover | `--texto-hover` | `#FFFFFF` | `#2A2A2F` |
+| Palabra AVORA de fondo (portada) | `--palabra-fondo` | `rgba(242,242,240,.04)` | — |
 
 - **El azul `#4D5BFF` (`--azul`)** es igual en los dos temas y solo se usa en la estela del logo y la barrita de cada panel.
 - **Botones y píldoras se invierten solos:** usan `--texto` de fondo y `--sobre-texto` encima, nunca colores fijos ni `--fondo`. En oscuro son claros con texto negro; en claro, negros con texto claro.
@@ -58,11 +59,11 @@ No hay paso de compilación. Sirve la carpeta con un servidor estático (por eje
 
 **Fondos alternados.** Portada oscura, **Servicios clara**, Proyectos oscura, **Planes clara**, cierre oscuro. Servicios y Planes van dentro de `<div class="franja tema-claro">`: la franja pinta el fondo claro de lado a lado de la pantalla (no solo el panel), con `--panel-gap` de relleno arriba; el panel de adentro conserva su margen inferior. El cambio de fondo ocurre solo con el scroll: la franja no se anima. `styles.css` está dividido en secciones numeradas que siguen ese orden. Mobile-first, un solo breakpoint en `min-width: 900px` (en celular el header muestra solo el logo y "Agenda tu demo").
 
-**Paneles (`.panel`).** Cada sección vive en un panel: esquinas de 28px, borde de 1px `--borde-panel`, fondo `--panel`, separado `--panel-gap` del borde de la pantalla y de los otros paneles (16px en computadora, 8px en celular). Arriba a la izquierda, `.panel__marca` (la barrita azul del logo, 16×2px girada −26.6°); arriba a la derecha, `.panel__indice` ("01 / 05 · Inicio", en `--texto-2`, `aria-hidden`). El contenido va en `.container` (máximo 1280px, padding `clamp(20px, 5vw, 80px)`).
+**Paneles (`.panel`).** Cada sección vive en un panel: esquinas de 28px, borde de 1px `--borde-panel` (con JS, el borde se "dibuja": ver Movimiento), fondo `--panel`, separado `--panel-gap` del borde de la pantalla y de los otros paneles (16px en computadora, 8px en celular). Arriba a la izquierda, `.panel__marca` (la barrita azul del logo, 16×2px girada −26.6°); arriba a la derecha, `.panel__indice` ("01 / 05 · Inicio", en `--texto-2`, `aria-hidden`). El contenido va en `.container` (máximo 1280px, padding `clamp(20px, 5vw, 80px)`).
 
 **Componentes.**
 - **Encabezado de sección (`.section-head`):** etiqueta con punto en una columna de 200px (`.section-head__etiqueta`) y título gigante (`.section-title`, `clamp(56px, 8vw, 120px)`).
-- **Botón principal (`.btn.btn--primary`):** píldora `--texto` con texto oscuro y la flecha dentro de un círculo oscuro (`.btn__circulo`). `.btn--lg` para la portada y el cierre. Al menos 44px de alto. En el panel claro se invierte. Se mantiene la clase `.btn--primary`, porque Avo la vigila.
+- **Botón principal (`.btn.btn--primary`):** píldora `--texto` con texto oscuro y la flecha dentro de un círculo oscuro (`.btn__circulo`). `.btn--lg` para la portada y el cierre. Al menos 44px de alto. En el panel claro se invierte. Se mantiene la clase `.btn--primary`, porque Avo la vigila. Es **magnético** y tiene un relleno que lo recorre con hover (ver Movimiento); las `.flecha` no.
 - **Flecha en círculo (`.flecha`):** 48px, borde `--linea`; las usan las filas de Servicios.
 - **Píldoras (`.pildora`):** rellenas (`--texto`) o de contorno (`.pildora--contorno`).
 - **Enlace de texto (`.enlace`):** subrayado con 6px de separación; `.enlace--flecha` agrega la flecha. Tiene 44px de área de toque.
@@ -70,19 +71,30 @@ No hay paso de compilación. Sirve la carpeta con un servidor estático (por eje
 
 **Los CTA son enlaces de WhatsApp** (`https://wa.me/50763288742?text=…`) con un mensaje precargado distinto según el contexto: general (header, portada, cierre, footer), uno por servicio (Atrae, Convierte, Automatiza), uno por proyecto ("Quiero algo así") y uno por plan. Al agregar un CTA, escribe un mensaje que encaje con su contexto y codifícalo para URL (tildes incluidas, ej. `%C3%A1`).
 
-**Proyectos.** Canal Silver y Distrito 507, cada uno con su captura real 16:10 (`img/canal-silver-desktop.jpg`, `img/distrito507-desktop.jpg`, con `loading="lazy"` y un `onerror` que oculta la figura si falta el archivo), píldoras, resultado, testimonio corto, "Ver sitio en vivo" y "Quiero algo así". El título visible es el año o "Proyecto escolar"; el nombre del proyecto va en un `.sr-only` para los lectores de pantalla.
+**Proyectos (sin imágenes).** Canal Silver y Distrito 507 en dos columnas amplias (una en celular), cada uno con: línea divisoria arriba, etiquetas en píldora (tipo y año / "Proyecto escolar"), el **nombre grande** como `h3` (`clamp(44px, 5vw, 72px)`), resultado, testimonio con su autor, "Ver sitio en vivo" y "Quiero algo así".
+
+**Palabra AVORA de fondo (portada).** `.hero__palabra`: Hanken Grotesk 800 a `28vw`, rellena en `--palabra-fondo`, detrás del contenido y con casi la mitad cortada por el borde inferior del panel (`bottom: -.38em`), sin tocar el título. Son dos elementos: el exterior se mueve con el scroll y el interior (`.hero__palabra-texto`) hace la aparición.
 
 ## Movimiento (calmado, editorial)
 
 Tokens en `:root`: curva `--ease` = `cubic-bezier(.22, 1, .36, 1)`, `--t-hover` 200 ms, `--t-press` 150 ms, `--t-aparecer` 800 ms, `--t-linea` 900 ms, `--escalon` 120 ms. Solo se animan `transform` y `opacity`; nunca `transition: all`.
 
-**Apariciones (`data-reveal`).** El script del `<head>` agrega `.js` al `<html>`; los estados ocultos iniciales están todos bajo `.js [data-reveal…]`, así la página se ve completa sin JavaScript. `main.js` agrega `.is-visible` con un solo `IntersectionObserver` (`threshold: .15`, una sola vez por elemento). Variantes:
+**Apariciones (`data-reveal`).** El script del `<head>` agrega `.js` al `<html>`; los estados ocultos iniciales están todos bajo `.js [data-reveal…]`, así la página se ve completa sin JavaScript. `main.js` agrega `.is-visible` con un solo `IntersectionObserver` (`threshold: .15`, una sola vez por elemento). Todo aparece animado, nada de golpe. Variantes:
 - `data-reveal` (sin valor): fundido + 12px → 0.
-- `data-reveal="panel"`: fundido + 16px (los paneles).
-- `data-reveal="fundido"`: solo opacidad (el header al cargar).
+- `data-reveal="panel"`: fundido + escala `.98 → 1` en 900 ms, al mismo tiempo que se dibuja su borde (todos los paneles, también la portada).
+- `data-reveal="fundido"`: solo opacidad (header, cinta y footer).
+- `data-reveal="grupo"`: se observa el contenedor y sus hijos `[data-paso]` aparecen en cascada (`--i` × 120 ms + `--d`). `data-paso="linea"` es una `.divisoria` que se dibuja de izquierda a derecha (`scaleX`); `data-paso="enfasis"` llega con `scale(.94) → 1` (el precio de cada plan, que aparece al final). `data-sube` hace que el contenedor también suba (proyectos y tarjetas de planes). Ojo: un elemento con `data-paso` usa `transition` para aparecer, así que su hover va en un hijo (`.servicio__nombre > span`) o en un envoltorio (`.servicio__accion`, `.plan__accion`), si no, el retraso de la cascada también frenaría el hover.
 - `data-reveal="lineas"`: títulos línea por línea. Cada línea es `<span class="linea"><span style="--n:N">…</span></span>`: la máscara tiene `overflow: hidden` y el texto sube con `translateY(105%) → 0`, 90 ms entre líneas. Las líneas se cortan a mano en el HTML (como la referencia), no con JS.
 
-Retrasos: `--d` es el retraso base (la portada lo usa para su secuencia: header → título → texto y botones) y `--i` es la posición en el escalonado de 120 ms.
+Retrasos: `--d` es el retraso base y `--i` la posición en el escalonado de 120 ms. Las máscaras de `lineas` esconden el texto con `translateY(150%)`: con menos, las letras altas se asoman por el margen inferior de la máscara.
+
+**Coreografías (mismo lenguaje en todas).** Portada (al cargar): panel y borde → palabra AVORA (`--d:100ms`) → título línea por línea y la línea de arriba (`--d:250ms`) → línea divisoria, texto y botones (`--d:550ms`). Servicios: cada fila es un grupo, 150 ms entre filas; dentro, la línea se dibuja y siguen el título, el texto, "Incluye" y cada píldora. Proyectos: cada uno sube (el segundo, 150 ms después): etiquetas → nombre → resultado → testimonio → enlaces. Planes: las tarjetas suben con 150 ms de diferencia y el precio llega al final con su énfasis. Cierre: título línea por línea → los 3 pasos en cascada, con su línea → texto y botón.
+
+**Bordes que se dibujan.** Con JS, el borde de CSS del panel queda transparente y `main.js` agrega `.panel__borde`: 4 tramos rectos que crecen con `scaleX`/`scaleY` y 4 esquinas de 27px que aparecen con `opacity`, en el orden del recorrido (empieza en la esquina de la barrita azul y sigue en el sentido del reloj). La curva `--ease` se aplica al contorno **completo**: `main.js` busca en qué momento de la curva la línea llega a cada pieza (búsqueda binaria sobre la bezier) y guarda `--ret` y `--dur` en cada una; se recalcula con `ResizeObserver`. Como la curva frena mucho al final, la línea recorre tres lados rápido y cierra despacio subiendo hacia la barrita. Para velocidad pareja, cambiar `tiempoDeAvance` por la identidad; para otra duración, `DURACION_BORDE`.
+
+**Botones magnéticos (`.btn--primary`, no `.flecha`).** Solo con mouse real (`pointerType === 'mouse'`, `hover: hover`, `pointer: fine`) y sin movimiento reducido. El botón se acerca al cursor hasta 8px (también en diagonal), el círculo se desplaza 3px más y la flecha gira hasta ±12°. Se usan las propiedades `translate` y `rotate`, aparte de `transform`, para no pisar el `scale(.97)` de presionar. Mientras sigue al mouse, cada destino se anima en `--t-sigue` (150 ms) y la transición se redirige desde donde va (efecto resorte); al salir vuelve en `--t-vuelta` (400 ms). El relleno `.btn__relleno` (capa que agrega `main.js`) entra con `scaleX` desde la izquierda y sale hacia la derecha; su color mezcla `--texto` y `--sobre-texto` (14:1 de contraste con el texto en los dos temas). En celular solo queda el `scale(.97)` al tocar.
+
+**Profundidad de la palabra AVORA.** Solo cuando existe Lenis (computadora con mouse, sin movimiento reducido): `lenis.on('scroll')` mueve `.hero__palabra` con `translate3d(0, scroll × 0.25, 0)` mientras la portada está en pantalla. No se agrega ningún listener de scroll del navegador. En celular queda fija.
 
 **Cinta.** Lineal y continua (40 s por vuelta), con los bordes desvanecidos. **Nunca se pausa**, ni con el mouse (decisión mía), salvo con movimiento reducido. Se mantiene la clase `.ribbon__band`, porque Avo la usa.
 
@@ -90,7 +102,7 @@ Retrasos: `--d` es el retraso base (la portada lo usa para su secuencia: header 
 
 **Scroll con inercia (Lenis 1.3.26, con huella SRI).** `main.js` lo descarga **solo** si hay mouse (`hover: hover` y `pointer: fine`), no hay pantalla táctil (`any-pointer: coarse`) y no hay movimiento reducido. En celular ni se descarga. Los enlaces internos los maneja `main.js` (con o sin Lenis): cancela el salto nativo, calcula el destino con `offsetTop` (para que el desplazamiento de animación de una sección que aún no apareció no corra el destino), actualiza la dirección y pasa el foco a la sección. El chat de Avo lleva `data-lenis-prevent` para desplazarse normal.
 
-**Movimiento reducido.** Todo aparece de inmediato y la cinta queda quieta. La única transición que queda es la del panel de Avo: abre y cierra con un fundido de opacidad de 180 ms, sin desplazarse.
+**Movimiento reducido.** Todo aparece de inmediato (también las cascadas y el borde, que queda completo), la cinta queda quieta, sin efecto magnético, sin relleno y sin profundidad. La única transición que queda es la del panel de Avo: abre y cierra con un fundido de opacidad de 180 ms, sin desplazarse.
 
 ## Avo, el asistente (v1 sin IA)
 
@@ -114,7 +126,7 @@ Mascota en pixel art que reemplaza al antiguo botón flotante de WhatsApp. Todo 
 
 ## Imágenes y carpetas que no son del sitio
 
-- Proyectos usa `img/canal-silver-desktop.jpg` (1280×800) e `img/distrito507-desktop.jpg` (1440×900); ya están optimizadas (60 a 80 KB). Las versiones `-movil.jpg` quedaron sin uso en la v2.
+- Las capturas de los proyectos (`img/canal-silver-*.jpg`, `img/distrito507-*.jpg`) quedaron sin uso: desde las animaciones v2, Proyectos no lleva imágenes.
 - `_herramientas/og-image.html` es la plantilla de 1200×630 para `img/og-image.jpg` (la imagen que se ve al compartir el link). **Pendiente:** todavía tiene la marca navy anterior; hay que rehacerla con la identidad v2 y regenerar el JPG.
 - `_referencias/` guarda capturas y la referencia del rediseño. Ambas carpetas con `_` están excluidas en `robots.txt` y no forman parte del sitio (`_referencias/` además está en `.gitignore`).
 
