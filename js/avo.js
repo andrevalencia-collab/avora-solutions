@@ -48,9 +48,10 @@
     convierte: 'Hacemos landing pages y sitios web pensados para una sola cosa: que quien te visita te escriba. Puedes empezar con tu página y, cuando estés listo, sumamos lo demás.',
     automatiza: 'Creamos chatbots y asistentes con IA que responden por ti, e integraciones que conectan tus herramientas para que trabajes menos. Así nadie se queda sin respuesta.',
     precio: [
-      'Tenemos planes desde $350 (pago único), con tu página lista para que te escriban por WhatsApp.',
-      'Si también quieres anuncios, el Sistema AVORA une anuncio, landing y WhatsApp automatizado trabajando juntos.',
-      'Mira todos los planes en la página o escríbenos y te ayudamos a elegir.',
+      'Tenemos dos planes:',
+      '• Web + Automatización: $650 de instalación + $90/mes. Tu página a medida y un asistente que responde por ti. Si solo necesitas la página, desde $350.',
+      '• A tu medida: anuncios, página y WhatsApp automatizado trabajando juntos. El precio sale de una evaluación de tu negocio.',
+      'Clientes Fundadores: 30% de descuento en la instalación para los primeros 5 clientes.',
     ].join('\n'),
     proceso: [
       'Trabajamos en tres pasos, sin complicaciones:',
@@ -121,7 +122,7 @@
       <img class="avo-face avo-launcher__img" src="${img('normal')}" alt="" width="34" height="34">
       <span class="avo-fx" aria-hidden="true"></span>
     </button>
-    <section class="avo-panel" id="avo-panel" role="dialog" aria-modal="true" aria-labelledby="avo-title" hidden>
+    <section class="avo-panel" id="avo-panel" role="dialog" aria-modal="true" aria-labelledby="avo-title" data-lenis-prevent hidden>
       <header class="avo-panel__head">
         <span class="avo-panel__avatar">
           <img class="avo-face" src="${img('normal')}" alt="" width="34" height="34">
@@ -492,13 +493,20 @@
      pasa por esa franja y por el lado derecho, Avo se aparta mientras tanto. */
   if ('IntersectionObserver' in window) {
     const ZONE = 104;   // alto de la franja que ocupa Avo (64px + márgenes)
-    const pageCtas = [...document.querySelectorAll('.btn--primary')]
+    const pageCtas = [...document.querySelectorAll('.btn--primary, .flecha')]
       .filter((b) => !b.closest('.site-header') && !root.contains(b));
     const covering = new Set();
     let observer = null;
 
+    // Fondo detrás de Avo: si una franja clara (Servicios, Planes) pasa por su zona,
+    // Avo usa su versión clara para no quedar como una mancha negra sobre el fondo crema.
+    const franjasClaras = [...document.querySelectorAll('.tema-claro')];
+    const encimaDeClaro = new Set();
+    let observerFondo = null;
+
     const sync = () => root.classList.toggle('is-ducked', covering.size > 0 && panel.hidden);
     const watch = () => {
+      const zona = { rootMargin: `-${Math.max(0, window.innerHeight - ZONE)}px 0px 0px 0px` };
       observer?.disconnect();
       covering.clear();
       observer = new IntersectionObserver((entries) => {
@@ -508,8 +516,16 @@
           else covering.delete(entry.target);
         });
         sync();
-      }, { rootMargin: `-${Math.max(0, window.innerHeight - ZONE)}px 0px 0px 0px` });
+      }, zona);
       pageCtas.forEach((b) => observer.observe(b));
+
+      observerFondo?.disconnect();
+      encimaDeClaro.clear();
+      observerFondo = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => (entry.isIntersecting ? encimaDeClaro.add(entry.target) : encimaDeClaro.delete(entry.target)));
+        root.classList.toggle('avo--sobre-claro', encimaDeClaro.size > 0);
+      }, zona);
+      franjasClaras.forEach((f) => observerFondo.observe(f));
     };
     watch();
     let resizeTimer = 0;

@@ -1,7 +1,7 @@
 /* ==========================================================================
    Avo · asistente de AVORA
-   Usa las variables de styles.css (paleta Deep Twilight, tema oscuro) y sus
-   botones .btn. El HTML lo crea js/avo.js.
+   Usa los tokens de styles.css (monocromo: --fondo, --panel, --texto,
+   --texto-2, --linea…) y su botón .btn--primary. El HTML lo crea js/avo.js.
    ========================================================================== */
 
 .avo {
@@ -34,7 +34,8 @@
   position: fixed;
   right: var(--avo-gap);
   z-index: 45;
-  transition: opacity var(--t-hover) var(--ease), transform var(--t-hover) var(--ease), visibility 0s;
+  transition: opacity var(--t-hover) var(--ease), transform var(--t-hover) var(--ease),
+    background-color var(--t-hover) var(--ease), color var(--t-hover) var(--ease), visibility 0s;
   -webkit-tap-highlight-color: transparent;  /* responde con su propio :active */
 }
 .avo-launcher {
@@ -44,18 +45,30 @@
   width: var(--avo-size);
   height: var(--avo-size);
   padding: 0;
-  border: 2px solid var(--indigo);
+  border: 1px solid var(--linea);
   border-radius: 50%;
-  background: var(--bone);
+  background: var(--fondo);
   cursor: pointer;
-  box-shadow: 0 0 0 4px rgba(77, 91, 255, .18), 0 10px 24px rgba(0, 2, 54, .45);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .45);
   /* "scale" (propiedad aparte de transform) no pisa la subida de .is-elevado */
   transition: opacity var(--t-hover) var(--ease), transform var(--t-hover) var(--ease),
+    background-color var(--t-hover) var(--ease), border-color var(--t-hover) var(--ease),
     box-shadow var(--t-hover) var(--ease), scale var(--t-hover) var(--ease), visibility 0s;
 }
 @media (hover: hover) and (pointer: fine) {
-  .avo-launcher:hover { box-shadow: 0 0 0 6px rgba(77, 91, 255, .28), 0 10px 24px rgba(0, 2, 54, .45); }
+  .avo-launcher:hover { border-color: var(--linea-activa); }   /* igual que las flechas */
 }
+
+/* Sobre una franja clara (js/avo.js agrega .avo--sobre-claro): el botón y la burbuja
+   toman los tokens del tema claro. El chat abierto sigue oscuro: es una ventana encima de todo. */
+.avo--sobre-claro .avo-launcher,
+.avo--sobre-claro .avo-bubble {
+  --fondo: #f7f6f3;
+  --texto: #0b0b0c;
+  --linea: rgba(11, 11, 12, .12);
+  --linea-activa: rgba(11, 11, 12, .45);
+}
+.avo--sobre-claro .avo-launcher { box-shadow: 0 10px 24px rgba(11, 11, 12, .16); }
 @media (prefers-reduced-motion: no-preference) {
   .avo-launcher:active { scale: .97; transition-duration: var(--t-press); }
 }
@@ -69,19 +82,20 @@
 /* Burbuja "¿Te ayudo?" */
 .avo-bubble {
   bottom: calc(var(--avo-gap) + env(safe-area-inset-bottom) + var(--avo-size) + .75rem);
-  padding: .6rem 1rem;
+  padding: .6rem 1.1rem;
   border: 0;
-  background: var(--bone);
-  color: var(--navy);
+  border-radius: 999px;
+  background: var(--texto);
+  color: var(--fondo);
   font: inherit;
   font-size: .9375rem;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 10px 24px rgba(0, 2, 54, .35);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .4);
   transform-origin: calc(100% - 1.85rem) 100%;  /* la punta de la colita */
   animation: avo-pop .25s var(--ease) both;
 }
-/* Colita con la pendiente del logo, apuntando a Avo */
+/* Colita apuntando a Avo */
 .avo-bubble::after {
   content: "";
   position: absolute;
@@ -89,7 +103,7 @@
   bottom: -.45rem;
   width: .9rem;
   height: .5rem;
-  background: var(--bone);
+  background: var(--texto);
   clip-path: polygon(0 0, 100% 0, 100% 100%);
 }
 @keyframes avo-pop { from { opacity: 0; transform: translateY(8px) scale(.96); } }
@@ -117,41 +131,42 @@
   z-index: 60;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
-  color: var(--fg);
-  box-shadow: 0 -10px 40px rgba(0, 2, 54, .5);
+  border: 1px solid var(--borde-panel);
+  background: var(--panel);
+  color: var(--texto);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, .5);
   opacity: 0;
   transform: translateY(24px);
   transition: opacity .22s var(--ease), transform .22s var(--ease);
 }
 .avo.is-open .avo-panel { opacity: 1; transform: none; }
 
-/* Celular: sube desde abajo y ocupa casi toda la pantalla, con el corte diagonal arriba */
+/* Celular: sube desde abajo y ocupa casi toda la pantalla, con las esquinas de arriba redondeadas */
 @media (max-width: 899px) {
   .avo-panel {
-    --pcut: 1.25rem;
     left: 0;
     right: 0;
     bottom: 0;
     height: calc(100vh - 1.5rem);
     height: calc(100dvh - 1.5rem);
-    padding-top: var(--pcut);
+    padding-top: .5rem;
     padding-bottom: env(safe-area-inset-bottom);
-    clip-path: polygon(0 var(--pcut), 100% 0, 100% 100%, 0 100%);
+    border-bottom: 0;
+    border-radius: 28px 28px 0 0;
   }
   html.avo-open,
   html.avo-open body { overflow: hidden; }
 }
 
-/* Computadora: panel de 380px abajo a la derecha, esquina recortada como los botones */
+/* Computadora: panel de 380px abajo a la derecha, redondeado como los paneles de la página */
 @media (min-width: 900px) {
   .avo-panel {
     right: var(--avo-gap);
     bottom: var(--avo-gap);
     width: 380px;
     height: min(620px, calc(100vh - 2 * var(--avo-gap) - var(--header-h)));
-    border: 1px solid var(--line);
-    clip-path: polygon(24px 0, 100% 0, 100% 100%, 0 100%, 0 12px);
+    border-radius: 28px;
+    overflow: hidden;
   }
 }
 
@@ -160,7 +175,7 @@
   align-items: center;
   gap: .75rem;
   padding: .75rem 1rem;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--linea);
 }
 /* El círculo es el envoltorio: Avo salta dentro de él sin mover el círculo */
 .avo-panel__avatar {
@@ -170,8 +185,8 @@
   width: 51px;
   height: 51px;
   flex-shrink: 0;
-  background: var(--bone);
-  border: 2px solid var(--indigo);
+  background: var(--fondo);
+  border: 1px solid var(--linea);
   border-radius: 50%;
   touch-action: manipulation;       /* 5 toques seguidos no hacen zoom en celular */
   user-select: none;
@@ -186,17 +201,15 @@
 .avo-panel__title {
   margin: 0;
   font-size: 1.25rem;
-  font-weight: 800;
-  font-stretch: 125%;
+  font-weight: 600;
+  letter-spacing: -.02em;
   line-height: 1.1;
 }
 .avo-panel__title:focus { outline: none; }
 .avo-panel__sub {
   margin-top: .15rem;
   font-size: .8125rem;
-  font-weight: 700;
-  letter-spacing: .08em;
-  color: var(--eyebrow);
+  color: var(--texto-2);
 }
 .avo-panel__close {
   display: grid;
@@ -205,12 +218,13 @@
   height: 44px;
   padding: 0;
   border: 0;
+  border-radius: 999px;
   background: transparent;
-  color: var(--fg);
+  color: var(--texto);
   cursor: pointer;
 }
 .avo-panel__close svg { width: 22px; height: 22px; }
-.avo-panel__close:hover { background: color-mix(in srgb, var(--fg) 10%, transparent); }
+.avo-panel__close:hover { background: color-mix(in srgb, var(--texto) 10%, transparent); }
 
 /* ---------- Conversación ---------- */
 .avo-log {
@@ -233,18 +247,18 @@
   animation: avo-in .25s var(--ease) both;
 }
 .avo-msg p + p { margin-top: .4rem; }
-/* Esquina recortada hacia quien habla */
+/* La esquina pegada a quien habla queda menos redondeada */
 .avo-msg--avo {
   align-self: flex-start;
-  background: var(--navy-raised);
-  color: var(--fg);
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 16px 100%, 0 calc(100% - 8px));
+  border-radius: 18px 18px 18px 6px;
+  background: color-mix(in srgb, var(--texto) 7%, transparent);
+  color: var(--texto);
 }
 .avo-msg--user {
   align-self: flex-end;
-  background: var(--royal);
-  color: #fff;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 16px) 100%, 0 100%);
+  border-radius: 18px 18px 6px 18px;
+  background: var(--texto);
+  color: var(--fondo);
 }
 @keyframes avo-in { from { opacity: 0; transform: translateY(6px); } }
 
@@ -255,15 +269,16 @@
   gap: .45rem;
   min-height: 40px;
   margin-top: .7rem;
-  padding: .45rem .85rem;
-  border: 1px solid var(--indigo);
-  color: var(--fg);
+  padding: .45rem .95rem;
+  border: 1px solid var(--linea);
+  border-radius: 999px;
+  color: var(--texto);
   font-size: .875rem;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
-  transition: background-color .2s var(--ease);
+  transition: background-color var(--t-hover) var(--ease);
 }
-.avo-wa:hover { background: rgba(77, 91, 255, .22); }
+.avo-wa:hover { background: color-mix(in srgb, var(--texto) 8%, transparent); }
 
 /* Enlace a una sección de la página (ej. Planes): secundario, como .link-arrow */
 .avo-link {
@@ -273,12 +288,11 @@
   width: fit-content;
   min-height: 40px;
   margin-top: .35rem;
-  color: var(--fg);
+  color: var(--texto);
   font-size: .875rem;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: underline;
-  text-decoration-color: var(--indigo);
-  text-decoration-thickness: 2px;
+  text-decoration-color: var(--texto-2);
   text-underline-offset: 5px;
 }
 
@@ -291,25 +305,26 @@
 }
 .avo-chip {
   min-height: 40px;
-  padding: .5rem .85rem;
-  border: 1px solid var(--indigo);
+  padding: .5rem .95rem;
+  border: 1px solid var(--linea);
+  border-radius: 999px;
   background: transparent;
-  color: var(--fg);
+  color: var(--texto);
   font: inherit;
   font-size: .875rem;
-  font-weight: 600;
+  font-weight: 500;
   text-align: left;
   cursor: pointer;
-  transition: background-color .2s var(--ease);
+  transition: background-color var(--t-hover) var(--ease);
 }
-.avo-chip:hover { background: rgba(77, 91, 255, .22); }
+.avo-chip:hover { background: color-mix(in srgb, var(--texto) 8%, transparent); }
 
 /* "Avo está escribiendo…" */
 .avo-typing {
   min-height: 1.5rem;
   padding: 0 1rem;
   font-size: .8125rem;
-  color: var(--muted);
+  color: var(--texto-2);
 }
 .avo.is-thinking .avo-typing { animation: avo-pulse 1s ease-in-out infinite alternate; }
 @keyframes avo-pulse { to { opacity: .45; } }
@@ -320,29 +335,31 @@
   grid-template-columns: 1fr auto;
   gap: .25rem .5rem;
   padding: .5rem 1rem 0;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--linea);
 }
 .avo-input {
   min-width: 0;
   min-height: 48px;
-  padding: .7rem .85rem;
-  border: 1px solid var(--line);
-  background: var(--navy-deep);
-  color: var(--fg);
+  padding: .7rem 1rem;
+  border: 1px solid var(--linea);
+  border-radius: 999px;
+  background: var(--fondo);
+  color: var(--texto);
   font: inherit;
   font-size: 1rem;                 /* 16px: evita que el iPhone haga zoom al escribir */
 }
-.avo-input::placeholder { color: var(--muted); }
-.avo-input:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.avo-input::placeholder { color: var(--texto-2); }
+.avo-input:focus-visible { outline: 2px solid var(--texto); outline-offset: -2px; }
 .avo-send {
   display: grid;
   place-items: center;
   width: 48px;
   height: 48px;
   padding: 0;
-  border: 1px solid var(--indigo);
-  background: var(--royal);
-  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  background: var(--texto);
+  color: var(--fondo);
   cursor: pointer;
 }
 .avo-send svg { width: 22px; height: 22px; }
@@ -350,11 +367,12 @@
 .avo-count {
   grid-column: 1 / -1;
   font-size: .75rem;
-  color: var(--muted);
+  color: var(--texto-2);
   text-align: right;
 }
 
 .avo-cta {
+  justify-content: center;
   margin: .5rem 1rem 1rem;
 }
 
@@ -379,7 +397,7 @@
 .avo-fx svg {
   position: absolute;
   display: none;
-  fill: var(--indigo);
+  fill: var(--texto);
   overflow: visible;
 }
 .avo[data-fx="puntos"] .avo-fx__puntos,
