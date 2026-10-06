@@ -270,16 +270,45 @@ html.lenis, html.lenis body { height: auto; }
 }
 .btn--primary {
   --btn-relleno: color-mix(in srgb, var(--texto) 90%, var(--sobre-texto));
-  position: relative;
-  isolation: isolate;              /* el relleno queda detrás del texto, delante del fondo */
-  padding: 12px 12px 12px 20px;
+  --btn-pad: 12px 12px 12px 20px;
+  padding: var(--btn-pad);
   background: var(--texto);
   color: var(--sobre-texto);
   font-size: 15px;
-  /* translate (el imán) va aparte de transform (presionar): no se pisan */
-  transition: transform var(--t-hover) var(--ease), translate var(--t-vuelta) var(--ease);
 }
-.btn--primary.es-magnetico { transition: transform var(--t-hover) var(--ease), translate var(--t-sigue) var(--ease); }
+.btn--lg { --btn-pad: 16px 16px 16px 26px; font-size: 17px; }
+
+/* Botón magnético: el <a> NO se mueve. Es el área que detecta el mouse, con 12px
+   extra alrededor (::before), y lo que se desplaza es su .btn__cuerpo. Así el área
+   no huye del cursor en los bordes (sin bucle de entrar y salir). Cada efecto tiene
+   su propiedad: el imán usa translate y presionar usa scale, los dos en el cuerpo. */
+.btn--magnetico {
+  position: relative;
+  padding: 0;
+  background: transparent;
+}
+.btn--magnetico::before {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: inherit;
+}
+.btn__cuerpo {
+  position: relative;
+  isolation: isolate;              /* el relleno queda detrás del texto, delante del fondo */
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  padding: var(--btn-pad);
+  border-radius: inherit;
+  background: var(--texto);
+  transition: translate var(--t-vuelta) var(--ease), scale var(--t-press) var(--ease);
+}
+.btn--magnetico.es-magnetico .btn__cuerpo {
+  transition: translate var(--t-sigue) var(--ease), scale var(--t-press) var(--ease);
+}
+
 /* Relleno que recorre el botón de izquierda a derecha (main.js agrega la capa) */
 .btn__relleno {
   position: absolute;
@@ -298,7 +327,6 @@ html.lenis, html.lenis body { height: auto; }
   transform-origin: right;         /* al salir se vacía hacia la derecha */
   transition: transform 500ms var(--ease);
 }
-.btn--lg { padding: 16px 16px 16px 26px; font-size: 17px; }
 .btn__circulo {
   flex-shrink: 0;
   display: inline-flex;
@@ -309,15 +337,15 @@ html.lenis, html.lenis body { height: auto; }
   border-radius: 999px;
   background: var(--sobre-texto);
   color: var(--texto);
+  transition: translate var(--t-vuelta) var(--ease);
 }
-.btn--primary .btn__circulo { transition: translate var(--t-vuelta) var(--ease); }
-.btn--primary.es-magnetico .btn__circulo { transition-duration: var(--t-sigue); }
+.btn--magnetico.es-magnetico .btn__circulo { transition-duration: var(--t-sigue); }
 .btn__circulo svg {
   width: 16px;
   height: 16px;
   transition: transform var(--t-hover) var(--ease), rotate var(--t-vuelta) var(--ease);
 }
-.btn--primary.es-magnetico .btn__circulo svg { transition: transform var(--t-hover) var(--ease), rotate var(--t-sigue) var(--ease); }
+.btn--magnetico.es-magnetico .btn__circulo svg { transition: transform var(--t-hover) var(--ease), rotate var(--t-sigue) var(--ease); }
 .btn .icon { width: 1.2em; height: 1.2em; flex-shrink: 0; }   /* ícono del botón del chat de Avo */
 
 /* Flecha en círculo (filas de servicios) */
@@ -725,6 +753,9 @@ html.lenis, html.lenis body { height: auto; }
 @media (prefers-reduced-motion: no-preference) {
   .btn:active,
   .flecha:active { transform: scale(.97); transition-duration: var(--t-press); }
+  /* En el magnético se achica el cuerpo (scale), que se suma al imán (translate) */
+  .btn--magnetico:active { transform: none; }
+  .btn--magnetico:active .btn__cuerpo { scale: .97; }
 }
 
 /* ==========================================================================

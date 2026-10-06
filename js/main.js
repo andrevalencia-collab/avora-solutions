@@ -87,37 +87,53 @@
   }
 
   /* ---------- Botones principales: relleno y efecto magnético ----------
-     El relleno (capa .btn__relleno) recorre el botón con hover, en CSS. El imán solo
-     existe con mouse real y sin movimiento reducido: el botón se acerca al cursor hasta
-     8px, el círculo se desplaza un poco más y la flecha gira levemente. Cada movimiento
-     fija un destino nuevo y una transición corta (150 ms) lo persigue desde donde va,
-     como un resorte; al salir vuelve en 400 ms. Se usan translate y rotate, aparte de
-     transform, para no pisar la reducción de escala al presionar. */
+     El relleno (capa .btn__relleno) recorre el botón con hover, en CSS.
+     El imán solo existe con mouse real y sin movimiento reducido. El <a> (.btn--magnetico)
+     NO se mueve: es el área que detecta el mouse (con 12px extra en CSS) y se mide en
+     cada movimiento, así la medida siempre es la real, también después de un scroll.
+     Lo que se desplaza es su .btn__cuerpo, hasta 8px hacia el cursor; el círculo se
+     corre un poco más, solo en horizontal (queda alineado con el texto), y la flecha
+     gira levemente. Cada movimiento fija un destino y una transición de 150 ms lo
+     persigue desde donde va (efecto resorte); al soltar vuelve en 400 ms.
+     Se suelta al salir el mouse, al perder el foco, al hacer scroll y al cambiar de
+     pestaña o de ventana: nunca queda movido. */
   const botones = [...document.querySelectorAll('.btn--primary')].filter((b) => !b.closest('.avo'));
   botones.forEach((btn) => {
     const relleno = document.createElement('span');
     relleno.className = 'btn__relleno';
     relleno.setAttribute('aria-hidden', 'true');
-    btn.prepend(relleno);
+    (btn.querySelector('.btn__cuerpo') || btn).prepend(relleno);
   });
 
   if (conMouse && !reduceMotion) {
-    const MAX_BOTON = 8;
+    const MAX_CUERPO = 8;
     const EXTRA_CIRCULO = 3;
     const GIRO = 12;
-    botones.forEach((btn) => {
-      const circulo = btn.querySelector('.btn__circulo');
-      const flecha = circulo?.querySelector('svg');
-      let caja = null;                           // medida al entrar, sin el desplazamiento
+    const soltadores = [];
 
-      btn.addEventListener('pointerenter', (e) => {
-        if (e.pointerType !== 'mouse') return;
-        caja = btn.getBoundingClientRect();
-        btn.classList.add('es-magnetico');
-      });
+    document.querySelectorAll('.btn--magnetico').forEach((btn) => {
+      const cuerpo = btn.querySelector('.btn__cuerpo');
+      if (!cuerpo) return;
+      const circulo = cuerpo.querySelector('.btn__circulo');
+      const flecha = circulo?.querySelector('svg');
+      let activo = false;
+
+      const soltar = () => {
+        if (!activo) return;
+        activo = false;
+        window.removeEventListener('scroll', soltar);
+        btn.classList.remove('es-magnetico');
+        cuerpo.style.translate = '';
+        if (circulo) circulo.style.translate = '';
+        if (flecha) flecha.style.rotate = '';
+      };
+      soltadores.push(soltar);
+
       btn.addEventListener('pointermove', (e) => {
-        if (e.pointerType !== 'mouse' || !caja) return;
-        // Posición del cursor respecto al centro, de -1 a 1 en cada eje
+        if (e.pointerType !== 'mouse') return;
+        // El <a> no se mueve: su caja es la posición real del botón
+        const caja = btn.getBoundingClientRect();
+        // Posición del cursor respecto al centro, de -1 a 1 (el área extra queda en el borde)
         let x = (e.clientX - (caja.left + caja.width / 2)) / (caja.width / 2);
         let y = (e.clientY - (caja.top + caja.height / 2)) / (caja.height / 2);
         x = Math.max(-1, Math.min(1, x));
@@ -125,18 +141,24 @@
         // Que en diagonal tampoco pase de 8px
         const largo = Math.hypot(x, y);
         const escala = largo > 1 ? 1 / largo : 1;
-        btn.style.translate = `${(x * escala * MAX_BOTON).toFixed(2)}px ${(y * escala * MAX_BOTON).toFixed(2)}px`;
-        if (circulo) circulo.style.translate = `${(x * EXTRA_CIRCULO).toFixed(2)}px ${(y * EXTRA_CIRCULO).toFixed(2)}px`;
+        if (!activo) {
+          activo = true;
+          btn.classList.add('es-magnetico');
+          // Solo mientras el imán está activo: el primer scroll lo suelta
+          window.addEventListener('scroll', soltar, { passive: true, once: true });
+        }
+        cuerpo.style.translate = `${(x * escala * MAX_CUERPO).toFixed(2)}px ${(y * escala * MAX_CUERPO).toFixed(2)}px`;
+        if (circulo) circulo.style.translate = `${(x * EXTRA_CIRCULO).toFixed(2)}px 0px`;
         if (flecha) flecha.style.rotate = `${(y * GIRO).toFixed(1)}deg`;
       });
-      btn.addEventListener('pointerleave', () => {
-        caja = null;
-        btn.classList.remove('es-magnetico');
-        btn.style.translate = '';
-        if (circulo) circulo.style.translate = '';
-        if (flecha) flecha.style.rotate = '';
-      });
+      btn.addEventListener('pointerleave', soltar);
+      btn.addEventListener('pointercancel', soltar);
+      btn.addEventListener('blur', soltar);
     });
+
+    const soltarTodos = () => soltadores.forEach((soltar) => soltar());
+    window.addEventListener('blur', soltarTodos);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) soltarTodos(); });
   }
 
   /* ---------- Scroll con inercia y profundidad ----------
