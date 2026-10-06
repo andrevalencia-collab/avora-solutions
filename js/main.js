@@ -95,8 +95,8 @@
      corre un poco más, solo en horizontal (queda alineado con el texto), y la flecha
      gira levemente. Cada movimiento fija un destino y una transición de 150 ms lo
      persigue desde donde va (efecto resorte); al soltar vuelve en 400 ms.
-     Se suelta al salir el mouse, al perder el foco, al hacer scroll y al cambiar de
-     pestaña o de ventana: nunca queda movido. */
+     Se suelta al salir el mouse, al perder el foco, cuando un scroll aleja el botón
+     del cursor y al cambiar de pestaña o de ventana: nunca queda movido. */
   const botones = [...document.querySelectorAll('.btn--primary')].filter((b) => !b.closest('.avo'));
   botones.forEach((btn) => {
     const relleno = document.createElement('span');
@@ -109,6 +109,7 @@
     const MAX_CUERPO = 8;
     const EXTRA_CIRCULO = 3;
     const GIRO = 12;
+    const AREA_EXTRA = 12;                       // igual que el ::before de .btn--magnetico en el CSS
     const soltadores = [];
 
     document.querySelectorAll('.btn--magnetico').forEach((btn) => {
@@ -117,11 +118,16 @@
       const circulo = cuerpo.querySelector('.btn__circulo');
       const flecha = circulo?.querySelector('svg');
       let activo = false;
+      let ultimoX = 0;                           // última posición conocida del cursor
+      let ultimoY = 0;
+      let cuadro = 0;
 
       const soltar = () => {
         if (!activo) return;
         activo = false;
-        window.removeEventListener('scroll', soltar);
+        window.removeEventListener('scroll', alHacerScroll);
+        cancelAnimationFrame(cuadro);
+        cuadro = 0;
         btn.classList.remove('es-magnetico');
         cuerpo.style.translate = '';
         if (circulo) circulo.style.translate = '';
@@ -129,27 +135,50 @@
       };
       soltadores.push(soltar);
 
-      btn.addEventListener('pointermove', (e) => {
-        if (e.pointerType !== 'mouse') return;
-        // El <a> no se mueve: su caja es la posición real del botón
-        const caja = btn.getBoundingClientRect();
+      // Acerca el cuerpo al cursor según la caja actual del <a>, que no se mueve
+      const seguir = (cx, cy, caja) => {
         // Posición del cursor respecto al centro, de -1 a 1 (el área extra queda en el borde)
-        let x = (e.clientX - (caja.left + caja.width / 2)) / (caja.width / 2);
-        let y = (e.clientY - (caja.top + caja.height / 2)) / (caja.height / 2);
+        let x = (cx - (caja.left + caja.width / 2)) / (caja.width / 2);
+        let y = (cy - (caja.top + caja.height / 2)) / (caja.height / 2);
         x = Math.max(-1, Math.min(1, x));
         y = Math.max(-1, Math.min(1, y));
         // Que en diagonal tampoco pase de 8px
         const largo = Math.hypot(x, y);
         const escala = largo > 1 ? 1 / largo : 1;
-        if (!activo) {
-          activo = true;
-          btn.classList.add('es-magnetico');
-          // Solo mientras el imán está activo: el primer scroll lo suelta
-          window.addEventListener('scroll', soltar, { passive: true, once: true });
-        }
         cuerpo.style.translate = `${(x * escala * MAX_CUERPO).toFixed(2)}px ${(y * escala * MAX_CUERPO).toFixed(2)}px`;
         if (circulo) circulo.style.translate = `${(x * EXTRA_CIRCULO).toFixed(2)}px 0px`;
         if (flecha) flecha.style.rotate = `${(y * GIRO).toFixed(1)}deg`;
+      };
+
+      // Con Lenis, el scroll sigue moviéndose suave casi un segundo después de la
+      // rueda: llegan muchos eventos seguidos. Soltar en cada uno hacía que el botón
+      // saltara entre su lugar y el cursor (temblaba). Ahora, una vez por cuadro, se
+      // mira dónde quedó el cursor: si sigue sobre el botón (o su área extra), el cuerpo
+      // solo se reacomoda; si el scroll alejó el botón del cursor, recién ahí se suelta.
+      const alHacerScroll = () => {
+        if (cuadro) return;
+        cuadro = requestAnimationFrame(() => {
+          cuadro = 0;
+          if (!activo) return;
+          const caja = btn.getBoundingClientRect();
+          const dentro = ultimoX >= caja.left - AREA_EXTRA && ultimoX <= caja.right + AREA_EXTRA
+            && ultimoY >= caja.top - AREA_EXTRA && ultimoY <= caja.bottom + AREA_EXTRA;
+          if (dentro) seguir(ultimoX, ultimoY, caja);
+          else soltar();
+        });
+      };
+
+      btn.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse') return;
+        ultimoX = e.clientX;
+        ultimoY = e.clientY;
+        if (!activo) {
+          activo = true;
+          btn.classList.add('es-magnetico');
+          // Solo mientras el imán está activo
+          window.addEventListener('scroll', alHacerScroll, { passive: true });
+        }
+        seguir(ultimoX, ultimoY, btn.getBoundingClientRect());
       });
       btn.addEventListener('pointerleave', soltar);
       btn.addEventListener('pointercancel', soltar);
