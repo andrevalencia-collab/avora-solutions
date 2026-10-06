@@ -4,7 +4,6 @@
    por una llamada a un servidor propio (ver el comentario sobre getReply).
    Sin librerías. Lo que escribe el usuario siempre se muestra como texto plano. */
 (() => {
-  const WA_BASE = 'https://wa.me/50763288742?text=';
   const MAX_CHARS = 300;
   const THINK_MS = 1000;
   const BUBBLE_DELAY_MS = 5000;
@@ -15,13 +14,12 @@
 
   /* ---------- Contenido ---------- */
 
-  // Las dos opciones del siguiente paso, con los mismos mensajes prellenados que la landing:
-  // el botón "Agenda una llamada" y el enlace "o escríbenos por WhatsApp"
-  const WHATSAPP = {
-    llamada: 'Hola AVORA, quiero agendar una llamada para hablar de mi negocio. ¿Qué días tienen disponibles?',
-    escribir: 'Hola AVORA, quiero conocer más sobre sus servicios.',
-  };
-  const waLink = (opcion) => WA_BASE + encodeURIComponent(WHATSAPP[opcion]);
+  // Los mensajes de WhatsApp viven en js/mensajes.js (los mismos de la landing).
+  // La llamada siempre usa "llamada"; para escribir, cada tema usa el mensaje del
+  // botón equivalente de la página y, si no tiene uno, el general "escribir".
+  const { enlace: waLink } = window.AVORA_WHATSAPP;
+  const MENSAJE_POR_TEMA = { atrae: 'atrae', convierte: 'convierte', automatiza: 'automatiza' };
+  const mensajeDelTema = (tema) => MENSAJE_POR_TEMA[tema] || 'escribir';
 
   // Enlaces a secciones de la página según el tema. Salen del tema y no del texto,
   // así getReply sigue devolviendo solo { texto, tema } aunque luego responda la IA.
@@ -279,7 +277,7 @@
 
   // Siguiente paso dentro de cada respuesta: las dos opciones, como en la landing.
   // La llamada es la píldora; escribir por WhatsApp, un enlace de texto debajo.
-  const addSiguientePaso = (msg) => {
+  const addSiguientePaso = (msg, tema) => {
     const llamada = document.createElement('a');
     llamada.className = 'avo-wa';
     llamada.href = waLink('llamada');
@@ -289,7 +287,7 @@
 
     const escribir = document.createElement('a');
     escribir.className = 'avo-escribir';
-    escribir.href = waLink('escribir');
+    escribir.href = waLink(mensajeDelTema(tema));
     escribir.target = '_blank';
     escribir.rel = 'noopener';
     escribir.textContent = 'o escríbenos por WhatsApp';
@@ -363,7 +361,7 @@
     typing.textContent = '';
     root.classList.remove('is-thinking');
     const msg = addMessage('avo', respuesta.texto);
-    if (respuesta.tema !== 'saludo') addSiguientePaso(msg);
+    if (respuesta.tema !== 'saludo') addSiguientePaso(msg, respuesta.tema);
     if (ENLACES[respuesta.tema]) addLink(msg, ENLACES[respuesta.tema]);
     cambiarEstado(respuesta.tema === 'saludo' ? 'saludando' : 'contento', true);
     addQuickReplies();
