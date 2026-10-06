@@ -280,6 +280,23 @@
 }
 .avo-wa:hover { background: color-mix(in srgb, var(--texto) 8%, transparent); }
 
+/* Segunda opción, debajo de la píldora: escribir por WhatsApp, como enlace de texto */
+.avo-escribir {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 40px;
+  color: var(--texto);
+  font-size: .875rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 5px;
+  transition: text-decoration-color var(--t-hover) var(--ease);
+}
+.avo-escribir:hover,
+.avo-escribir:focus-visible { text-decoration-color: var(--texto-2); }
+
 /* Enlace a una sección de la página (ej. Planes): secundario, como .link-arrow */
 .avo-link {
   display: flex;
@@ -511,7 +528,8 @@
   .avo-launcher,
   .avo-bubble,
   .avo-chip,
-  .avo-wa { transition: none; }
+  .avo-wa,
+  .avo-escribir { transition: none; }
   /* El panel no se desplaza, pero abre y cierra con un fundido corto: sin moverse,
      se entiende igual que algo se abrió o se cerró. js/avo.js espera lo mismo al cerrar. */
   .avo-panel { transform: none; transition: opacity 180ms var(--ease); }

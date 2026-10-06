@@ -15,16 +15,13 @@
 
   /* ---------- Contenido ---------- */
 
-  // Los mismos mensajes prellenados que ya usa la landing en cada botón
+  // Las dos opciones del siguiente paso, con los mismos mensajes prellenados que la landing:
+  // el botón "Agenda una llamada" y el enlace "o escríbenos por WhatsApp"
   const WHATSAPP = {
-    general: 'Hola AVORA, quiero agendar una demo para mi negocio.',
-    atrae: 'Hola AVORA, quiero que más clientes conozcan mi negocio en redes sociales. ¿Podemos agendar una demo?',
-    convierte: 'Hola AVORA, me interesa una landing page para mi negocio. ¿Podemos agendar una demo?',
-    automatiza: 'Hola AVORA, quiero automatizar la atención de mi negocio. ¿Podemos agendar una demo?',
-    caso: 'Hola AVORA, vi sus proyectos y quiero algo así para mi negocio.',
-    precio: 'Hola AVORA, vi los planes y quiero saber cuál le conviene a mi negocio. ¿Podemos agendar una demo?',
+    llamada: 'Hola AVORA, quiero agendar una llamada para hablar de mi negocio. ¿Qué días tienen disponibles?',
+    escribir: 'Hola AVORA, quiero conocer más sobre sus servicios.',
   };
-  const waLink = (tema) => WA_BASE + encodeURIComponent(WHATSAPP[tema] || WHATSAPP.general);
+  const waLink = (opcion) => WA_BASE + encodeURIComponent(WHATSAPP[opcion]);
 
   // Enlaces a secciones de la página según el tema. Salen del tema y no del texto,
   // así getReply sigue devolviendo solo { texto, tema } aunque luego responda la IA.
@@ -64,7 +61,7 @@
       '• Canal Silver (compra de oro, plata y joyería): no tenían presencia digital propia y su competencia sí. Les hicimos una landing enfocada en conversión, conectada a WhatsApp. Hoy compiten en igualdad de condiciones y han llegado nuevos clientes por la página.',
       '• Distrito 507 (marca de ropa inspirada en Panamá, proyecto escolar): un lookbook digital con una historia por cada diseño. Sorprendió al grupo y a los padres de familia, y hasta generó la venta de un suéter.',
     ].join('\n'),
-    'no-entiende': 'Esa pregunta la vemos mejor juntos. Escríbenos por WhatsApp y te respondemos directo.',
+    'no-entiende': 'Esa pregunta la vemos mejor juntos. Agenda una llamada o escríbenos por WhatsApp y te respondemos directo.',
   };
 
   // Palabras clave por tema, ya sin tildes y en minúsculas.
@@ -112,7 +109,6 @@
   const img = (estado) => `img/avo/avo-capucha-${estado}.svg`;
   ['normal', 'parpadeo', 'saludo', 'pensando', 'feliz'].forEach((e) => { new Image().src = img(e); });
 
-  const ICON_CHAT = '<svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>';
   const root = document.createElement('div');
   root.className = 'avo theme-dark';
   root.innerHTML = `
@@ -147,8 +143,8 @@
         </button>
         <span class="avo-count" id="avo-count">0/${MAX_CHARS} caracteres</span>
       </form>
-      <a class="btn btn--primary avo-cta" href="${waLink('general')}" target="_blank" rel="noopener">
-        ${ICON_CHAT}<span>Agendar demo por WhatsApp</span>
+      <a class="btn btn--primary avo-cta" href="${waLink('llamada')}" target="_blank" rel="noopener">
+        Agenda una llamada
       </a>
     </section>`;
   document.body.appendChild(root);
@@ -165,7 +161,6 @@
   const input = $('.avo-input');
   const sendBtn = $('.avo-send');
   const count = $('.avo-count');
-  const cta = $('.avo-cta');
   const avatar = $('.avo-panel__avatar');
   const faces = root.querySelectorAll('.avo-face');
 
@@ -282,14 +277,24 @@
     return msg;
   };
 
-  const addWhatsApp = (msg, tema) => {
-    const a = document.createElement('a');
-    a.className = 'avo-wa';
-    a.href = waLink(tema);
-    a.target = '_blank';
-    a.rel = 'noopener';
-    a.innerHTML = `${ICON_CHAT}<span>Hablar por WhatsApp</span>`;
-    msg.appendChild(a);
+  // Siguiente paso dentro de cada respuesta: las dos opciones, como en la landing.
+  // La llamada es la píldora; escribir por WhatsApp, un enlace de texto debajo.
+  const addSiguientePaso = (msg) => {
+    const llamada = document.createElement('a');
+    llamada.className = 'avo-wa';
+    llamada.href = waLink('llamada');
+    llamada.target = '_blank';
+    llamada.rel = 'noopener';
+    llamada.textContent = 'Agenda una llamada';
+
+    const escribir = document.createElement('a');
+    escribir.className = 'avo-escribir';
+    escribir.href = waLink('escribir');
+    escribir.target = '_blank';
+    escribir.rel = 'noopener';
+    escribir.textContent = 'o escríbenos por WhatsApp';
+
+    msg.append(llamada, escribir);
   };
 
   // Enlace a una sección de la landing (ej. #planes). El navegador hace el salto
@@ -358,9 +363,8 @@
     typing.textContent = '';
     root.classList.remove('is-thinking');
     const msg = addMessage('avo', respuesta.texto);
-    if (respuesta.tema !== 'saludo') addWhatsApp(msg, respuesta.tema);
+    if (respuesta.tema !== 'saludo') addSiguientePaso(msg);
     if (ENLACES[respuesta.tema]) addLink(msg, ENLACES[respuesta.tema]);
-    cta.href = waLink(respuesta.tema);   // el botón fijo sigue el tema de la conversación
     cambiarEstado(respuesta.tema === 'saludo' ? 'saludando' : 'contento', true);
     addQuickReplies();
 
@@ -493,7 +497,7 @@
      pasa por esa franja y por el lado derecho, Avo se aparta mientras tanto. */
   if ('IntersectionObserver' in window) {
     const ZONE = 104;   // alto de la franja que ocupa Avo (64px + márgenes)
-    const pageCtas = [...document.querySelectorAll('.btn--primary, .flecha')]
+    const pageCtas = [...document.querySelectorAll('.btn--primary, .flecha, .cta__whatsapp')]
       .filter((b) => !b.closest('.site-header') && !root.contains(b));
     const covering = new Set();
     let observer = null;

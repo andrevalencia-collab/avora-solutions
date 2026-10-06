@@ -308,7 +308,6 @@ html.lenis, html.lenis body { height: auto; }
   color: var(--texto);
 }
 .btn__circulo svg { width: 16px; height: 16px; transition: transform var(--t-hover) var(--ease); }
-.btn .icon { width: 1.2em; height: 1.2em; flex-shrink: 0; }   /* ícono del botón del chat de Avo */
 
 /* Flecha en círculo (filas de servicios) */
 .flecha {
@@ -340,6 +339,35 @@ html.lenis, html.lenis body { height: auto; }
 }
 .enlace--flecha { gap: 10px; }
 .enlace--flecha svg { width: 16px; height: 16px; transition: transform var(--t-hover) var(--ease); }
+
+/* Llamado a la acción (portada y cierre): botón "Agenda una llamada", debajo el enlace
+   para escribir por WhatsApp y una nota pequeña que explica qué pasa al tocar */
+.cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.cta__whatsapp {                   /* enlace de texto, sin forma de botón: subrayado solo con hover */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;                /* área de toque cómoda */
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--texto);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+  -webkit-tap-highlight-color: transparent;
+  transition: text-decoration-color var(--t-hover) var(--ease);
+}
+.cta__whatsapp:focus-visible { text-decoration-color: var(--texto-2); }
+.cta__nota {
+  max-width: 36ch;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--texto-2);
+}
 
 /* Píldoras de texto */
 .pildoras { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -375,6 +403,13 @@ html.lenis, html.lenis body { height: auto; }
 }
 .marca__logo { width: 33px; height: 28px; color: var(--texto); }
 .marca__nombre { font-weight: 700; font-size: 19px; letter-spacing: .02em; }
+
+/* Botón del header: "Llamada" en celular, "Agenda una llamada" en computadora */
+.solo-computadora { display: none; }
+@media (min-width: 900px) {
+  .solo-celular { display: none; }
+  .solo-computadora { display: inline; }
+}
 
 .site-nav { display: none; }
 @media (min-width: 900px) {
@@ -459,13 +494,23 @@ html.lenis, html.lenis body { height: auto; }
   line-height: 1.55;
   color: var(--texto-2);
 }
-.hero__acciones {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 24px;
+/* En celular, "Ver planes" va al final; en computadora, al lado del botón */
+.hero__acciones .enlace { margin-top: 8px; font-size: 16px; }
+@media (min-width: 900px) {
+  .hero__acciones {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-items: start;
+    column-gap: 24px;
+  }
+  .hero__acciones > :not(.enlace) { grid-column: 1; }
+  .hero__acciones .enlace {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    margin-top: 0;
+  }
 }
-.hero__acciones .enlace { font-size: 16px; }
 
 /* ---------- 2 · Cinta ---------- */
 /* Lineal y continua; nunca se pausa (salvo con movimiento reducido). Avo usa
@@ -699,6 +744,7 @@ html.lenis, html.lenis body { height: auto; }
   .site-nav a:hover,
   .site-footer a:hover { color: var(--texto); }
   .enlace:hover { color: var(--texto-2); }
+  .cta__whatsapp:hover { text-decoration-color: var(--texto-2); }
   .servicio:hover .flecha,
   .flecha:hover { border-color: var(--linea-activa); }
   .servicio:hover .servicio__nombre > span { color: var(--texto-hover); }
