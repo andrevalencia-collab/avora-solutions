@@ -1,8 +1,9 @@
 /* Avo · asistente GUIADO de AVORA (sin IA, sin API y sin texto libre).
    Hace 3 preguntas con botones (negocio, qué mejorar, si ya tiene página) y
    recomienda uno de los planes de la sección Planes. El botón final abre WhatsApp
-   con las respuestas ya escritas (js/mensajes.js → resultadoAvo). No se guarda nada
-   en servidores: solo se recuerda, en la pestaña, si la persona ya vio a Avo saludar.
+   con las respuestas ya escritas (js/mensajes.js → resultadoAvo). No se guarda nada:
+   ni en servidores, ni en cookies, ni en el almacenamiento del navegador. Las respuestas
+   solo viven en memoria mientras la página está abierta (lo dice privacidad/index.html).
    Sin librerías. Todo el texto se inserta con textContent, nunca como HTML. */
 (() => {
   const THINK_MS = 1000;

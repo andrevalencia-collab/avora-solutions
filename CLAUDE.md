@@ -82,7 +82,7 @@ No hay paso de compilación. Sirve la carpeta con un servidor estático (por eje
 
 **Proyectos (sin imágenes).** Canal Silver y Distrito 507 en dos columnas amplias (una en celular), cada uno con: línea divisoria arriba, etiquetas en píldora, el **nombre grande** como `h3` (`clamp(44px, 5vw, 72px)`), resultado, testimonio con su autor, "Ver sitio en vivo" y "Quiero algo así" (WhatsApp).
 
-**Planes, cierre y footer.** Planes: 2 tarjetas ("Web + Automatización" clara con "¿Solo necesitas la página? Desde $350." y "Quiero este plan"; "A tu medida" negra con "Agenda tu evaluación") y la línea de Clientes Fundadores. Cierre: "Hablemos de tu negocio.", los 3 pasos (Conversamos, Propuesta clara, Construimos contigo) y el `.cta`. Footer: logo, "Avo atiende. Tú vendes.", "Software · IA · Crecimiento", WhatsApp, Panamá y año.
+**Planes, cierre y footer.** Planes: 2 tarjetas ("Web + Automatización" clara con "¿Solo necesitas la página? Desde $350." y "Quiero este plan"; "A tu medida" negra con "Agenda tu evaluación") y la línea de Clientes Fundadores. Cierre: "Hablemos de tu negocio.", los 3 pasos (Conversamos, Propuesta clara, Construimos contigo) y el `.cta`. Footer: logo, "Avo atiende. Tú vendes.", "Software · IA · Crecimiento", WhatsApp y Panamá; al final, a lo ancho, la línea legal `.site-footer__legal` (13px, `--texto-2`): "© 2026 AVORA Solutions. Todos los derechos reservados." con los enlaces "Privacidad" y "Términos".
 
 **Componentes.**
 - **Encabezado de sección (`.section-head`):** etiqueta con punto en una columna de 200px (`.section-head__etiqueta`) y título gigante (`.section-title`, `clamp(56px, 8vw, 120px)`).
@@ -149,10 +149,17 @@ Tokens en `:root`: una sola curva `--ease` = `cubic-bezier(.22, 1, .36, 1)`, `--
 - El dominio propio todavía **no está comprado**. La dirección actual se repite en `canonical`, `og:url`, `og:image`, el bloque JSON-LD, `robots.txt` y `sitemap.xml`: cuando se defina el dominio real, se actualizan todos juntos. `theme-color` es `#0B0B0C`.
 - **Favicon:** la cabeza de Avo. `img/favicon.svg` es `avo-normal.svg` con el `viewBox` recortado a la cabeza; `img/favicon-32.png` y `img/apple-touch-icon.png` (180px, fondo `#0B0B0C`) salen de ahí.
 - **Logo de la empresa** (JSON-LD `logo`): `img/logo-avora.svg`, la A con su estela azul. El logo de la empresa no es Avo.
-- **Imagen para compartir:** `img/og-image.jpg` (1200×630), una versión de la portada. Su plantilla es `_herramientas/og-image.html`.
-- **Regenerar las imágenes:** con un servidor estático en el puerto 8765, `node _herramientas/generar-imagenes.mjs` crea `og-image.jpg`, `favicon-32.png` y `apple-touch-icon.png` (necesita Playwright).
+- **Imagen para compartir:** `img/og-avora-v3.png` (1200×630, la hice yo aparte). Se usa con la URL completa (`https://avosolutions.netlify.app/img/og-avora-v3.png`) en `og:image`, `twitter:image` y el `image` del JSON-LD, con `og:image:width` 1200, `og:image:height` 630 y `og:image:alt` "AVORA: Avo atiende. Tú vendes.". Textos para compartir: `og:title` "AVORA · Avo atiende. Tú vendes." y `og:description` "Páginas web, asistentes con IA y campañas que traen clientes. Agencia digital en Panamá."; `twitter:card` es `summary_large_image`. Si la imagen cambia, se reemplaza el archivo y se actualizan esas URLs juntas.
+- **Regenerar los íconos:** con un servidor estático en el puerto 8765, `node _herramientas/generar-imagenes.mjs` crea `favicon-32.png` y `apple-touch-icon.png` desde `favicon.svg` (necesita Playwright).
 - La única imagen de contenido es Avo de la portada (carga inmediata con `fetchpriority="high"`). Las caras del chat se precargan para que cambien sin parpadeo.
+
+## Páginas legales
+
+- **`privacidad/index.html`** (Política de privacidad, Ley 81 de 2019 de Panamá) y **`terminos/index.html`** (Términos de uso). Se ven en `/privacidad/` y `/terminos/`, están en `sitemap.xml` y cada una tiene su `title`, `meta description` y `canonical`.
+- **Estilo:** cargan `css/styles.css` y `css/legal.css` (columna de lectura de 720px). Usan el mismo header (logo y botón "Volver al inicio", `.btn--volver`), un panel oscuro con firma e índice y el mismo footer. **Sin Avo, sin `main.js` y sin animaciones.** Solo cargan `js/mensajes.js` para el enlace de WhatsApp.
+- **Contenido:** español claro y corto, con "Última actualización" arriba y la nota "Este documento es informativo y puede actualizarse." al final. Retención de datos: mientras dure la conversación o el servicio; si no se trabaja juntos, hasta 12 meses desde el último contacto.
+- **La política de privacidad debe decir la verdad sobre el código.** Hoy el sitio no usa cookies ni `localStorage`/`sessionStorage`/IndexedDB, y no tiene analítica ni publicidad. Los terceros que reciben la IP son Netlify (hosting), Google Fonts y jsDelivr (Lenis, solo en computadora con mouse). **Si se agrega cualquier cosa que guarde datos en el navegador, una cookie, analítica, un formulario o un servicio de terceros, hay que actualizar la política y su fecha en el mismo cambio.**
 
 ## Carpetas que no son del sitio
 
-- `docs/` guarda las referencias de diseño; `_herramientas/` las plantillas y el script de imágenes; `_referencias/` los originales y capturas (fuera de Git, en `.gitignore`). Las tres están excluidas en `robots.txt`.
+- `docs/` guarda las referencias de diseño; `_herramientas/` el script de los íconos; `_referencias/` los originales y capturas (fuera de Git, en `.gitignore`). Las tres están excluidas en `robots.txt`.
