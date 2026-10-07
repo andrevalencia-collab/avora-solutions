@@ -885,6 +885,26 @@ html.avo-open .hero__burbuja.is-visible { opacity: 0; transition-delay: 0s; poin
   transition: color var(--t-hover) var(--ease);
 }
 .site-footer a:focus-visible { color: var(--texto); }
+/* Línea legal: a lo ancho, pequeña y discreta. Los enlaces llevan subrayado sutil y 44px de toque. */
+.site-footer__legal {
+  flex: 1 1 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--linea);
+  font-size: 13px;
+}
+.site-footer__legal span { margin-right: auto; padding-block: 12px; }
+.site-footer .site-footer__legal a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: underline;
+  text-decoration-color: var(--linea);
+  text-underline-offset: 4px;
+}
 
 /* ==========================================================================
    Hover: solo con mouse real (en celular no se queda "pegado"). 200 ms, sutil.

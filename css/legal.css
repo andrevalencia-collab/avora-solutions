@@ -1,0 +1,88 @@
+/* ==========================================================================
+   Páginas legales (privacidad/ y terminos/)
+   Se cargan después de styles.css y usan sus tokens, header, panel y footer.
+   Una sola columna cómoda de leer. Sin Avo, sin main.js y sin animaciones:
+   como no llevan la clase .js, nada queda escondido esperando aparecer.
+   ========================================================================== */
+
+/* Botón "Volver al inicio": el círculo va a la izquierda y la flecha apunta hacia atrás.
+   Se gira el círculo (no la flecha), así el hover la sigue moviendo 3px "hacia adelante". */
+.btn--volver .btn__circulo { transform: rotate(180deg); }
+@media (min-width: 900px) {
+  .btn--volver { padding: 10px 18px 10px 10px; }
+}
+
+.legal__cuerpo {
+  max-width: 720px;
+  padding-top: 88px;
+  padding-bottom: 56px;
+}
+@media (min-width: 900px) {
+  .legal__cuerpo { padding-top: 120px; padding-bottom: 80px; }
+}
+.legal__cuerpo > * + * { margin-top: 16px; }
+
+.legal__etiqueta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+.legal__etiqueta::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--texto);
+}
+.legal h1 {
+  font-weight: 600;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1;
+  letter-spacing: -.045em;
+}
+.legal__fecha { font-size: 14px; color: var(--texto-2); }
+
+.legal h2 {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--linea);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+}
+.legal p,
+.legal li {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--texto-2);
+}
+.legal strong { font-weight: 500; color: var(--texto); }
+.legal li {
+  position: relative;
+  padding-left: 24px;
+}
+.legal li + li { margin-top: 8px; }
+.legal li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--marca-chica);
+}
+.legal__cuerpo a {
+  color: var(--texto);
+  text-decoration: underline;
+  text-decoration-color: var(--texto-2);
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;          /* el correo no rompe la columna en celular */
+  transition: text-decoration-color var(--t-hover) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .legal__cuerpo a:hover { text-decoration-color: var(--texto); }
+}
+.legal .legal__nota {
+  margin-top: 56px;
+  font-size: 13px;
+  color: var(--marca-chica);
+}
