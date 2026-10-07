@@ -24,7 +24,7 @@
     llamada: mensaje('Quiero agendar una llamada para hablar de mi negocio.', [
       NOMBRE,
       NEGOCIO,
-      '💬 Lo que busco (más clientes, página web o automatizar mi atención):',
+      '💬 Lo que busco:',
       '🕐 Mejores días y horas para la llamada:',
     ]),
     // Enlace "o escríbenos por WhatsApp" (portada y cierre) y footer
@@ -34,21 +34,21 @@
       '💬 Lo que me gustaría mejorar:',
     ]),
 
-    // Servicios
-    atrae: mensaje('Quiero que más personas conozcan mi negocio en redes sociales.', [
-      NOMBRE,
-      NEGOCIO,
-      '📲 Mi Instagram o página actual:',
-    ]),
-    convierte: mensaje('Me interesa una página web para mi negocio.', [
+    // Servicios (flecha de cada fila)
+    'servicio-software': mensaje('Me interesa una página web o un sistema a la medida para mi negocio.', [
       NOMBRE,
       NEGOCIO,
       PAGINA,
     ]),
-    automatiza: mensaje('Quiero automatizar la atención de mi negocio.', [
+    'servicio-ia': mensaje('Quiero un asistente que responda por mí y automatizar la atención de mi negocio.', [
       NOMBRE,
       NEGOCIO,
       '💬 ¿Por dónde me escriben hoy mis clientes?:',
+    ]),
+    'servicio-crecimiento': mensaje('Quiero que más personas conozcan mi negocio con anuncios y redes.', [
+      NOMBRE,
+      NEGOCIO,
+      '📲 Mi Instagram o página actual:',
     ]),
 
     // Proyectos ("Quiero algo así")
@@ -77,12 +77,20 @@
   };
 
   // encodeURIComponent convierte tildes, emojis y saltos de línea (%0A) para la URL
-  const enlace = (clave) => `https://wa.me/${NUMERO}?text=${encodeURIComponent(MENSAJES[clave])}`;
+  const url = (texto) => `https://wa.me/${NUMERO}?text=${encodeURIComponent(texto)}`;
+  const enlace = (clave) => url(MENSAJES[clave]);
+
+  // Resultado del asistente guiado de Avo: las respuestas ya van escritas en los campos,
+  // así la persona solo agrega su nombre. { plan, negocio, mejorar, pagina } son textos.
+  const resultadoAvo = ({ plan, negocio, mejorar, pagina }) => url(mensaje(
+    `Avo me recomendó: ${plan}. Quiero agendar una llamada.`,
+    [NOMBRE, `🏢 Mi negocio: ${negocio}`, `💬 Quiero mejorar: ${mejorar}`, `📲 ¿Ya tengo página?: ${pagina}`],
+  ));
 
   document.querySelectorAll('a[data-wa]').forEach((a) => {
     if (MENSAJES[a.dataset.wa]) a.href = enlace(a.dataset.wa);
     else console.error(`Falta el mensaje de WhatsApp "${a.dataset.wa}" en js/mensajes.js`);
   });
 
-  window.AVORA_WHATSAPP = { MENSAJES, enlace };
+  window.AVORA_WHATSAPP = { MENSAJES, enlace, resultadoAvo };
 })();

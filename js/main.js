@@ -1,6 +1,6 @@
 /* AVORA Solutions · interacciones de la página (sin librerías propias).
    Nada escucha el evento scroll del navegador: las apariciones usan un solo
-   IntersectionObserver, y la profundidad de la palabra AVORA usa el scroll de Lenis.
+   IntersectionObserver, y la profundidad de Avo en la portada usa el scroll de Lenis.
    Lenis (scroll con inercia) se descarga solo en computadora con mouse. */
 (() => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -15,8 +15,6 @@
      pieza avanza en línea recta entre ese momento y el siguiente. Así no frena en
      cada esquina. */
   const DURACION_BORDE = 900;
-  const RADIO = 27;                             // radio interior (28px menos el borde de 1px)
-  const ARCO = (Math.PI / 2) * RADIO;           // largo de cada esquina
   const PIEZAS = ['esquina--1', 'arriba', 'esquina--2', 'derecha', 'esquina--3', 'abajo', 'esquina--4', 'izquierda'];
 
   // cubic-bezier(.22, 1, .36, 1): dado un avance del recorrido (0 a 1), devuelve en
@@ -33,9 +31,12 @@
   };
 
   const ajustarBorde = (panel, capa) => {
-    const ancho = Math.max(panel.clientWidth - 2 * RADIO, 0);
-    const alto = Math.max(panel.clientHeight - 2 * RADIO, 0);
-    const largos = [ARCO, ancho, ARCO, alto, ARCO, ancho, ARCO, alto];
+    // Radio interior (el del CSS menos el borde de 1px): 23px en celular, 27px en computadora
+    const radio = parseFloat(getComputedStyle(panel).borderTopLeftRadius) - 1 || 0;
+    const arco = (Math.PI / 2) * radio;         // largo de cada esquina
+    const ancho = Math.max(panel.clientWidth - 2 * radio, 0);
+    const alto = Math.max(panel.clientHeight - 2 * radio, 0);
+    const largos = [arco, ancho, arco, alto, arco, ancho, arco, alto];
     const total = largos.reduce((a, b) => a + b, 0);
     let recorrido = 0;
     [...capa.children].forEach((pieza, i) => {
@@ -97,11 +98,27 @@
     btn.prepend(relleno);
   });
 
+  /* ---------- Avo de la portada: parpadeo ----------
+     Cada 3 a 6 segundos cierra los ojos 160 ms. Es solo un cambio de imagen (no hay
+     movimiento), así que sigue activo con movimiento reducido. */
+  const avoPortada = document.querySelector('.hero__avo');
+  if (avoPortada) {
+    const OJOS_ABIERTOS = avoPortada.getAttribute('src');
+    const OJOS_CERRADOS = OJOS_ABIERTOS.replace('avo-normal', 'avo-parpadeo');
+    new Image().src = OJOS_CERRADOS;            // precarga: el parpadeo no espera a la red
+    const parpadear = () => {
+      avoPortada.src = OJOS_CERRADOS;
+      setTimeout(() => { avoPortada.src = OJOS_ABIERTOS; }, 160);
+      setTimeout(parpadear, 3000 + Math.random() * 3000);
+    };
+    setTimeout(parpadear, 3000 + Math.random() * 3000);
+  }
+
   /* ---------- Scroll con inercia y profundidad ----------
      Lenis, suave y ligero, SOLO en computadora con mouse: en celular, en pantallas
      táctiles y con movimiento reducido ni siquiera se descarga. Cuando existe, también
-     mueve la palabra AVORA de la portada más lento que el scroll (efecto de profundidad),
-     solo mientras la portada está en pantalla. En celular la palabra queda fija. */
+     mueve a Avo y su burbuja ([data-profundidad]) más lento que el scroll (efecto de
+     profundidad), solo mientras la portada está en pantalla. En celular quedan fijos. */
   if (conMouse && !tactil && !reduceMotion) {
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js';
@@ -116,14 +133,16 @@
       });
       window.lenis = lenis;
 
-      const palabra = document.querySelector('.hero__palabra');
+      const capas = document.querySelectorAll('[data-profundidad]');
       const portada = document.querySelector('.hero');
-      if (palabra && portada && 'IntersectionObserver' in window) {
-        const PROFUNDIDAD = 0.25;    // la palabra baja un 25 % de lo que sube la página
+      if (capas.length && portada && 'IntersectionObserver' in window) {
+        const PROFUNDIDAD = 0.15;    // Avo baja un 15 % de lo que sube la página
         let portadaVisible = true;
         new IntersectionObserver(([e]) => { portadaVisible = e.isIntersecting; }).observe(portada);
         lenis.on('scroll', ({ scroll }) => {
-          if (portadaVisible) palabra.style.transform = `translate3d(0, ${(scroll * PROFUNDIDAD).toFixed(1)}px, 0)`;
+          if (!portadaVisible) return;
+          const y = `translate3d(0, ${(scroll * PROFUNDIDAD).toFixed(1)}px, 0)`;
+          capas.forEach((capa) => { capa.style.transform = y; });
         });
       }
     };

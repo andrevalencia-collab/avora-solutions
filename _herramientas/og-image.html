@@ -1,53 +1,52 @@
 <!doctype html>
-<!-- Plantilla de la imagen para compartir (1200×630). Se captura con el navegador en modo headless. -->
+<!-- Plantilla de la imagen para compartir (1200×630): una versión de la portada v3.
+     Se captura con _herramientas/generar-imagenes.mjs y queda en img/og-image.jpg. -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400..700&display=swap">
 <style>
-  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
-  body {
-    position: relative;
-    background: #00034A;
-    color: #f2f3f7;
-    font-family: "Archivo", sans-serif;
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: #0b0b0c; }
+  body { font-family: "Hanken Grotesk", "Helvetica Neue", sans-serif; color: #f2f2f0; }
+  .panel {
+    position: absolute; inset: 16px;
+    border: 1px solid rgba(242, 242, 240, .20); border-radius: 28px;
+    background: #0f0f11; overflow: hidden;
   }
-  .band {
-    position: absolute;
-    right: -120px; bottom: -40px;
-    width: 760px; height: 380px;
-    background: #030756;
-    clip-path: polygon(0 100%, 100% 0, 100% 100%);
+  .avo {
+    position: absolute; right: 24px; bottom: -96px;
+    width: 576px; height: 576px; image-rendering: pixelated;
   }
-  .line {
-    position: absolute;
-    right: 40px; bottom: 130px;
-    width: 700px; height: 350px;
+  .velo {
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(15, 15, 17, .94) 0%, rgba(15, 15, 17, .78) 40%, rgba(15, 15, 17, 0) 64%);
   }
-  .brand { position: absolute; top: 70px; left: 80px; display: flex; align-items: center; gap: 18px; }
-  .brand img { width: 64px; }
-  .brand b { display: block; font-size: 34px; font-weight: 800; font-stretch: 125%; line-height: 1; }
-  .brand small { display: block; margin-top: 8px; font-size: 13px; font-weight: 600; letter-spacing: .38em; opacity: .8; }
-  h1 {
-    position: absolute; left: 80px; top: 200px; margin: 0;
-    font-size: 84px; font-weight: 800; font-stretch: 125%; line-height: .98; letter-spacing: -.015em;
-  }
-  h1 span { display: block; }
-  h1 span:last-child { color: #4D5BFF; }
-  p { position: absolute; left: 80px; bottom: 60px; margin: 0; font-size: 26px; color: #808080; }
+  .firma { position: absolute; top: 26px; left: 30px; display: flex; align-items: center; gap: 12px; }
+  .firma i { width: 16px; height: 2px; background: #4d5bff; transform: rotate(-26.6deg); }
+  .firma span, .indice { font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #8e8e93; }
+  .indice { position: absolute; top: 26px; right: 34px; }
+  .texto { position: absolute; left: 72px; top: 96px; width: 620px; }
+  .marca { display: flex; align-items: center; gap: 12px; }
+  .marca svg { width: 40px; height: 34px; }
+  .marca b { font-size: 24px; font-weight: 700; letter-spacing: .02em; }
+  h1 { margin: 44px 0 0; font-size: 96px; font-weight: 600; line-height: .95; letter-spacing: -.055em; }
+  p { margin: 28px 0 0; max-width: 470px; font-size: 22px; line-height: 1.5; color: #a3a3a8; }
 </style>
 </head>
 <body>
-  <div class="band"></div>
-  <svg class="line" viewBox="0 0 200 100">
-    <path d="M0 100 L176 12" stroke="#4D5BFF" stroke-width="1" fill="none" opacity=".6"/>
-    <path d="M181 13 L179 8 L200 0 Z" fill="#4D5BFF"/>
-  </svg>
-  <div class="brand">
-    <img src="../img/logo-avora-claro.svg" alt="">
-    <div><b>AVORA</b><small>SOLUTIONS</small></div>
+  <div class="panel">
+    <img class="avo" src="../img/avo/avo-normal.svg" alt="">
+    <div class="velo"></div>
+    <div class="firma"><i></i><span>AVORA/2026</span></div>
+    <span class="indice">Agencia digital · Panamá</span>
+    <div class="texto">
+      <div class="marca">
+        <svg viewBox="14 24 180 154" aria-hidden="true"><path fill="#f2f2f0" fill-rule="evenodd" d="M112.0 28.0 L88.0 28.0 L40.6 131.3 L81.2 111.1 L100.0 70.0 L111.8 95.7 L137.2 83.0 Z M18.4 173.8 L50.4 173.8 L65.1 141.8 L127.7 141.8 L142.4 173.8 L174.4 173.8 L136.1 90.3 L110.7 103.0 L118.4 119.8 L77.1 119.8 L33.1 141.8 Z"/><path fill="#4d5bff" d="M147.3 85.5 L144.0 78.8 L188.6 60.7 Z"/></svg>
+        <b>AVORA</b>
+      </div>
+      <h1>Avo atiende.<br>Tú vendes.</h1>
+      <p>Páginas web, asistentes con IA y campañas que traen clientes.</p>
+    </div>
   </div>
-  <h1><span>Atrae.</span><span>Convierte.</span><span>Automatiza.</span></h1>
-  <p>Más clientes y menos trabajo manual · Panamá</p>
 </body>
 </html>

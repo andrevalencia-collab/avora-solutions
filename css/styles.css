@@ -1,29 +1,34 @@
 /* ==========================================================================
-   AVORA Solutions · Landing v2
+   AVORA Solutions · Landing v3 · "Avo atiende. Tú vendes."
    Monocromo y editorial: cada sección vive en un panel redondeado. Las franjas
    alternan tema oscuro y claro de lado a lado de la pantalla (Servicios y Planes
-   son claras). El azul solo aparece en la estela del logo y en la barrita de
-   cada panel. Mobile-first, un breakpoint en 900px.
+   son claras). El azul solo aparece en la estela del logo, la barrita de cada
+   panel y la luz de Avo (dentro de sus SVG). Mobile-first, un breakpoint en 900px.
    ========================================================================== */
 
 /* ---------- Tokens ---------- */
 :root {
   --fondo: #0b0b0c;
-  --panel: #111113;
-  --superficie: #141416;           /* tarjetas dentro de un panel (capturas, planes) */
+  --panel: #0f0f11;
+  --superficie: #141416;           /* tarjetas dentro de un panel */
   --texto: #f2f2f0;
-  --texto-2: #8e8e93;              /* secundario: 5.8:1 sobre el panel */
+  --texto-2: #a3a3a8;              /* secundario: 7.6:1 sobre el panel */
+  --marca-chica: #8e8e93;          /* índices, firma y etiquetas en mayúsculas: 5.9:1 sobre el panel */
   --linea: rgba(242, 242, 240, .12);
   --borde-panel: rgba(242, 242, 240, .20);
-  --azul: #4d5bff;                 /* solo la estela del logo y la barrita de cada panel */
+  --azul: #4d5bff;                 /* solo la estela del logo, la barrita de cada panel y la luz de Avo */
   --sobre-texto: #0b0b0c;          /* lo que va encima de --texto: botones y píldoras se invierten solos */
   --linea-activa: rgba(242, 242, 240, .45);   /* borde de la flecha con hover */
   --texto-hover: #fff;             /* el título de un servicio "se aclara apenas" con hover */
-  --palabra-fondo: rgba(242, 242, 240, .04);   /* AVORA gigante detrás del título de la portada */
+
+  /* Firma de la marca en los paneles (arriba a la izquierda y en vertical en la portada).
+     Cambiarla aquí la cambia en toda la página. */
+  --marca-texto: "AVORA/2026";
 
   --gutter: clamp(20px, 5vw, 80px);
-  --panel-gap: clamp(8px, 1.2vw, 16px);   /* 8px en celular, 16px en computadora */
-  --header-h: 98px;                /* lo usa css/avo.css para el alto del chat */
+  --panel-gap: 8px;                /* separación de los paneles: 8px en celular, 16px en computadora */
+  --radio-panel: 24px;             /* esquinas: 24px en celular, 28px en computadora */
+  --header-h: 64px;                /* 64px en celular, 76px en computadora; css/avo.css lo usa */
 
   /* Movimiento: calmado, editorial */
   --ease: cubic-bezier(.22, 1, .36, 1);
@@ -32,6 +37,13 @@
   --t-aparecer: 800ms;
   --t-linea: 900ms;
   --escalon: 120ms;
+}
+@media (min-width: 900px) {
+  :root {
+    --panel-gap: 16px;
+    --radio-panel: 28px;
+    --header-h: 76px;
+  }
 }
 
 /* Tema claro: Servicios y Planes. Solo redefine variables; los componentes leen
@@ -42,6 +54,7 @@
   --superficie: #f7f6f3;           /* tarjetas */
   --texto: #0b0b0c;
   --texto-2: #55555b;
+  --marca-chica: #55555b;
   --linea: rgba(11, 11, 12, .12);
   --borde-panel: rgba(11, 11, 12, .18);
   --sobre-texto: #f2f2f0;
@@ -140,7 +153,7 @@ html.lenis, html.lenis body { height: auto; }
   position: relative;
   margin: 0 var(--panel-gap) var(--panel-gap);
   border: 1px solid var(--borde-panel);
-  border-radius: 28px;
+  border-radius: var(--radio-panel);
   background: var(--panel);
   overflow: hidden;
 }
@@ -150,10 +163,11 @@ html.lenis, html.lenis body { height: auto; }
    pieza para que la línea recorra el contorno en 900 ms con la curva --ease. */
 .js .panel { border-color: transparent; }
 .panel__borde {
+  --r: calc(var(--radio-panel) - 1px);   /* radio interior: el borde mide 1px */
   position: absolute;
   inset: 0;
-  z-index: 2;
-  border-radius: 27px;
+  z-index: 3;
+  border-radius: var(--r);
   pointer-events: none;
 }
 .panel__borde > span {
@@ -161,32 +175,50 @@ html.lenis, html.lenis body { height: auto; }
   transition: transform var(--dur, 0ms) linear var(--ret, 0ms), opacity var(--dur, 0ms) linear var(--ret, 0ms);
 }
 .borde-tramo { background: var(--borde-panel); }
-.borde-arriba    { top: 0; left: 27px; right: 27px; height: 1px; transform: scaleX(0); transform-origin: left; }
-.borde-derecha   { right: 0; top: 27px; bottom: 27px; width: 1px; transform: scaleY(0); transform-origin: top; }
-.borde-abajo     { bottom: 0; left: 27px; right: 27px; height: 1px; transform: scaleX(0); transform-origin: right; }
-.borde-izquierda { left: 0; top: 27px; bottom: 27px; width: 1px; transform: scaleY(0); transform-origin: bottom; }
-.borde-esquina { width: 27px; height: 27px; border: 0 solid var(--borde-panel); opacity: 0; }
-.borde-esquina--1 { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; border-top-left-radius: 27px; }
-.borde-esquina--2 { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; border-top-right-radius: 27px; }
-.borde-esquina--3 { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; border-bottom-right-radius: 27px; }
-.borde-esquina--4 { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; border-bottom-left-radius: 27px; }
+.borde-arriba    { top: 0; left: var(--r); right: var(--r); height: 1px; transform: scaleX(0); transform-origin: left; }
+.borde-derecha   { right: 0; top: var(--r); bottom: var(--r); width: 1px; transform: scaleY(0); transform-origin: top; }
+.borde-abajo     { bottom: 0; left: var(--r); right: var(--r); height: 1px; transform: scaleX(0); transform-origin: right; }
+.borde-izquierda { left: 0; top: var(--r); bottom: var(--r); width: 1px; transform: scaleY(0); transform-origin: bottom; }
+.borde-esquina { width: var(--r); height: var(--r); border: 0 solid var(--borde-panel); opacity: 0; }
+.borde-esquina--1 { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; border-top-left-radius: var(--r); }
+.borde-esquina--2 { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; border-top-right-radius: var(--r); }
+.borde-esquina--3 { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; border-bottom-right-radius: var(--r); }
+.borde-esquina--4 { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; border-bottom-left-radius: var(--r); }
 .panel.is-visible .panel__borde > span { transform: none; opacity: 1; }
 
 .panel__marca {
   position: absolute;
-  top: 30px;
-  left: 30px;
-  width: 16px;
+  z-index: 2;
+  top: 23px;
+  left: 20px;
+  width: 14px;
   height: 2px;
   background: var(--azul);
   transform: rotate(-26.6deg);
 }
-.panel__indice {
+/* Firma y número de sección: mayúsculas pequeñas y espaciadas, en --marca-chica */
+.panel__firma,
+.panel__indice,
+.hero__firma-vertical {
   position: absolute;
-  top: 22px;
-  right: 28px;
-  font-size: 13px;
-  color: var(--texto-2);
+  z-index: 2;
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--marca-chica);
+}
+.panel__firma { top: 16px; left: 44px; }
+.panel__firma::before,
+.hero__firma-vertical::before { content: var(--marca-texto); }
+.panel__indice { top: 16px; right: 20px; }
+@media (min-width: 900px) {
+  .panel__marca { top: 33px; left: 30px; width: 16px; }
+  .panel__firma,
+  .panel__indice { top: 24px; font-size: 12px; letter-spacing: .22em; }
+  .panel__firma { left: 58px; }
+  .panel__indice { right: 34px; }
 }
 .panel__cuerpo {
   display: flex;
@@ -392,19 +424,22 @@ html.lenis, html.lenis body { height: auto; }
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding-block: 28px;
+  height: var(--header-h);
+  padding-inline: 20px;
 }
 .marca {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   min-height: 44px;
   text-decoration: none;
 }
-.marca__logo { width: 33px; height: 28px; color: var(--texto); }
-.marca__nombre { font-weight: 700; font-size: 19px; letter-spacing: .02em; }
+.marca__logo { width: 28px; height: 24px; color: var(--texto); }
+.marca__nombre { font-weight: 700; font-size: 17px; letter-spacing: .02em; }
+/* Botón del header: en celular solo "Llamada", sin círculo; en computadora "Agenda una llamada" */
+.btn--sm { padding: 0 18px; font-size: 14px; }
+.btn--sm .btn__circulo { display: none; }
 
-/* Botón del header: "Llamada" en celular, "Agenda una llamada" en computadora */
 .solo-computadora { display: none; }
 @media (min-width: 900px) {
   .solo-celular { display: none; }
@@ -413,11 +448,17 @@ html.lenis, html.lenis body { height: auto; }
 
 .site-nav { display: none; }
 @media (min-width: 900px) {
+  .site-header { padding-inline: 44px; }
+  .marca { gap: 10px; }
+  .marca__logo { width: 33px; height: 28px; }
+  .marca__nombre { font-size: 19px; }
+  .btn--sm { padding: 10px 10px 10px 18px; }
+  .btn--sm .btn__circulo { display: inline-flex; width: 32px; height: 32px; }
   .site-nav {
     display: flex;
-    gap: 28px;
+    gap: 32px;
     margin-left: auto;
-    margin-right: 12px;
+    margin-right: 16px;
     font-size: 15px;
   }
   .site-nav a {
@@ -428,93 +469,202 @@ html.lenis, html.lenis body { height: auto; }
   .site-nav a:focus-visible { color: var(--texto); }
 }
 
-/* ---------- 1 · Portada ---------- */
-.hero__sentinel {                  /* js/avo.js sabe con él si la página está arriba del todo */
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 1px;
-  height: 40px;
+/* ---------- 1 · Portada ----------
+   Avo gigante al fondo, cortado por el borde inferior del panel, con un velo que
+   oscurece su lado del texto. Medidas de docs/referencia-portada-*.html:
+   computadora (1440 × 940): Avo de 800px, a 32px de la derecha y 140px bajo el borde;
+   celular (390 × 844): Avo de 420px, 50px fuera por la derecha y 64px bajo el borde.
+   --avo-tam escala todo lo que depende de Avo (la burbuja va sobre su cabeza). */
+.hero {
+  --avo-tam: min(420px, 108vw);
+  min-height: max(680px, calc(100vh - var(--header-h) - 2 * var(--panel-gap)));
+  min-height: max(680px, calc(100svh - var(--header-h) - 2 * var(--panel-gap)));
 }
-/* AVORA gigante, rellena y casi invisible, cortada por el borde inferior del panel.
-   El exterior se mueve más lento que el scroll en computadora (main.js, con Lenis). */
-.hero__palabra {
+.hero__avo-capa {
+  position: absolute;
+  z-index: 0;
+  right: calc(var(--avo-tam) * -.119);
+  bottom: calc(var(--avo-tam) * -.152);
+  width: var(--avo-tam);
+  height: var(--avo-tam);
+}
+.hero__avo {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  user-select: none;
+}
+/* Velo fijo (no animado) para que el texto se lea sobre Avo */
+.hero__velo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--panel) 96%, transparent) 0%,
+    color-mix(in srgb, var(--panel) 86%, transparent) 46%,
+    transparent 62%);
+  pointer-events: none;
+}
+.hero__cuerpo {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 374px;
+  padding: 58px 20px 0;
+}
+.hero__etiqueta { display: none; }   /* en celular no cabe: la referencia no la muestra */
+.hero__title {
+  font-weight: 600;
+  font-size: clamp(46px, 7.2vw, 104px);
+  line-height: .96;
+  letter-spacing: -.05em;
+}
+.hero__pie { display: flex; flex-direction: column; gap: 18px; }
+.hero__lead {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--texto-2);
+}
+.hero__acciones {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.hero .btn--lg { padding: 12px 12px 12px 22px; font-size: 16px; gap: 12px; }
+.hero .btn--lg .btn__circulo { width: 36px; height: 36px; }
+.hero .cta__whatsapp { min-height: 44px; font-size: 15px; font-weight: 600; }
+.hero .cta__nota { margin-top: 6px; color: var(--marca-chica); }
+
+/* Burbuja de Avo: una píldora clara sobre su cabeza; abre el asistente */
+.hero__burbuja-capa {
+  position: absolute;
+  z-index: 2;
+  right: 18px;
+  bottom: calc(var(--avo-tam) * .605);
+}
+/* Con el chat de Avo abierto (html.avo-open) la burbuja se va de inmediato; al cerrarlo
+   vuelve con el mismo retraso de su aparición */
+html.avo-open .hero__burbuja.is-visible { opacity: 0; transition-delay: 0s; pointer-events: none; }
+.hero__burbuja {
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 14px 14px 4px 14px;   /* la esquina más cerrada apunta a Avo */
+  background: var(--texto);
+  color: var(--sobre-texto);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Franja de los 4 pilares, abajo del panel (por debajo del borde dibujado) */
+.hero__pilares {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -.38em;                  /* casi la mitad queda bajo el borde del panel */
-  z-index: 0;
-  font-size: 28vw;
-  font-weight: 800;
-  line-height: .8;
-  letter-spacing: -.04em;
-  text-align: center;
-  white-space: nowrap;
-  color: var(--palabra-fondo);
-  pointer-events: none;
-  user-select: none;
-}
-.hero__palabra-texto { display: block; }
-.hero__cuerpo {
-  position: relative;
+  bottom: 0;
   z-index: 1;
   display: flex;
-  flex-direction: column;
-  gap: 40px;
-  padding-top: clamp(48px, 8vw, 120px);
-  padding-bottom: 72px;
+  height: 52px;
+  border-top: 1px solid var(--linea);
+  background: color-mix(in srgb, var(--panel) 94%, transparent);
 }
-.hero__meta {
+.hero__pilares-etiqueta { display: none; }
+.hero__pilares ul { flex: 1; display: flex; }
+.hero__pilares li {
+  flex: 1 1 0;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 15px;
-  color: var(--texto-2);
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--linea);
+  font-size: 13px;
+  font-weight: 500;
 }
-.hero__meta-claro { color: var(--texto); }
-.hero__title {
-  font-weight: 600;
-  font-size: clamp(64px, 11vw, 168px);
-  line-height: .9;
-  letter-spacing: -.055em;
-}
-.hero__pie {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 32px;
-  position: relative;
-  padding-top: 32px;
-}
-.hero__lead {
-  max-width: 520px;
-  font-size: 20px;
-  line-height: 1.55;
-  color: var(--texto-2);
-}
-/* En celular, "Ver planes" va al final; en computadora, al lado del botón */
-.hero__acciones .enlace { margin-top: 8px; font-size: 16px; }
+.hero__pilares li:first-child { border-left: 0; }
+.hero__firma-vertical { display: none; }
+
 @media (min-width: 900px) {
-  .hero__acciones {
-    display: grid;
-    grid-template-columns: auto auto;
-    justify-items: start;
-    column-gap: 24px;
+  .hero {
+    --avo-tam: min(800px, 56vw);
+    min-height: max(760px, calc(100vh - var(--header-h) - var(--panel-gap)));
+    min-height: max(760px, calc(100svh - var(--header-h) - var(--panel-gap)));
   }
-  .hero__acciones > :not(.enlace) { grid-column: 1; }
-  .hero__acciones .enlace {
-    grid-column: 2;
-    grid-row: 1;
-    align-self: center;
-    margin-top: 0;
+  .hero__avo-capa {
+    right: 32px;
+    bottom: calc(var(--avo-tam) * -.175);
   }
+  .hero__velo {
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--panel) 94%, transparent) 0%,
+      color-mix(in srgb, var(--panel) 78%, transparent) 36%,
+      transparent 62%);
+  }
+  .hero__cuerpo {
+    gap: 30px;
+    max-width: 772px;
+    padding: 92px 0 0 72px;
+  }
+  .hero__etiqueta {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--texto-2);
+  }
+  .hero__title { line-height: .95; letter-spacing: -.055em; }
+  .hero__pie { gap: 30px; }
+  .hero__lead { max-width: 470px; font-size: 19px; line-height: 1.55; }
+  .hero__acciones { flex-direction: row; align-items: center; gap: 28px; }
+  .hero .btn--lg { padding: 14px 14px 14px 26px; font-size: 17px; gap: 14px; }
+  .hero .btn--lg .btn__circulo { width: 38px; height: 38px; }
+  .hero .cta__whatsapp { font-size: 16px; }
+  .hero .cta__nota { margin-top: 16px; font-size: 14px; }
+
+  /* Sobre la oreja derecha de Avo (en 1440: x = 1120, como la referencia). Se ancla por
+     la derecha, con 40px de mínimo, para que en pantallas medianas no se salga del panel. */
+  .hero__burbuja-capa {
+    right: max(40px, calc(var(--avo-tam) * .32 - 200px));
+    bottom: calc(var(--avo-tam) * .7875);
+  }
+  .hero__burbuja {
+    padding: 12px 18px;
+    border-radius: 16px 16px 16px 4px;
+    font-size: 16px;
+  }
+
+  .hero__pilares { height: 64px; background: color-mix(in srgb, var(--panel) 92%, transparent); }
+  .hero__pilares-etiqueta {
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    font-size: 12px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--marca-chica);
+  }
+  .hero__pilares li { font-size: 15px; }
+  .hero__pilares li:first-child { border-left: 1px solid var(--linea); }
+
+  /* La firma también va en vertical sobre los bordes izquierdo y derecho */
+  .hero__firma-vertical {
+    display: block;
+    top: 50%;
+    font-size: 11px;
+    letter-spacing: .22em;
+    writing-mode: vertical-rl;
+  }
+  .hero__firma-vertical--izq { left: 14px; transform: translateY(-50%) rotate(180deg); }
+  .hero__firma-vertical--der { right: 14px; transform: translateY(-50%); }
 }
 
 /* ---------- 2 · Cinta ---------- */
-/* Lineal y continua; nunca se pausa (salvo con movimiento reducido). Avo usa
-   .ribbon__band para no taparla. */
+/* Lineal y continua; nunca se pausa (salvo con movimiento reducido). */
 .ribbon {
   margin: 0 0 var(--panel-gap);
   padding: 20px 0;
@@ -780,6 +930,13 @@ html.lenis, html.lenis body { height: auto; }
   transform: scale(.98);
   transition: opacity var(--t-linea) var(--ease), transform var(--t-linea) var(--ease);
 }
+/* Avo de la portada: fundido y sube 16px (es lo primero que aparece después del panel) */
+.js [data-reveal="avo"] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity var(--t-linea) var(--ease), transform var(--t-linea) var(--ease);
+  transition-delay: var(--d, 0ms);
+}
 .js [data-reveal="fundido"] {
   opacity: 0;
   transition: opacity var(--t-aparecer) var(--ease);
@@ -823,6 +980,12 @@ html.lenis, html.lenis body { height: auto; }
 .js [data-reveal="grupo"].is-visible,
 .js [data-reveal="grupo"].is-visible [data-paso] { opacity: 1; transform: none; }
 
+/* Avo de la portada respira: sube 1px y vuelve, en pasos (como pixel art) */
+@media (prefers-reduced-motion: no-preference) {
+  .hero__avo { animation: avo-respira-portada 3s steps(1, end) infinite; }
+}
+@keyframes avo-respira-portada { 50% { transform: translateY(-1px); } }
+
 /* ==========================================================================
    Movimiento reducido: todo aparece de inmediato y la cinta queda quieta
    ========================================================================== */
@@ -837,6 +1000,7 @@ html.lenis, html.lenis body { height: auto; }
   }
   .ribbon__track { animation: none; }
   .btn__relleno::before { transform: none; opacity: 0; }
+  html.avo-open .hero__burbuja { opacity: 0 !important; }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
   .btn--primary:hover .btn__relleno::before { transform: none; opacity: 1; }
