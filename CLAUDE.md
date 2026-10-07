@@ -149,10 +149,10 @@ Tokens en `:root`: una sola curva `--ease` = `cubic-bezier(.22, 1, .36, 1)`, `--
 - El dominio propio todavía **no está comprado**. La dirección actual se repite en `canonical`, `og:url`, `og:image`, el bloque JSON-LD, `robots.txt` y `sitemap.xml`: cuando se defina el dominio real, se actualizan todos juntos. `theme-color` es `#0B0B0C`.
 - **Favicon:** la cabeza de Avo. `img/favicon.svg` es `avo-normal.svg` con el `viewBox` recortado a la cabeza; `img/favicon-32.png` y `img/apple-touch-icon.png` (180px, fondo `#0B0B0C`) salen de ahí.
 - **Logo de la empresa** (JSON-LD `logo`): `img/logo-avora.svg`, la A con su estela azul. El logo de la empresa no es Avo.
-- **Imagen para compartir:** `img/og-image.jpg` (1200×630), una versión de la portada. Su plantilla es `_herramientas/og-image.html`.
-- **Regenerar las imágenes:** con un servidor estático en el puerto 8765, `node _herramientas/generar-imagenes.mjs` crea `og-image.jpg`, `favicon-32.png` y `apple-touch-icon.png` (necesita Playwright).
+- **Imagen para compartir:** `img/og-avora-v3.png` (1200×630, la hice yo aparte). Se usa con la URL completa (`https://avosolutions.netlify.app/img/og-avora-v3.png`) en `og:image`, `twitter:image` y el `image` del JSON-LD, con `og:image:width` 1200, `og:image:height` 630 y `og:image:alt` "AVORA: Avo atiende. Tú vendes.". Textos para compartir: `og:title` "AVORA · Avo atiende. Tú vendes." y `og:description` "Páginas web, asistentes con IA y campañas que traen clientes. Agencia digital en Panamá."; `twitter:card` es `summary_large_image`. Si la imagen cambia, se reemplaza el archivo y se actualizan esas URLs juntas.
+- **Regenerar los íconos:** con un servidor estático en el puerto 8765, `node _herramientas/generar-imagenes.mjs` crea `favicon-32.png` y `apple-touch-icon.png` desde `favicon.svg` (necesita Playwright).
 - La única imagen de contenido es Avo de la portada (carga inmediata con `fetchpriority="high"`). Las caras del chat se precargan para que cambien sin parpadeo.
 
 ## Carpetas que no son del sitio
 
-- `docs/` guarda las referencias de diseño; `_herramientas/` las plantillas y el script de imágenes; `_referencias/` los originales y capturas (fuera de Git, en `.gitignore`). Las tres están excluidas en `robots.txt`.
+- `docs/` guarda las referencias de diseño; `_herramientas/` el script de los íconos; `_referencias/` los originales y capturas (fuera de Git, en `.gitignore`). Las tres están excluidas en `robots.txt`.
