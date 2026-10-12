@@ -805,6 +805,11 @@ html[lang="en"] .idioma__op[data-idioma="en"] { color: var(--texto); }
 }
 .viene-de-ingles .legal__aviso { display: block; }
 
+/* 404.html: el texto sale en inglés si el visitante venía navegando en inglés */
+.solo-en { display: none; }
+.viene-de-ingles .solo-en { display: revert; }
+.viene-de-ingles .solo-es { display: none; }
+
 /* ---------- 8 · Cortina de idioma ---------- */
 /* Al cambiar de idioma (js/idioma.js), un panel claro cruza la pantalla de izquierda a
    derecha y los textos cambian mientras la tapa. El script crea el panel, le pone la clase

@@ -163,8 +163,41 @@
     return { texto: segunIdioma(RESPUESTAS, RESPUESTAS_EN)[tema], tema };
   }
 
-  const RAPIDAS = ['¿Qué hacen?', '¿Cuánto cuesta?', 'Quiero más clientes', 'Necesito una página web', 'Quiero automatizar mi atención', 'Ver proyectos'];
-  const RAPIDAS_EN = ['What do you do?', 'How much does it cost?', 'I want more customers', 'I need a website', 'I want to automate my replies', 'See projects'];
+  // Opciones rápidas, por tema. El texto que se ve es también la pregunta que se envía,
+  // así que cada uno tiene que caer en su tema con las palabras clave de arriba.
+  const OPCIONES = {
+    general: '¿Qué hacen?',
+    precio: '¿Cuánto cuesta?',
+    atrae: 'Quiero más clientes',
+    convierte: 'Necesito una página web',
+    automatiza: 'Quiero automatizar mi atención',
+    caso: 'Ver proyectos',
+    proceso: '¿Cómo trabajan?',
+  };
+  const OPCIONES_EN = {
+    general: 'What do you do?',
+    precio: 'How much does it cost?',
+    atrae: 'I want more customers',
+    convierte: 'I need a website',
+    automatiza: 'I want to automate my replies',
+    caso: 'See projects',
+    proceso: 'How do you work?',
+  };
+  // Qué ofrecer en cada momento: al abrir, el menú completo; después de cada respuesta,
+  // 2 o 3 opciones relacionadas con ese tema (nunca la que se acaba de responder).
+  // "Hablar por WhatsApp" va siempre al principio de la fila y no se anota aquí.
+  const OPCIONES_INICIO = ['general', 'precio', 'atrae', 'convierte', 'automatiza', 'caso'];
+  const SIGUIENTES = {
+    precio: ['proceso', 'caso'],
+    general: ['atrae', 'convierte', 'automatiza'],
+    atrae: ['convierte', 'precio'],
+    convierte: ['precio', 'caso'],
+    automatiza: ['precio', 'proceso'],
+    caso: ['precio', 'proceso'],
+    proceso: ['precio', 'caso'],
+    saludo: ['general', 'precio'],
+    'no-entiende': ['general', 'precio'],
+  };
   const BIENVENIDA = '¡Hola! Soy Avo, el asistente de AVORA. ¿En qué te ayudo con tu negocio?';
   const BIENVENIDA_EN = 'Hi! I\'m Avo, AVORA\'s assistant. How can I help with your business?';
 
@@ -178,7 +211,6 @@
     pregunta: 'Escribe tu pregunta',
     enviar: 'Enviar',
     caracteres: 'caracteres',
-    contacto: 'Contáctanos',
     escribiendo: 'Avo está escribiendo…',
     whatsapp: 'Hablar por WhatsApp',
     rapidas: 'Respuestas rápidas',
@@ -192,7 +224,6 @@
     pregunta: 'Type your question',
     enviar: 'Send',
     caracteres: 'characters',
-    contacto: 'Contact us',
     escribiendo: 'Avo is typing…',
     whatsapp: 'Chat on WhatsApp',
     rapidas: 'Quick replies',
@@ -204,7 +235,6 @@
   const img = (estado) => `img/avo/avo-${estado}.svg`;
   ['normal', 'parpadeo', 'saludo', 'pensando', 'feliz'].forEach((e) => { new Image().src = img(e); });
 
-  const ICON_CHAT = '<svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>';
   const root = document.createElement('div');
   root.className = 'avo theme-dark';
   const t = ui();   // textos en el idioma con el que carga la página
@@ -231,6 +261,7 @@
       </header>
       <div class="avo-log" role="log" aria-live="polite" aria-label="${t.conversacion}" tabindex="-1"></div>
       <p class="avo-typing" role="status"></p>
+      <div class="avo-rapidas" role="group" aria-label="${t.rapidas}"></div>
       <form class="avo-form" novalidate>
         <label class="avo-sr-only" for="avo-input">${t.pregunta}</label>
         <input class="avo-input" id="avo-input" type="text" maxlength="${MAX_CHARS}" autocomplete="off"
@@ -240,9 +271,6 @@
         </button>
         <span class="avo-count" id="avo-count">0/${MAX_CHARS} ${t.caracteres}</span>
       </form>
-      <a class="btn btn--primary avo-cta" href="${waLink('general')}" target="_blank" rel="noopener">
-        ${ICON_CHAT}<span>${t.contacto}</span>
-      </a>
     </section>`;
   document.body.appendChild(root);
 
@@ -258,7 +286,7 @@
   const input = $('.avo-input');
   const sendBtn = $('.avo-send');
   const count = $('.avo-count');
-  const cta = $('.avo-cta');
+  const rapidas = $('.avo-rapidas');
   const avatar = $('.avo-panel__avatar');
   const faces = root.querySelectorAll('.avo-face');
 
@@ -360,7 +388,20 @@
   }
 
   /* Mensajes */
-  const scrollToEnd = () => { log.scrollTop = log.scrollHeight; };
+  // Desplaza la conversación hasta dejar esa altura arriba. Suave, salvo con movimiento reducido.
+  const desplazarA = (top) => log.scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' });
+  const scrollToEnd = () => desplazarA(log.scrollHeight);
+  // Altura de un mensaje dentro de la conversación, sin importar cuánto se haya desplazado
+  const alturaEnLog = (el) => el.getBoundingClientRect().top - log.getBoundingClientRect().top + log.scrollTop;
+
+  // Deja a la vista el INICIO de la respuesta de Avo, no el final del chat. Si la pregunta
+  // y la respuesta caben juntas se ven las dos; si no, la respuesta queda arriba del todo.
+  const mostrarRespuesta = (pregunta, respuesta) => {
+    const margen = parseFloat(getComputedStyle(log).paddingTop) || 0;
+    const fin = alturaEnLog(respuesta) + respuesta.offsetHeight;
+    const cabenLasDos = fin - alturaEnLog(pregunta) <= log.clientHeight - 2 * margen;
+    desplazarA(alturaEnLog(cabenLasDos ? pregunta : respuesta) - margen);
+  };
 
   const addMessage = (quien, texto) => {
     const msg = document.createElement('div');
@@ -371,18 +412,7 @@
       msg.appendChild(p);
     });
     log.appendChild(msg);
-    scrollToEnd();
     return msg;
-  };
-
-  const addWhatsApp = (msg, tema) => {
-    const a = document.createElement('a');
-    a.className = 'avo-wa';
-    a.href = waLink(tema);
-    a.target = '_blank';
-    a.rel = 'noopener';
-    a.innerHTML = `${ICON_CHAT}<span>${ui().whatsapp}</span>`;
-    msg.appendChild(a);
   };
 
   // Enlace a una sección de la landing (ej. #planes). El navegador hace el salto
@@ -401,26 +431,32 @@
     msg.appendChild(a);
   };
 
-  // Solo queda un grupo de respuestas rápidas, siempre al final de la conversación
-  const addQuickReplies = () => {
-    log.querySelectorAll('.avo-chips').forEach((g) => g.remove());
-    const group = document.createElement('div');
-    group.className = 'avo-chips';
-    group.setAttribute('role', 'group');
-    group.setAttribute('aria-label', ui().rapidas);
-    segunIdioma(RAPIDAS, RAPIDAS_EN).forEach((texto) => {
+  // Fila de opciones rápidas, fija sobre el campo de texto (fuera de la conversación: no
+  // empuja los mensajes). Se reemplaza entera cada vez, así las opciones nunca se acumulan.
+  // Empieza siempre con el enlace de WhatsApp del tema: es la acción principal del chat y
+  // al principio de la fila se ve entero, sin tener que desplazarla.
+  const mostrarOpciones = (claves, tema) => {
+    const textos = segunIdioma(OPCIONES, OPCIONES_EN);
+    rapidas.replaceChildren();
+    const a = document.createElement('a');
+    a.className = 'avo-chip avo-chip--wa';
+    a.href = waLink(tema);
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = ui().whatsapp;
+    rapidas.appendChild(a);
+    claves.forEach((clave) => {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'avo-chip';
-      b.textContent = texto;
+      b.textContent = textos[clave];
       b.addEventListener('click', () => {
-        log.focus({ preventScroll: true });   // el grupo se reemplaza: el foco no debe perderse
-        send(texto);
+        log.focus({ preventScroll: true });   // la fila se reemplaza: el foco no debe perderse
+        send(textos[clave]);
       });
-      group.appendChild(b);
+      rapidas.appendChild(b);
     });
-    log.appendChild(group);
-    scrollToEnd();
+    rapidas.scrollLeft = 0;
   };
 
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -433,9 +469,8 @@
     sendBtn.disabled = true;
     hideBubble();
 
-    // Las respuestas rápidas anteriores se van; vuelven al final después de la respuesta
-    log.querySelectorAll('.avo-chips').forEach((g) => g.remove());
-    addMessage('user', mensaje);
+    const pregunta = addMessage('user', mensaje);
+    scrollToEnd();
     cambiarEstado('pensando', true);
     typing.textContent = ui().escribiendo;
     root.classList.add('is-thinking');
@@ -451,11 +486,11 @@
     typing.textContent = '';
     root.classList.remove('is-thinking');
     const msg = addMessage('avo', respuesta.texto);
-    if (respuesta.tema !== 'saludo') addWhatsApp(msg, respuesta.tema);
     if (ENLACES[respuesta.tema]) addLink(msg, ENLACES[respuesta.tema]);
-    cta.href = waLink(respuesta.tema);   // el botón fijo sigue el tema de la conversación
+    mostrarRespuesta(pregunta, msg);
     cambiarEstado(respuesta.tema === 'saludo' ? 'saludando' : 'contento', true);
-    addQuickReplies();
+    // El enlace de WhatsApp de la fila sigue el tema de la conversación
+    mostrarOpciones(SIGUIENTES[respuesta.tema] || SIGUIENTES['no-entiende'], respuesta.tema);
 
     busy = false;
     sendBtn.disabled = false;
@@ -490,7 +525,7 @@
     if (!started) {
       started = true;
       addMessage('avo', segunIdioma(BIENVENIDA, BIENVENIDA_EN));
-      addQuickReplies();
+      mostrarOpciones(OPCIONES_INICIO, 'general');
     }
     // En computadora se puede escribir de inmediato; en celular no abrimos el teclado solo.
     (isDesktop() ? input : title).focus({ preventScroll: true });
@@ -523,12 +558,11 @@
     input.placeholder = `${t.pregunta}…`;
     sendBtn.setAttribute('aria-label', t.enviar);
     count.textContent = `${input.value.length}/${MAX_CHARS} ${t.caracteres}`;
-    cta.lastElementChild.textContent = t.contacto;
-    cta.href = waLink('general');
+    rapidas.setAttribute('aria-label', t.rapidas);
     if (!started) return;
     log.replaceChildren();
     addMessage('avo', segunIdioma(BIENVENIDA, BIENVENIDA_EN));
-    addQuickReplies();
+    mostrarOpciones(OPCIONES_INICIO, 'general');
   });
 
   /* ---------- Reacciones ---------- */

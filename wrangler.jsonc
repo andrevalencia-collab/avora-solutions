@@ -1,0 +1,17 @@
+// Configuración del Worker de Cloudflare que publica este sitio.
+// Es la misma que Cloudflare generaba sola en cada publicación, más "not_found_handling":
+// con esa línea, una dirección que no existe muestra 404.html en vez de una pantalla en blanco.
+// "name" tiene que ser el nombre del Worker en Cloudflare: si se cambia, se publica en otro.
+// Este archivo no se publica (está en .assetsignore).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "avora-solutions",
+  "compatibility_date": "2026-10-06",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": ".",
+    "not_found_handling": "404-page"
+  }
+}

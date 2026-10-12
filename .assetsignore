@@ -1,0 +1,31 @@
+# Lo que aparece aquí NO se publica en Cloudflare (mismo formato que .gitignore).
+# Cloudflare publica la carpeta entera del proyecto (wrangler.jsonc: "directory": "."),
+# así que cualquier archivo nuevo en la raíz queda público salvo que se agregue a esta lista.
+
+# Historial y configuración de Git
+.git
+.github
+.gitignore
+.assetsignore
+
+# Configuración de Cloudflare y de Node, y archivos de claves por si algún día existen
+wrangler.jsonc
+wrangler.toml
+.wrangler
+.dev.vars
+.env*
+package.json
+package-lock.json
+node_modules
+
+# Herramientas, referencias y notas internas
+_herramientas
+_referencias
+.claude
+.impeccable
+CLAUDE.md
+README*
+*.md
+
+# Documento de precios desactualizado (CLAUDE.md pide no enlazarlo)
+AVORA-Planes-y-Precios-2026.pdf

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es-PA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // Avisa al CSS que hay JavaScript. Si el visitante venía navegando en inglés, el
+    // texto de esta página sale en inglés (.solo-en en vez de .solo-es)
+    document.documentElement.classList.add('js');
+    try { if (localStorage.getItem('avora-idioma') === 'en') document.documentElement.classList.add('viene-de-ingles'); } catch (e) {}
+  </script>
+
+  <title>Página no encontrada | AVORA Solutions</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0B0B0C">
+  <!-- Cloudflare muestra esta página en cualquier dirección que no exista, también dentro de
+       carpetas: por eso todas sus rutas empiezan con "/" (ver wrangler.jsonc) -->
+  <!-- Ícono: .ico para navegadores viejos, .svg para los actuales y el PNG para la pantalla de inicio del iPhone -->
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <!-- HEADER: el mismo de index.html, sin el selector de idioma -->
+  <header class="site-header container" data-reveal="fundido">
+    <a class="marca" href="/" aria-label="AVORA Solutions, ir al inicio">
+      <svg class="marca__logo" viewBox="14 24 180 154" aria-hidden="true"><use href="#i-logo"/></svg>
+      <span class="marca__nombre" aria-hidden="true">AVORA</span>
+    </a>
+    <nav class="site-nav" aria-label="Principal">
+      <a href="/#servicios">Servicios</a>
+      <a href="/#proyectos">Proyectos</a>
+      <a href="/#planes">Planes</a>
+    </nav>
+    <a class="btn btn--primary btn--sm" href="https://wa.me/50766328271?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios." target="_blank" rel="noopener">
+      <span>Contáctanos</span><span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
+    </a>
+  </header>
+
+  <main id="contenido">
+    <section class="panel" aria-labelledby="error-title" data-reveal="panel">
+      <span class="panel__marca" aria-hidden="true"></span>
+      <p class="panel__indice" aria-hidden="true">Error 404</p>
+      <div class="container panel__cuerpo">
+        <header class="section-head">
+          <p class="section-head__etiqueta" data-reveal>Error 404</p>
+          <h1 class="legal__titulo" id="error-title" data-reveal="lineas">
+            <span class="linea"><span style="--n:0"><span class="solo-es">Página no</span><span class="solo-en" lang="en">Page not</span></span></span>
+            <span class="linea"><span style="--n:1"><span class="solo-es">encontrada.</span><span class="solo-en" lang="en">found.</span></span></span>
+          </h1>
+        </header>
+
+        <div class="legal__texto" data-reveal>
+          <p><span class="solo-es">La dirección que abriste no existe o cambió de lugar.</span><span class="solo-en" lang="en">The address you opened doesn't exist or has moved.</span></p>
+          <div>
+            <a class="btn btn--primary btn--lg" href="/">
+              <span><span class="solo-es">Volver al inicio</span><span class="solo-en" lang="en">Back to home</span></span><span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER: el mismo de index.html -->
+  <footer class="site-footer container" data-reveal="fundido">
+    <p class="site-footer__marca">
+      <svg class="site-footer__logo" viewBox="14 24 180 154" aria-hidden="true"><use href="#i-logo"/></svg>
+      <span class="claro">AVORA Solutions</span>
+    </p>
+    <p>Atrae. Convierte. Automatiza.</p>
+    <p><a href="https://wa.me/50766328271?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios." target="_blank" rel="noopener">WhatsApp +507 6632-8271</a> · <a href="mailto:avorasolution@gmail.com">avorasolution@gmail.com</a> · Panamá · © 2026</p>
+    <p class="site-footer__legal"><a href="/privacidad.html">Privacidad</a> · <a href="/terminos.html">Términos</a></p>
+  </footer>
+
+  <!-- Íconos -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-logo" viewBox="14 24 180 154">
+      <path fill="currentColor" fill-rule="evenodd" d="M112.0 28.0 L88.0 28.0 L40.6 131.3 L81.2 111.1 L100.0 70.0 L111.8 95.7 L137.2 83.0 Z M18.4 173.8 L50.4 173.8 L65.1 141.8 L127.7 141.8 L142.4 173.8 L174.4 173.8 L136.1 90.3 L110.7 103.0 L118.4 119.8 L77.1 119.8 L33.1 141.8 Z"/>
+      <!-- La estela del logo: único uso del azul junto con la barrita de cada panel -->
+      <path style="fill: var(--azul)" d="M147.3 85.5 L144.0 78.8 L188.6 60.7 Z"/>
+    </symbol>
+    <symbol id="i-flecha" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
+    </symbol>
+  </svg>
+
+  <script src="/js/main.js" defer></script>
+</body>
+</html>
