@@ -4,7 +4,7 @@
    por una llamada a un servidor propio (ver el comentario sobre getReply).
    Sin librerías. Lo que escribe el usuario siempre se muestra como texto plano. */
 (() => {
-  const WA_BASE = 'https://wa.me/50763288742?text=';
+  const WA_BASE = 'https://wa.me/50766328271?text=';
   const MAX_CHARS = 300;
   const THINK_MS = 1000;
   const BUBBLE_DELAY_MS = 5000;
@@ -13,24 +13,39 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isDesktop = () => window.matchMedia('(min-width: 900px)').matches;
 
+  // El chat habla el idioma de la página, que cambia js/idioma.js con el botón ES | EN.
+  // Cada texto tiene su versión en inglés al lado (…_EN); esta función elige cuál usar.
+  const segunIdioma = (es, en) => (document.documentElement.lang === 'en' ? en : es);
+
   /* ---------- Contenido ---------- */
 
   // Los mismos mensajes prellenados que ya usa la landing en cada botón
   const WHATSAPP = {
-    general: 'Hola AVORA, quiero agendar una demo para mi negocio.',
-    atrae: 'Hola AVORA, quiero que más clientes conozcan mi negocio en redes sociales. ¿Podemos agendar una demo?',
-    convierte: 'Hola AVORA, me interesa una landing page para mi negocio. ¿Podemos agendar una demo?',
-    automatiza: 'Hola AVORA, quiero automatizar la atención de mi negocio. ¿Podemos agendar una demo?',
+    general: 'Hola, vi su página web y quiero información sobre sus servicios.',
+    atrae: 'Hola AVORA, quiero que más clientes conozcan mi negocio en redes sociales. ¿Me dan más información?',
+    convierte: 'Hola AVORA, me interesa una landing page para mi negocio. ¿Me dan más información?',
+    automatiza: 'Hola AVORA, quiero automatizar la atención de mi negocio. ¿Me dan más información?',
     caso: 'Hola AVORA, vi sus proyectos y quiero algo así para mi negocio.',
-    precio: 'Hola AVORA, vi los planes y quiero saber cuál le conviene a mi negocio. ¿Podemos agendar una demo?',
+    precio: 'Hola AVORA, vi los planes y quiero saber cuál le conviene a mi negocio. ¿Me dan más información?',
   };
-  const waLink = (tema) => WA_BASE + encodeURIComponent(WHATSAPP[tema] || WHATSAPP.general);
+  const WHATSAPP_EN = {
+    general: 'Hi, I saw your website and I\'d like information about your services.',
+    atrae: 'Hi AVORA, I\'d like more customers to find my business on social media. Could you send me more information?',
+    convierte: 'Hi AVORA, I\'m interested in a landing page for my business. Could you send me more information?',
+    automatiza: 'Hi AVORA, I\'d like to automate my customer service. Could you send me more information?',
+    caso: 'Hi AVORA, I saw your projects and I\'d like something like that for my business.',
+    precio: 'Hi AVORA, I saw the plans and I\'d like to know which one fits my business. Could you send me more information?',
+  };
+  const waLink = (tema) => {
+    const mensajes = segunIdioma(WHATSAPP, WHATSAPP_EN);
+    return WA_BASE + encodeURIComponent(mensajes[tema] || mensajes.general);
+  };
 
   // Enlaces a secciones de la página según el tema. Salen del tema y no del texto,
   // así getReply sigue devolviendo solo { texto, tema } aunque luego responda la IA.
   const ENLACES = {
-    precio: { href: '#planes', texto: 'Ver los planes' },
-    caso: { href: '#proyectos', texto: 'Ver los proyectos' },
+    precio: { href: '#planes', texto: 'Ver los planes', textoEn: 'See the plans' },
+    caso: { href: '#proyectos', texto: 'Ver los proyectos', textoEn: 'See the projects' },
   };
 
   // Textos basados solo en lo que ya dice la landing: sin cifras ni clientes inventados.
@@ -41,15 +56,15 @@
       'Somos un solo equipo para todo lo digital de tu negocio, en tres pilares:',
       '• Atrae: manejamos tus redes sociales con contenido orgánico y campañas de ads.',
       '• Convierte: landing pages y sitios web pensados para que quien te visita te escriba.',
-      '• Automatiza: chatbots y asistentes con IA que responden por ti.',
+      '• Automatiza: automatizaciones que responden por ti.',
       '¿Cuál te interesa más?',
     ].join('\n'),
     atrae: 'Para que te conozcan, manejamos tus redes sociales: contenido orgánico y campañas de ads, para que las personas correctas sepan que existes.',
     convierte: 'Hacemos landing pages y sitios web pensados para una sola cosa: que quien te visita te escriba. Puedes empezar con tu página y, cuando estés listo, sumamos lo demás.',
-    automatiza: 'Creamos chatbots y asistentes con IA que responden por ti, e integraciones que conectan tus herramientas para que trabajes menos. Así nadie se queda sin respuesta.',
+    automatiza: 'Creamos automatizaciones que responden por ti, e integraciones que conectan tus herramientas para que trabajes menos. Así nadie se queda sin respuesta.',
     precio: [
       'Tenemos dos planes:',
-      '• Web + Automatización: $650 de instalación + $90/mes. Tu página a medida y un asistente que responde por ti. Si solo necesitas la página, desde $350.',
+      '• Web + Automatización: $650 de instalación + $90/mes. Tu página a medida y una automatización que responde por ti. Si solo necesitas la página, desde $350.',
       '• A tu medida: anuncios, página y WhatsApp automatizado trabajando juntos. El precio sale de una evaluación de tu negocio.',
       'Clientes Fundadores: 30% de descuento en la instalación para los primeros 5 clientes.',
     ].join('\n'),
@@ -66,6 +81,38 @@
     ].join('\n'),
     'no-entiende': 'Esa pregunta la vemos mejor juntos. Escríbenos por WhatsApp y te respondemos directo.',
   };
+  // Las mismas respuestas en inglés, con los mismos precios
+  const RESPUESTAS_EN = {
+    saludo: 'Hi! Tell me what your business needs, or pick one of the options below.',
+    general: [
+      'We\'re one team for everything digital in your business, built on three pillars:',
+      '• Attract: we manage your social media with organic content and ad campaigns.',
+      '• Convert: landing pages and websites built so visitors message you.',
+      '• Automate: automations that reply for you.',
+      'Which one interests you most?',
+    ].join('\n'),
+    atrae: 'To get you noticed, we manage your social media: organic content and ad campaigns, so the right people know you exist.',
+    convierte: 'We build landing pages and websites designed for one thing: getting visitors to message you. You can start with your page and add the rest when you\'re ready.',
+    automatiza: 'We build automations that reply for you, and integrations that connect your tools so you work less. That way, no one is left without an answer.',
+    precio: [
+      'We have two plans:',
+      '• Web + Automation: $650 setup + $90/mo. Your custom page plus an automation that replies for you. If you only need the page, from $350.',
+      '• Tailored: ads, website and automated WhatsApp working together. The price comes from an assessment of your business.',
+      'Founding Clients: 30% off setup for the first 5 clients.',
+    ].join('\n'),
+    proceso: [
+      'We work in three simple steps:',
+      '1. We talk about your business: what you sell, who you sell to and what\'s holding you back.',
+      '2. We send you a clear proposal, with a defined scope and price.',
+      '3. We build with you, in stages, adjusting based on your feedback.',
+    ].join('\n'),
+    caso: [
+      'Here are two projects that are already live:',
+      '• Canal Silver (buyers of gold, silver and jewelry): they had no digital presence of their own, and their competitors did. We built them a conversion-focused landing page connected to WhatsApp. Today they compete on equal footing, and new customers have come in through the page.',
+      '• Distrito 507 (a clothing brand inspired by Panama, school project): a digital lookbook with a story behind each design. It surprised the group and the parents, and even led to the sale of a sweater.',
+    ].join('\n'),
+    'no-entiende': 'That\'s a question we\'d better look at together. Message us on WhatsApp and we\'ll reply directly.',
+  };
 
   // Palabras clave por tema, ya sin tildes y en minúsculas.
   // "\\b" = inicio de palabra: así "ia" no coincide dentro de "envía" o "media".
@@ -78,6 +125,17 @@
     atrae: /\b(redes|anuncio|ads\b|publicidad|cliente|instagram|facebook|tiktok|seguidores|contenido)/,
     general: /\b(que hacen|servicio|que ofrecen|a que se dedican)/,
     saludo: /^[¡!¿?\s]*(hola|buenas|buenos dias|buen dia|hey)\b/,
+  };
+  // Lo mismo para preguntas en inglés (mismos temas, misma prioridad)
+  const PALABRAS_CLAVE_EN = {
+    precio: /\b(pric|cost|how much|rates?\b|budget|quote|plans?\b|package|monthly|fees?\b)/,
+    caso: /\b(case|example|portfolio|projects?\b|previous work|canal silver|distrito 507|lookbook)/,
+    proceso: /\b(process|steps|how do you work|how does it work)/,
+    automatiza: /\b(chatbot|bot\b|automat|repl(y|ies)\b|respond|answer|customer service|assistant|ai\b|integrat)/,
+    convierte: /\b(page|web|landing|site)/,
+    atrae: /\b(social|ads?\b|advertis|customer|client|instagram|facebook|tiktok|followers|content)/,
+    general: /\b(what do you do|services?\b|what do you offer)/,
+    saludo: /^[!?\s]*(hi|hello|hey|good morning|good afternoon)\b/,
   };
 
   // Si un mensaje toca varios temas, gana el primero de esta lista.
@@ -100,55 +158,90 @@
    */
   async function getReply(mensaje) {
     const texto = normalizar(mensaje);
-    const tema = PRIORIDAD.find((t) => PALABRAS_CLAVE[t].test(texto)) || 'no-entiende';
-    return { texto: RESPUESTAS[tema], tema };
+    const palabras = segunIdioma(PALABRAS_CLAVE, PALABRAS_CLAVE_EN);
+    const tema = PRIORIDAD.find((t) => palabras[t].test(texto)) || 'no-entiende';
+    return { texto: segunIdioma(RESPUESTAS, RESPUESTAS_EN)[tema], tema };
   }
 
   const RAPIDAS = ['¿Qué hacen?', '¿Cuánto cuesta?', 'Quiero más clientes', 'Necesito una página web', 'Quiero automatizar mi atención', 'Ver proyectos'];
+  const RAPIDAS_EN = ['What do you do?', 'How much does it cost?', 'I want more customers', 'I need a website', 'I want to automate my replies', 'See projects'];
   const BIENVENIDA = '¡Hola! Soy Avo, el asistente de AVORA. ¿En qué te ayudo con tu negocio?';
+  const BIENVENIDA_EN = 'Hi! I\'m Avo, AVORA\'s assistant. How can I help with your business?';
+
+  // Textos fijos de la interfaz del chat (botones, etiquetas para lectores de pantalla)
+  const INTERFAZ = {
+    burbuja: '¿Te ayudo?',
+    abrir: 'Chatea con Avo, el asistente de AVORA',
+    sub: 'Asistente de AVORA',
+    cerrar: 'Cerrar chat',
+    conversacion: 'Conversación con Avo',
+    pregunta: 'Escribe tu pregunta',
+    enviar: 'Enviar',
+    caracteres: 'caracteres',
+    contacto: 'Contáctanos',
+    escribiendo: 'Avo está escribiendo…',
+    whatsapp: 'Hablar por WhatsApp',
+    rapidas: 'Respuestas rápidas',
+  };
+  const INTERFAZ_EN = {
+    burbuja: 'Need help?',
+    abrir: 'Chat with Avo, AVORA\'s assistant',
+    sub: 'AVORA\'s assistant',
+    cerrar: 'Close chat',
+    conversacion: 'Conversation with Avo',
+    pregunta: 'Type your question',
+    enviar: 'Send',
+    caracteres: 'characters',
+    contacto: 'Contact us',
+    escribiendo: 'Avo is typing…',
+    whatsapp: 'Chat on WhatsApp',
+    rapidas: 'Quick replies',
+  };
+  const ui = () => segunIdioma(INTERFAZ, INTERFAZ_EN);
 
   /* ---------- Interfaz ---------- */
 
-  const img = (estado) => `img/avo/avo-capucha-${estado}.svg`;
+  const img = (estado) => `img/avo/avo-${estado}.svg`;
   ['normal', 'parpadeo', 'saludo', 'pensando', 'feliz'].forEach((e) => { new Image().src = img(e); });
 
   const ICON_CHAT = '<svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>';
   const root = document.createElement('div');
   root.className = 'avo theme-dark';
+  const t = ui();   // textos en el idioma con el que carga la página
   root.innerHTML = `
-    <button class="avo-bubble" type="button" hidden>¿Te ayudo?</button>
+    <button class="avo-bubble" type="button" hidden>${t.burbuja}</button>
     <button class="avo-launcher" type="button" aria-expanded="false" aria-controls="avo-panel"
-            aria-label="Chatea con Avo, el asistente de AVORA">
-      <img class="avo-face avo-launcher__img" src="${img('normal')}" alt="" width="34" height="34">
+            aria-label="${t.abrir}">
+      <img class="avo-face avo-launcher__img" src="${img('normal')}" alt="" width="48" height="48">
       <span class="avo-fx" aria-hidden="true"></span>
     </button>
     <section class="avo-panel" id="avo-panel" role="dialog" aria-modal="true" aria-labelledby="avo-title" data-lenis-prevent hidden>
       <header class="avo-panel__head">
         <span class="avo-panel__avatar">
-          <img class="avo-face" src="${img('normal')}" alt="" width="34" height="34">
+          <img class="avo-face" src="${img('normal')}" alt="" width="48" height="48">
           <span class="avo-fx" aria-hidden="true"></span>
         </span>
         <div class="avo-panel__who">
           <h2 class="avo-panel__title" id="avo-title" tabindex="-1">Avo</h2>
-          <p class="avo-panel__sub">Asistente de AVORA</p>
+          <p class="avo-panel__sub">${t.sub}</p>
         </div>
-        <button class="avo-panel__close" type="button" aria-label="Cerrar chat">
+        <button class="avo-panel__close" type="button" aria-label="${t.cerrar}">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </button>
       </header>
-      <div class="avo-log" role="log" aria-live="polite" aria-label="Conversación con Avo" tabindex="-1"></div>
+      <div class="avo-log" role="log" aria-live="polite" aria-label="${t.conversacion}" tabindex="-1"></div>
       <p class="avo-typing" role="status"></p>
       <form class="avo-form" novalidate>
-        <label class="avo-sr-only" for="avo-input">Escribe tu pregunta</label>
+        <label class="avo-sr-only" for="avo-input">${t.pregunta}</label>
         <input class="avo-input" id="avo-input" type="text" maxlength="${MAX_CHARS}" autocomplete="off"
-               placeholder="Escribe tu pregunta…" aria-describedby="avo-count">
-        <button class="avo-send" type="submit" aria-label="Enviar">
+               placeholder="${t.pregunta}…" aria-describedby="avo-count">
+        <button class="avo-send" type="submit" aria-label="${t.enviar}">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <span class="avo-count" id="avo-count">0/${MAX_CHARS} caracteres</span>
+        <span class="avo-count" id="avo-count">0/${MAX_CHARS} ${t.caracteres}</span>
       </form>
       <a class="btn btn--primary avo-cta" href="${waLink('general')}" target="_blank" rel="noopener">
-        ${ICON_CHAT}<span>Agendar demo por WhatsApp</span>
+        ${ICON_CHAT}<span>${t.contacto}</span>
       </a>
     </section>`;
   document.body.appendChild(root);
@@ -288,7 +381,7 @@
     a.href = waLink(tema);
     a.target = '_blank';
     a.rel = 'noopener';
-    a.innerHTML = `${ICON_CHAT}<span>Hablar por WhatsApp</span>`;
+    a.innerHTML = `${ICON_CHAT}<span>${ui().whatsapp}</span>`;
     msg.appendChild(a);
   };
 
@@ -299,7 +392,7 @@
     a.className = 'avo-link';
     a.href = enlace.href;
     a.innerHTML = '<span></span><span aria-hidden="true">↓</span>';
-    a.firstChild.textContent = enlace.texto;
+    a.firstChild.textContent = segunIdioma(enlace.texto, enlace.textoEn);
     // En celular el panel tapa toda la página: se cierra para que se vea la sección.
     // En computadora el panel es pequeño y el chat puede seguir abierto al lado.
     a.addEventListener('click', () => {
@@ -314,8 +407,8 @@
     const group = document.createElement('div');
     group.className = 'avo-chips';
     group.setAttribute('role', 'group');
-    group.setAttribute('aria-label', 'Respuestas rápidas');
-    RAPIDAS.forEach((texto) => {
+    group.setAttribute('aria-label', ui().rapidas);
+    segunIdioma(RAPIDAS, RAPIDAS_EN).forEach((texto) => {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'avo-chip';
@@ -344,7 +437,7 @@
     log.querySelectorAll('.avo-chips').forEach((g) => g.remove());
     addMessage('user', mensaje);
     cambiarEstado('pensando', true);
-    typing.textContent = 'Avo está escribiendo…';
+    typing.textContent = ui().escribiendo;
     root.classList.add('is-thinking');
 
     let respuesta;
@@ -352,7 +445,7 @@
       // Siempre al menos 1 segundo "pensando", aunque la respuesta llegue antes
       [respuesta] = await Promise.all([getReply(mensaje), wait(THINK_MS)]);
     } catch {
-      respuesta = { texto: RESPUESTAS['no-entiende'], tema: 'general' };
+      respuesta = { texto: segunIdioma(RESPUESTAS, RESPUESTAS_EN)['no-entiende'], tema: 'general' };
     }
 
     typing.textContent = '';
@@ -372,11 +465,11 @@
     e.preventDefault();
     const texto = input.value;
     input.value = '';
-    count.textContent = `0/${MAX_CHARS} caracteres`;
+    count.textContent = `0/${MAX_CHARS} ${ui().caracteres}`;
     send(texto);
   });
   input.addEventListener('input', () => {
-    count.textContent = `${input.value.length}/${MAX_CHARS} caracteres`;
+    count.textContent = `${input.value.length}/${MAX_CHARS} ${ui().caracteres}`;
   });
 
   /* Abrir y cerrar */
@@ -396,7 +489,7 @@
 
     if (!started) {
       started = true;
-      addMessage('avo', BIENVENIDA);
+      addMessage('avo', segunIdioma(BIENVENIDA, BIENVENIDA_EN));
       addQuickReplies();
     }
     // En computadora se puede escribir de inmediato; en celular no abrimos el teclado solo.
@@ -415,6 +508,28 @@
   launcher.addEventListener('click', () => (panel.hidden ? open() : close()));
   bubble.addEventListener('click', open);
   closeBtn.addEventListener('click', close);
+
+  /* Cambio de idioma: el botón ES | EN (js/idioma.js) avisa con el evento "avora:idioma".
+     Se traducen los textos fijos y, si la conversación ya empezó, vuelve a empezar con el
+     saludo en el idioma nuevo (así no quedan los dos idiomas mezclados). */
+  document.addEventListener('avora:idioma', () => {
+    const t = ui();
+    bubble.textContent = t.burbuja;
+    launcher.setAttribute('aria-label', t.abrir);
+    $('.avo-panel__sub').textContent = t.sub;
+    closeBtn.setAttribute('aria-label', t.cerrar);
+    log.setAttribute('aria-label', t.conversacion);
+    $('.avo-form label').textContent = t.pregunta;
+    input.placeholder = `${t.pregunta}…`;
+    sendBtn.setAttribute('aria-label', t.enviar);
+    count.textContent = `${input.value.length}/${MAX_CHARS} ${t.caracteres}`;
+    cta.lastElementChild.textContent = t.contacto;
+    cta.href = waLink('general');
+    if (!started) return;
+    log.replaceChildren();
+    addMessage('avo', segunIdioma(BIENVENIDA, BIENVENIDA_EN));
+    addQuickReplies();
+  });
 
   /* ---------- Reacciones ---------- */
 

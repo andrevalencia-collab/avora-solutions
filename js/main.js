@@ -1,6 +1,6 @@
 /* AVORA Solutions · interacciones de la página (sin librerías propias).
    Nada escucha el evento scroll del navegador: las apariciones usan un solo
-   IntersectionObserver, y la profundidad de la palabra AVORA usa el scroll de Lenis.
+   IntersectionObserver, y la profundidad de la palabra de fondo usa el scroll de Lenis.
    Lenis (scroll con inercia) se descarga solo en computadora con mouse. */
 (() => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -100,7 +100,7 @@
   /* ---------- Scroll con inercia y profundidad ----------
      Lenis, suave y ligero, SOLO en computadora con mouse: en celular, en pantallas
      táctiles y con movimiento reducido ni siquiera se descarga. Cuando existe, también
-     mueve la palabra AVORA de la portada más lento que el scroll (efecto de profundidad),
+     mueve la palabra CRECER de la portada más lento que el scroll (efecto de profundidad),
      solo mientras la portada está en pantalla. En celular la palabra queda fija. */
   if (conMouse && !tactil && !reduceMotion) {
     const script = document.createElement('script');

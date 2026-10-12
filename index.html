@@ -3,10 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>document.documentElement.classList.add('js')</script>
+  <script>
+    // Avisa al CSS que hay JavaScript y pone el idioma guardado antes de dibujar (js/idioma.js hace el resto)
+    document.documentElement.classList.add('js');
+    try { if (localStorage.getItem('avora-idioma') === 'en') document.documentElement.lang = 'en'; } catch (e) {}
+  </script>
 
-  <title>AVORA Solutions | Agencia de marketing digital en Panamá</title>
-  <meta name="description" content="Redes sociales, páginas web y automatizaciones con IA para negocios en Panamá. Más clientes y menos trabajo manual. Agenda tu demo por WhatsApp.">
+  <title>AVORA Solutions | Creamos sistemas que atienden por ti</title>
+  <meta name="description" content="Páginas web, automatizaciones y redes sociales para que más clientes te escriban por WhatsApp. Negocios en Panamá. Contáctanos.">
   <!-- Dirección actual (Netlify): reemplazar https://avosolutions.netlify.app cuando haya dominio propio -->
   <link rel="canonical" href="https://avosolutions.netlify.app/">
   <meta name="theme-color" content="#0B0B0C">
@@ -15,8 +19,8 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_PA">
   <meta property="og:site_name" content="AVORA Solutions">
-  <meta property="og:title" content="AVORA Solutions | Atrae. Convierte. Automatiza.">
-  <meta property="og:description" content="Más clientes y menos trabajo manual para tu negocio en Panamá. Redes, página web y automatizaciones en un solo equipo.">
+  <meta property="og:title" content="AVORA Solutions | Creamos sistemas que atienden por ti.">
+  <meta property="og:description" content="Páginas web, automatizaciones y redes sociales para que más clientes te escriban por WhatsApp. Negocios en Panamá.">
   <meta property="og:url" content="https://avosolutions.netlify.app/">
   <meta property="og:image" content="https://avosolutions.netlify.app/img/og-image.jpg">
   <meta property="og:image:width" content="1200">
@@ -25,7 +29,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300..800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/avo.css">
 
@@ -35,80 +39,102 @@
     "@type": "ProfessionalService",
     "name": "AVORA Solutions",
     "slogan": "Atrae. Convierte. Automatiza.",
-    "description": "Agencia de marketing digital en Panamá: manejo de redes sociales, landing pages y sitios web, chatbots y automatizaciones con IA.",
+    "description": "Agencia digital en Panamá: landing pages y sitios web, automatizaciones y redes sociales (contenido orgánico y campañas de anuncios).",
     "url": "https://avosolutions.netlify.app/",
     "logo": "https://avosolutions.netlify.app/img/favicon.svg",
     "image": "https://avosolutions.netlify.app/img/og-image.jpg",
-    "telephone": "+507 6328-8742",
+    "telephone": "+507 6632-8271",
     "email": "avorasolution@gmail.com",
     "address": { "@type": "PostalAddress", "addressCountry": "PA" },
     "areaServed": { "@type": "Country", "name": "Panamá" },
-    "knowsAbout": ["Manejo de redes sociales", "Publicidad digital", "Landing pages", "Diseño web", "Chatbots", "Automatización con IA"]
+    "knowsAbout": ["Landing pages", "Sitios web", "Automatizaciones", "Manejo de redes sociales", "Contenido orgánico", "Campañas de anuncios", "SEO local"]
   }
   </script>
 </head>
 <body>
-  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <a class="skip-link" href="#contenido" data-i18n="saltar">Saltar al contenido</a>
 
   <!-- HEADER -->
   <header class="site-header container" data-reveal="fundido">
-    <a class="marca" href="#inicio" aria-label="AVORA Solutions, ir al inicio">
+    <a class="marca" href="#inicio" aria-label="AVORA Solutions, ir al inicio" data-i18n-aria="marca.aria">
       <svg class="marca__logo" viewBox="14 24 180 154" aria-hidden="true"><use href="#i-logo"/></svg>
       <span class="marca__nombre" aria-hidden="true">AVORA</span>
     </a>
-    <nav class="site-nav" aria-label="Principal">
-      <a href="#servicios">Servicios</a>
-      <a href="#proyectos">Proyectos</a>
-      <a href="#planes">Planes</a>
+    <nav class="site-nav" aria-label="Principal" data-i18n-aria="nav.aria">
+      <a href="#servicios" data-i18n="nav.servicios">Servicios</a>
+      <a href="#proyectos" data-i18n="nav.proyectos">Proyectos</a>
+      <a href="#planes" data-i18n="nav.planes">Planes</a>
     </nav>
-    <a class="btn btn--primary btn--sm" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">
-      Agenda tu demo<span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
+    <!-- Idioma: un solo botón que alterna. js/idioma.js cambia los textos; sin JavaScript no se muestra -->
+    <button class="idioma" type="button" aria-label="Cambiar idioma a inglés">
+      <span class="idioma__op" data-idioma="es" aria-hidden="true">ES</span><span class="idioma__sep" aria-hidden="true">|</span><span class="idioma__op" data-idioma="en" aria-hidden="true">EN</span>
+    </button>
+    <a class="btn btn--primary btn--sm" href="https://wa.me/50766328271?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios." target="_blank" rel="noopener" data-wa="general">
+      <span data-i18n="cta">Contáctanos</span><span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
     </a>
   </header>
 
   <main id="contenido">
 
-    <!-- 1 · PORTADA. Secuencia al cargar: panel y borde → palabra AVORA → título → texto y botones -->
+    <!-- 1 · PORTADA. Secuencia al cargar: panel y borde → palabra CRECER → título → texto y botones -->
     <section class="panel hero" id="inicio" aria-labelledby="hero-title" data-reveal="panel">
       <span class="hero__sentinel" aria-hidden="true"></span>
       <span class="panel__marca" aria-hidden="true"></span>
-      <p class="panel__indice" aria-hidden="true">01 / 05 · Inicio</p>
-      <!-- Palabra de fondo: el exterior se mueve con el scroll (main.js), el interior aparece -->
-      <span class="hero__palabra" aria-hidden="true"><span class="hero__palabra-texto" data-reveal style="--d:100ms">AVORA</span></span>
+      <p class="panel__indice" aria-hidden="true">01 / 05 · <span data-i18n="indice.inicio">Inicio</span></p>
       <div class="container hero__cuerpo">
         <p class="hero__meta" data-reveal style="--d:250ms">
-          <span>Agencia digital · Panamá</span>
-          <span class="hero__meta-claro">Redes, web y automatización.</span>
+          <span data-i18n="hero.meta1">Agencia digital · Panamá</span>
+          <span class="hero__meta-claro" data-i18n="hero.meta2">Redes, web y automatización.</span>
         </p>
-        <h1 class="hero__title" id="hero-title" data-reveal="lineas" style="--d:250ms">
-          <span class="linea"><span style="--n:0">Atrae.</span></span>
-          <span class="linea"><span style="--n:1">Convierte.</span></span>
-          <span class="linea"><span style="--n:2">Automatiza.</span></span>
-        </h1>
+        <div class="hero__titular">
+          <!-- Palabra de fondo, centrada detrás del título: el exterior se mueve con el scroll (main.js), el interior aparece -->
+          <span class="hero__palabra" aria-hidden="true"><span class="hero__palabra-texto" data-reveal data-i18n="hero.palabra" style="--d:100ms">CRECER</span></span>
+          <!-- En celular son 4 líneas; en computadora las dos primeras (.linea--pareja) comparten fila -->
+          <h1 class="hero__title" id="hero-title" data-reveal="lineas" style="--d:250ms">
+            <span class="linea linea--pareja"><span style="--n:0" data-i18n="hero.t1">Creamos</span></span>
+            <span class="linea linea--pareja"><span style="--n:1" data-i18n="hero.t2">sistemas</span></span>
+            <span class="linea"><span style="--n:2" data-i18n="hero.t3">que atienden</span></span>
+            <span class="linea"><span style="--n:3" data-i18n="hero.t4">por ti.</span></span>
+          </h1>
+        </div>
         <div class="hero__pie" data-reveal="grupo" style="--d:550ms">
           <span class="divisoria" data-paso="linea" style="--i:0"></span>
-          <p class="hero__lead" data-paso style="--i:1">
-            <span class="claro">Más clientes y menos trabajo manual</span> para tu negocio. Redes, página web y automatizaciones en un solo equipo.
+          <p class="hero__lead" data-paso data-i18n-html="hero.lead" style="--i:1">
+            Páginas web, automatizaciones y redes sociales para que <span class="claro">más clientes te escriban por WhatsApp.</span> Negocios en Panamá.
           </p>
           <div class="hero__acciones" data-paso style="--i:2">
-            <a class="btn btn--primary btn--lg" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">
-              Agenda tu demo por WhatsApp<span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
+            <a class="btn btn--primary btn--lg" href="https://wa.me/50766328271?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios." target="_blank" rel="noopener" data-wa="general">
+              <span data-i18n="cta">Contáctanos</span><span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
             </a>
-            <a class="enlace" href="#planes">Ver planes</a>
+            <a class="enlace" href="#planes" data-i18n="hero.planes">Ver planes</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 2 · CINTA (sin panel). La lista se repite para que el movimiento no tenga corte -->
-    <div class="ribbon" role="region" aria-label="Lo que hacemos y para quién" data-reveal="fundido">
+    <!-- 2 · CINTA (sin panel). La lista se repite para que el movimiento no tenga corte: el
+         recorrido avanza la mitad de la pista, así que las copias siempre van en número par.
+         Son 6 porque la lista es corta y media pista tiene que llenar una pantalla ancha. -->
+    <div class="ribbon" role="region" aria-label="Lo que hacemos" data-i18n-aria="cinta.aria" data-reveal="fundido">
       <div class="ribbon__band">
         <div class="ribbon__track">
           <ul class="ribbon__list">
-            <li>Landing pages para clínicas</li><li>Ads para restaurantes</li><li>Chatbots para inmobiliarias</li><li>Automatizaciones para gimnasios</li><li>Webs para emprendedores</li>
+            <li data-i18n="cinta.1">Landing pages</li><li data-i18n="cinta.2">Sitios web</li><li data-i18n="cinta.3">Automatizaciones</li><li data-i18n="cinta.4">Redes sociales</li><li data-i18n="cinta.5">Campañas de ads</li>
           </ul>
           <ul class="ribbon__list" aria-hidden="true">
-            <li>Landing pages para clínicas</li><li>Ads para restaurantes</li><li>Chatbots para inmobiliarias</li><li>Automatizaciones para gimnasios</li><li>Webs para emprendedores</li>
+            <li data-i18n="cinta.1">Landing pages</li><li data-i18n="cinta.2">Sitios web</li><li data-i18n="cinta.3">Automatizaciones</li><li data-i18n="cinta.4">Redes sociales</li><li data-i18n="cinta.5">Campañas de ads</li>
+          </ul>
+          <ul class="ribbon__list" aria-hidden="true">
+            <li data-i18n="cinta.1">Landing pages</li><li data-i18n="cinta.2">Sitios web</li><li data-i18n="cinta.3">Automatizaciones</li><li data-i18n="cinta.4">Redes sociales</li><li data-i18n="cinta.5">Campañas de ads</li>
+          </ul>
+          <ul class="ribbon__list" aria-hidden="true">
+            <li data-i18n="cinta.1">Landing pages</li><li data-i18n="cinta.2">Sitios web</li><li data-i18n="cinta.3">Automatizaciones</li><li data-i18n="cinta.4">Redes sociales</li><li data-i18n="cinta.5">Campañas de ads</li>
+          </ul>
+          <ul class="ribbon__list" aria-hidden="true">
+            <li data-i18n="cinta.1">Landing pages</li><li data-i18n="cinta.2">Sitios web</li><li data-i18n="cinta.3">Automatizaciones</li><li data-i18n="cinta.4">Redes sociales</li><li data-i18n="cinta.5">Campañas de ads</li>
+          </ul>
+          <ul class="ribbon__list" aria-hidden="true">
+            <li data-i18n="cinta.1">Landing pages</li><li data-i18n="cinta.2">Sitios web</li><li data-i18n="cinta.3">Automatizaciones</li><li data-i18n="cinta.4">Redes sociales</li><li data-i18n="cinta.5">Campañas de ads</li>
           </ul>
         </div>
       </div>
@@ -118,12 +144,12 @@
     <div class="franja tema-claro">
     <section class="panel" id="servicios" aria-labelledby="servicios-title" data-reveal="panel">
       <span class="panel__marca" aria-hidden="true"></span>
-      <p class="panel__indice" aria-hidden="true">02 / 05 · Servicios</p>
+      <p class="panel__indice" aria-hidden="true">02 / 05 · <span data-i18n="indice.servicios">Servicios</span></p>
       <div class="container panel__cuerpo">
         <header class="section-head">
-          <p class="section-head__etiqueta" data-reveal>Lo que hacemos</p>
+          <p class="section-head__etiqueta" data-reveal data-i18n="serv.etiqueta">Lo que hacemos</p>
           <h2 class="section-title" id="servicios-title" data-reveal="lineas">
-            <span class="linea"><span style="--n:0">Servicios.</span></span>
+            <span class="linea"><span style="--n:0" data-i18n="serv.titulo">Servicios.</span></span>
           </h2>
         </header>
 
@@ -131,17 +157,17 @@
           <li class="servicio" data-reveal="grupo" style="--d:0ms">
             <span class="divisoria" data-paso="linea" style="--i:0"></span>
             <div class="servicio__texto">
-              <h3 class="servicio__nombre" data-paso style="--i:1"><span>Atrae</span></h3>
-              <p data-paso style="--i:2">Redes y anuncios que ponen tu negocio frente a las personas correctas, en el momento correcto.</p>
+              <h3 class="servicio__nombre" data-paso style="--i:1"><span data-i18n="atrae.nombre">Atrae</span></h3>
+              <p data-paso style="--i:2" data-i18n="atrae.texto">Redes y anuncios que ponen tu negocio frente a las personas correctas, en el momento correcto.</p>
             </div>
             <div class="servicio__incluye">
-              <p class="servicio__label" data-paso style="--i:3">Incluye</p>
+              <p class="servicio__label" data-paso style="--i:3" data-i18n="serv.incluye">Incluye</p>
               <ul class="pildoras">
-                <li class="pildora" data-paso style="--i:4">Manejo de redes</li><li class="pildora" data-paso style="--i:5">Contenido orgánico</li><li class="pildora" data-paso style="--i:6">Campañas de ads</li>
+                <li class="pildora" data-paso style="--i:4" data-i18n="atrae.p1">Manejo de redes</li><li class="pildora" data-paso style="--i:5" data-i18n="atrae.p2">Contenido orgánico</li><li class="pildora" data-paso style="--i:6" data-i18n="atrae.p3">Campañas de ads</li>
               </ul>
             </div>
             <span class="servicio__accion" data-paso style="--i:4">
-              <a class="flecha" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20que%20m%C3%A1s%20clientes%20conozcan%20mi%20negocio%20en%20redes%20sociales.%20%C2%BFPodemos%20agendar%20una%20demo%3F" target="_blank" rel="noopener" aria-label="Preguntar por Atrae en WhatsApp">
+              <a class="flecha" href="https://wa.me/50766328271?text=Hola%20AVORA%2C%20quiero%20que%20m%C3%A1s%20clientes%20conozcan%20mi%20negocio%20en%20redes%20sociales.%20%C2%BFMe%20dan%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank" rel="noopener" aria-label="Preguntar por Atrae en WhatsApp" data-i18n-aria="atrae.aria" data-wa="atrae">
                 <svg aria-hidden="true"><use href="#i-flecha"/></svg>
               </a>
             </span>
@@ -149,17 +175,17 @@
           <li class="servicio" data-reveal="grupo" style="--d:150ms">
             <span class="divisoria" data-paso="linea" style="--i:0"></span>
             <div class="servicio__texto">
-              <h3 class="servicio__nombre" data-paso style="--i:1"><span>Convierte</span></h3>
-              <p data-paso style="--i:2">Landing pages a tu medida, pensadas para una sola cosa: que quien te visita te escriba.</p>
+              <h3 class="servicio__nombre" data-paso style="--i:1"><span data-i18n="convierte.nombre">Convierte</span></h3>
+              <p data-paso style="--i:2" data-i18n="convierte.texto">Landing pages a tu medida, pensadas para una sola cosa: que quien te visita te escriba.</p>
             </div>
             <div class="servicio__incluye">
-              <p class="servicio__label" data-paso style="--i:3">Incluye</p>
+              <p class="servicio__label" data-paso style="--i:3" data-i18n="serv.incluye">Incluye</p>
               <ul class="pildoras">
-                <li class="pildora" data-paso style="--i:4">Landing pages</li><li class="pildora" data-paso style="--i:5">Sitios web</li><li class="pildora" data-paso style="--i:6">SEO local</li>
+                <li class="pildora" data-paso style="--i:4" data-i18n="convierte.p1">Landing pages</li><li class="pildora" data-paso style="--i:5" data-i18n="convierte.p2">Sitios web</li><li class="pildora" data-paso style="--i:6" data-i18n="convierte.p3">SEO local</li>
               </ul>
             </div>
             <span class="servicio__accion" data-paso style="--i:4">
-              <a class="flecha" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20me%20interesa%20una%20landing%20page%20para%20mi%20negocio.%20%C2%BFPodemos%20agendar%20una%20demo%3F" target="_blank" rel="noopener" aria-label="Preguntar por Convierte en WhatsApp">
+              <a class="flecha" href="https://wa.me/50766328271?text=Hola%20AVORA%2C%20me%20interesa%20una%20landing%20page%20para%20mi%20negocio.%20%C2%BFMe%20dan%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank" rel="noopener" aria-label="Preguntar por Convierte en WhatsApp" data-i18n-aria="convierte.aria" data-wa="convierte">
                 <svg aria-hidden="true"><use href="#i-flecha"/></svg>
               </a>
             </span>
@@ -167,17 +193,17 @@
           <li class="servicio" data-reveal="grupo" style="--d:300ms">
             <span class="divisoria" data-paso="linea" style="--i:0"></span>
             <div class="servicio__texto">
-              <h3 class="servicio__nombre" data-paso style="--i:1"><span>Automatiza</span></h3>
-              <p data-paso style="--i:2">Asistentes con IA que responden por ti, de día y de noche, y te pasan los clientes listos.</p>
+              <h3 class="servicio__nombre" data-paso style="--i:1"><span data-i18n="automatiza.nombre">Automatiza</span></h3>
+              <p data-paso style="--i:2" data-i18n="automatiza.texto">Automatizaciones que responden por ti, de día y de noche, y te pasan los clientes listos.</p>
             </div>
             <div class="servicio__incluye">
-              <p class="servicio__label" data-paso style="--i:3">Incluye</p>
+              <p class="servicio__label" data-paso style="--i:3" data-i18n="serv.incluye">Incluye</p>
               <ul class="pildoras">
-                <li class="pildora" data-paso style="--i:4">Chatbots</li><li class="pildora" data-paso style="--i:5">Asistentes con IA</li><li class="pildora" data-paso style="--i:6">Integraciones</li>
+                <li class="pildora" data-paso style="--i:4" data-i18n="automatiza.p1">Respuestas automáticas</li><li class="pildora" data-paso style="--i:5" data-i18n="automatiza.p2">WhatsApp automatizado</li><li class="pildora" data-paso style="--i:6" data-i18n="automatiza.p3">Integraciones</li>
               </ul>
             </div>
             <span class="servicio__accion" data-paso style="--i:4">
-              <a class="flecha" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20automatizar%20la%20atenci%C3%B3n%20de%20mi%20negocio.%20%C2%BFPodemos%20agendar%20una%20demo%3F" target="_blank" rel="noopener" aria-label="Preguntar por Automatiza en WhatsApp">
+              <a class="flecha" href="https://wa.me/50766328271?text=Hola%20AVORA%2C%20quiero%20automatizar%20la%20atenci%C3%B3n%20de%20mi%20negocio.%20%C2%BFMe%20dan%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank" rel="noopener" aria-label="Preguntar por Automatiza en WhatsApp" data-i18n-aria="automatiza.aria" data-wa="automatiza">
                 <svg aria-hidden="true"><use href="#i-flecha"/></svg>
               </a>
             </span>
@@ -190,12 +216,12 @@
     <!-- 4 · PROYECTOS. Cada proyecto sube con un fundido: etiquetas → nombre → resultado → testimonio → enlaces -->
     <section class="panel" id="proyectos" aria-labelledby="proyectos-title" data-reveal="panel">
       <span class="panel__marca" aria-hidden="true"></span>
-      <p class="panel__indice" aria-hidden="true">03 / 05 · Proyectos</p>
+      <p class="panel__indice" aria-hidden="true">03 / 05 · <span data-i18n="indice.proyectos">Proyectos</span></p>
       <div class="container panel__cuerpo">
         <header class="section-head">
-          <p class="section-head__etiqueta" data-reveal>En línea</p>
+          <p class="section-head__etiqueta" data-reveal data-i18n="proy.etiqueta">En línea</p>
           <h2 class="section-title" id="proyectos-title" data-reveal="lineas">
-            <span class="linea"><span style="--n:0">Proyectos.</span></span>
+            <span class="linea"><span style="--n:0" data-i18n="proy.titulo">Proyectos.</span></span>
           </h2>
         </header>
 
@@ -203,35 +229,35 @@
           <article class="proyecto" data-reveal="grupo" data-sube style="--d:0ms">
             <span class="divisoria" data-paso="linea" style="--i:0"></span>
             <ul class="pildoras" data-paso style="--i:1">
-              <li class="pildora pildora--contorno">Landing de conversión</li><li class="pildora pildora--contorno">2026</li>
+              <li class="pildora pildora--contorno" data-i18n="canal.tipo">Landing de conversión</li><li class="pildora pildora--contorno">2026</li>
             </ul>
             <h3 class="proyecto__nombre" data-paso style="--i:2">Canal Silver</h3>
-            <p class="proyecto__resultado" data-paso style="--i:3">Una landing conectada a WhatsApp que les permitió competir en igualdad y traer nuevos clientes.</p>
+            <p class="proyecto__resultado" data-paso style="--i:3" data-i18n="canal.resultado">Una landing conectada a WhatsApp que les permitió competir en igualdad y traer nuevos clientes.</p>
             <figure class="proyecto__cita" data-paso style="--i:4">
               <!-- Cita acortada: (…) marca la frase omitida del testimonio original -->
-              <blockquote><p>“Trabajar con AVORA fue una experiencia brutal. (…) Gran atención al cliente. Sencillo y rápido.”</p></blockquote>
-              <figcaption>Alberto Bañón, CEO de Canal Silver</figcaption>
+              <blockquote><p data-i18n="canal.cita">“Trabajar con AVORA fue una experiencia brutal. (…) Gran atención al cliente. Sencillo y rápido.”</p></blockquote>
+              <figcaption data-i18n="canal.autor">Alberto Bañón, CEO de Canal Silver</figcaption>
             </figure>
             <div class="proyecto__enlaces" data-paso style="--i:5">
-              <a class="enlace enlace--flecha" href="https://www.canalsilver.com" target="_blank" rel="noopener">Ver sitio en vivo<svg aria-hidden="true"><use href="#i-flecha"/></svg></a>
-              <a class="enlace" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20vi%20el%20caso%20de%20Canal%20Silver%20y%20quiero%20algo%20as%C3%AD%20para%20mi%20negocio." target="_blank" rel="noopener">Quiero algo así</a>
+              <a class="enlace enlace--flecha" href="https://www.canalsilver.com" target="_blank" rel="noopener"><span data-i18n="proy.vivo">Ver sitio en vivo</span><svg aria-hidden="true"><use href="#i-flecha"/></svg></a>
+              <a class="enlace" href="https://wa.me/50766328271?text=Hola%20AVORA%2C%20vi%20el%20caso%20de%20Canal%20Silver%20y%20quiero%20algo%20as%C3%AD%20para%20mi%20negocio." target="_blank" rel="noopener" data-wa="canal" data-i18n="proy.quiero">Quiero algo así</a>
             </div>
           </article>
 
           <article class="proyecto" data-reveal="grupo" data-sube style="--d:150ms">
             <span class="divisoria" data-paso="linea" style="--i:0"></span>
             <ul class="pildoras" data-paso style="--i:1">
-              <li class="pildora pildora--contorno">Lookbook de marca</li><li class="pildora pildora--contorno">Proyecto escolar</li>
+              <li class="pildora pildora--contorno" data-i18n="distrito.tipo">Lookbook de marca</li><li class="pildora pildora--contorno" data-i18n="distrito.escolar">Proyecto escolar</li>
             </ul>
             <h3 class="proyecto__nombre" data-paso style="--i:2">Distrito 507</h3>
-            <p class="proyecto__resultado" data-paso style="--i:3">Un lookbook digital con una historia por diseño. Sorprendió a todos y hasta vendió un suéter.</p>
+            <p class="proyecto__resultado" data-paso style="--i:3" data-i18n="distrito.resultado">Un lookbook digital con una historia por diseño. Sorprendió a todos y hasta vendió un suéter.</p>
             <figure class="proyecto__cita" data-paso style="--i:4">
-              <blockquote><p>“La página fue muy interesante y dinámica, a todos les encantó.”</p></blockquote>
-              <figcaption>Isaac V. y Camila C., estudiantes, junto a padres de familia</figcaption>
+              <blockquote><p data-i18n="distrito.cita">“La página fue muy interesante y dinámica, a todos les encantó.”</p></blockquote>
+              <figcaption data-i18n="distrito.autor">Isaac V. y Camila C., estudiantes, junto a padres de familia</figcaption>
             </figure>
             <div class="proyecto__enlaces" data-paso style="--i:5">
-              <a class="enlace enlace--flecha" href="https://distrito507.netlify.app" target="_blank" rel="noopener">Ver sitio en vivo<svg aria-hidden="true"><use href="#i-flecha"/></svg></a>
-              <a class="enlace" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20vi%20el%20proyecto%20de%20Distrito%20507%20y%20quiero%20una%20p%C3%A1gina%20as%C3%AD%20para%20mi%20marca." target="_blank" rel="noopener">Quiero algo así</a>
+              <a class="enlace enlace--flecha" href="https://distrito507.netlify.app" target="_blank" rel="noopener"><span data-i18n="proy.vivo">Ver sitio en vivo</span><svg aria-hidden="true"><use href="#i-flecha"/></svg></a>
+              <a class="enlace" href="https://wa.me/50766328271?text=Hola%20AVORA%2C%20vi%20el%20proyecto%20de%20Distrito%20507%20y%20quiero%20una%20p%C3%A1gina%20as%C3%AD%20para%20mi%20marca." target="_blank" rel="noopener" data-wa="distrito" data-i18n="proy.quiero">Quiero algo así</a>
             </div>
           </article>
         </div>
@@ -242,56 +268,56 @@
     <div class="franja tema-claro">
     <section class="panel" id="planes" aria-labelledby="planes-title" data-reveal="panel">
       <span class="panel__marca" aria-hidden="true"></span>
-      <p class="panel__indice" aria-hidden="true">04 / 05 · Planes</p>
+      <p class="panel__indice" aria-hidden="true">04 / 05 · <span data-i18n="indice.planes">Planes</span></p>
       <div class="container panel__cuerpo">
         <header class="section-head">
-          <p class="section-head__etiqueta" data-reveal>Inversión</p>
+          <p class="section-head__etiqueta" data-reveal data-i18n="planes.etiqueta">Inversión</p>
           <h2 class="section-title" id="planes-title" data-reveal="lineas">
-            <span class="linea"><span style="--n:0">Planes.</span></span>
+            <span class="linea"><span style="--n:0" data-i18n="planes.titulo">Planes.</span></span>
           </h2>
         </header>
 
         <div class="planes">
           <article class="plan" data-reveal="grupo" data-sube style="--d:0ms" aria-labelledby="plan1-title">
-            <p class="pildora" data-paso style="--i:0">Recomendado</p>
-            <h3 class="plan__nombre" id="plan1-title" data-paso style="--i:1">Web + Automatización</h3>
-            <p class="plan__desc" data-paso style="--i:2">Tu página a medida y un asistente que responde por ti. Para negocios que pierden clientes por no responder a tiempo.</p>
-            <p class="plan__precio" data-paso="enfasis" style="--i:6"><span class="plan__monto">$650</span><span class="plan__terminos">instalación + $90/mes</span></p>
+            <p class="pildora" data-paso style="--i:0" data-i18n="plan1.pildora">Recomendado</p>
+            <h3 class="plan__nombre" id="plan1-title" data-paso style="--i:1" data-i18n="plan1.nombre">Web + Automatización</h3>
+            <p class="plan__desc" data-paso style="--i:2" data-i18n="plan1.desc">Tu página a medida y una automatización que responde por ti. Para negocios que pierden clientes por no responder a tiempo.</p>
+            <p class="plan__precio" data-paso="enfasis" style="--i:6"><span class="plan__monto">$650</span><span class="plan__terminos" data-i18n="plan1.terminos">instalación + $90/mes</span></p>
             <ul class="plan__lista" data-paso style="--i:3">
-              <li>Landing a medida con textos para vender</li>
-              <li>Asistente con IA en tu página</li>
-              <li>WhatsApp Business configurado</li>
-              <li>SEO local y mantenimiento incluido</li>
+              <li data-i18n="plan1.l1">Landing a medida con textos para vender</li>
+              <li data-i18n="plan1.l2">Respuestas automáticas en tu página</li>
+              <li data-i18n="plan1.l3">WhatsApp Business configurado</li>
+              <li data-i18n="plan1.l4">SEO local y mantenimiento incluido</li>
             </ul>
-            <p class="plan__nota" data-paso style="--i:4">¿Solo necesitas la página? <span class="claro">Desde $350.</span></p>
+            <p class="plan__nota" data-paso data-i18n-html="plan1.nota" style="--i:4">¿Solo necesitas la página? <span class="claro">Desde $350.</span></p>
             <div class="plan__accion" data-paso style="--i:5">
-              <a class="btn btn--primary" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20me%20interesa%20el%20plan%20Web%20%2B%20Automatizaci%C3%B3n.%20%C2%BFPodemos%20agendar%20una%20demo%3F" target="_blank" rel="noopener">
-                Quiero este plan<span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
+              <a class="btn btn--primary" href="https://wa.me/50766328271?text=Hola%20AVORA%2C%20me%20interesa%20el%20plan%20Web%20%2B%20Automatizaci%C3%B3n.%20%C2%BFMe%20dan%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank" rel="noopener" data-wa="plan1">
+                <span data-i18n="plan1.boton">Quiero este plan</span><span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
               </a>
             </div>
           </article>
 
           <article class="plan plan--oscuro" data-reveal="grupo" data-sube style="--d:150ms" aria-labelledby="plan2-title">
-            <p class="pildora" data-paso style="--i:0">Con evaluación previa</p>
-            <h3 class="plan__nombre" id="plan2-title" data-paso style="--i:1">A tu medida</h3>
-            <p class="plan__desc" data-paso style="--i:2">El sistema completo para crecer: anuncios, página y WhatsApp automatizado trabajando juntos, diseñado según tu negocio.</p>
-            <p class="plan__precio" data-paso="enfasis" style="--i:6"><span class="plan__monto plan__monto--texto">Según evaluación</span></p>
+            <p class="pildora" data-paso style="--i:0" data-i18n="plan2.pildora">Con evaluación previa</p>
+            <h3 class="plan__nombre" id="plan2-title" data-paso style="--i:1" data-i18n="plan2.nombre">A tu medida</h3>
+            <p class="plan__desc" data-paso style="--i:2" data-i18n="plan2.desc">El sistema completo para crecer: anuncios, página y WhatsApp automatizado trabajando juntos, diseñado según tu negocio.</p>
+            <p class="plan__precio" data-paso="enfasis" style="--i:6"><span class="plan__monto plan__monto--texto" data-i18n="plan2.monto">Según evaluación</span></p>
             <ul class="plan__lista" data-paso style="--i:3">
-              <li>Todo lo del plan Web + Automatización</li>
-              <li>Gestión de campañas en Meta</li>
-              <li>Integraciones con tus herramientas</li>
-              <li>Reporte mensual de resultados</li>
+              <li data-i18n="plan2.l1">Todo lo del plan Web + Automatización</li>
+              <li data-i18n="plan2.l2">Gestión de campañas en Meta</li>
+              <li data-i18n="plan2.l3">Integraciones con tus herramientas</li>
+              <li data-i18n="plan2.l4">Reporte mensual de resultados</li>
             </ul>
-            <p class="plan__nota" data-paso style="--i:4">Conversamos, evaluamos tu negocio y te enviamos una propuesta clara.</p>
+            <p class="plan__nota" data-paso style="--i:4" data-i18n="plan2.nota">Conversamos, evaluamos tu negocio y te enviamos una propuesta clara.</p>
             <div class="plan__accion" data-paso style="--i:5">
-              <a class="btn btn--primary" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20evaluaci%C3%B3n%20para%20el%20plan%20A%20tu%20medida." target="_blank" rel="noopener">
-                Agenda tu evaluación<span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
+              <a class="btn btn--primary" href="https://wa.me/50766328271?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20evaluaci%C3%B3n%20para%20el%20plan%20A%20tu%20medida." target="_blank" rel="noopener" data-wa="plan2">
+                <span data-i18n="plan2.boton">Agenda tu evaluación</span><span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
               </a>
             </div>
           </article>
         </div>
 
-        <p class="planes__fundadores" data-reveal><span class="claro">Clientes Fundadores:</span> 30% de descuento en la instalación para nuestros primeros 5 clientes. Precios en USD, ITBMS no incluido.</p>
+        <p class="planes__fundadores" data-reveal data-i18n-html="planes.fundadores"><span class="claro">Clientes Fundadores:</span> 30% de descuento en la instalación para nuestros primeros 5 clientes. Precios en USD, ITBMS no incluido.</p>
       </div>
     </section>
     </div>
@@ -299,37 +325,37 @@
     <!-- 6 · CONTACTO (cierre): título línea por línea → pasos en cascada → botón al final -->
     <section class="panel contacto" id="contacto" aria-labelledby="contacto-title" data-reveal="panel">
       <span class="panel__marca" aria-hidden="true"></span>
-      <p class="panel__indice" aria-hidden="true">05 / 05 · Contacto</p>
+      <p class="panel__indice" aria-hidden="true">05 / 05 · <span data-i18n="indice.contacto">Contacto</span></p>
       <div class="container panel__cuerpo">
         <h2 class="contacto__title" id="contacto-title" data-reveal="lineas">
-          <span class="linea"><span style="--n:0">Hablemos de</span></span>
-          <span class="linea"><span style="--n:1">tu negocio.</span></span>
+          <span class="linea"><span style="--n:0" data-i18n="contacto.t1">Hablemos de</span></span>
+          <span class="linea"><span style="--n:1" data-i18n="contacto.t2">tu negocio.</span></span>
         </h2>
 
         <ol class="pasos" data-reveal="grupo">
           <li class="paso">
             <span class="divisoria" data-paso="linea" style="--i:0"></span>
-            <h3 class="paso__nombre" data-paso style="--i:1">Conversamos</h3>
-            <p data-paso style="--i:2">Nos cuentas qué vendes y qué te está frenando.</p>
+            <h3 class="paso__nombre" data-paso style="--i:1" data-i18n="paso1.nombre">Conversamos</h3>
+            <p data-paso style="--i:2" data-i18n="paso1.texto">Nos cuentas qué vendes y qué te está frenando.</p>
           </li>
           <li class="paso">
             <span class="divisoria" data-paso="linea" style="--i:1"></span>
-            <h3 class="paso__nombre" data-paso style="--i:2">Propuesta clara</h3>
-            <p data-paso style="--i:3">Alcance, plazos y precio, por escrito.</p>
+            <h3 class="paso__nombre" data-paso style="--i:2" data-i18n="paso2.nombre">Propuesta clara</h3>
+            <p data-paso style="--i:3" data-i18n="paso2.texto">Alcance, plazos y precio, por escrito.</p>
           </li>
           <li class="paso">
             <span class="divisoria" data-paso="linea" style="--i:2"></span>
-            <h3 class="paso__nombre" data-paso style="--i:3">Construimos contigo</h3>
-            <p data-paso style="--i:4">Por etapas, con tu feedback.</p>
+            <h3 class="paso__nombre" data-paso style="--i:3" data-i18n="paso3.nombre">Construimos contigo</h3>
+            <p data-paso style="--i:4" data-i18n="paso3.texto">Por etapas, con tu feedback.</p>
           </li>
         </ol>
 
         <div class="contacto__pie" data-reveal="grupo">
           <span class="divisoria" data-paso="linea" style="--i:0"></span>
-          <p class="contacto__lead" data-paso style="--i:1">Agenda una demo y te mostramos cómo conseguir más clientes con menos trabajo manual.</p>
+          <p class="contacto__lead" data-paso style="--i:1" data-i18n="contacto.lead">Escríbenos y te mostramos cómo conseguir más clientes con menos trabajo manual.</p>
           <div data-paso style="--i:2">
-            <a class="btn btn--primary btn--lg" href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">
-              Agenda tu demo por WhatsApp<span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
+            <a class="btn btn--primary btn--lg" href="https://wa.me/50766328271?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios." target="_blank" rel="noopener" data-wa="general">
+              <span data-i18n="cta">Contáctanos</span><span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
             </a>
           </div>
         </div>
@@ -343,8 +369,8 @@
       <svg class="site-footer__logo" viewBox="14 24 180 154" aria-hidden="true"><use href="#i-logo"/></svg>
       <span class="claro">AVORA Solutions</span>
     </p>
-    <p>Atrae. Convierte. Automatiza.</p>
-    <p><a href="https://wa.me/50763288742?text=Hola%20AVORA%2C%20quiero%20agendar%20una%20demo%20para%20mi%20negocio." target="_blank" rel="noopener">WhatsApp +507 6328-8742</a> · <a href="mailto:avorasolution@gmail.com">avorasolution@gmail.com</a> · Panamá · © 2026</p>
+    <p data-i18n="footer.lema">Atrae. Convierte. Automatiza.</p>
+    <p><a href="https://wa.me/50766328271?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios." target="_blank" rel="noopener" data-wa="general">WhatsApp +507 6632-8271</a> · <a href="mailto:avorasolution@gmail.com">avorasolution@gmail.com</a> · <span data-i18n="footer.pais">Panamá</span> · © 2026</p>
   </footer>
 
   <!-- Íconos -->
@@ -359,6 +385,7 @@
     </symbol>
   </svg>
 
+  <script src="js/idioma.js" defer></script>
   <script src="js/main.js" defer></script>
   <script src="js/avo.js" defer></script>
 </body>

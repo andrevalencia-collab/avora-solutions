@@ -19,7 +19,11 @@
   --sobre-texto: #0b0b0c;          /* lo que va encima de --texto: botones y píldoras se invierten solos */
   --linea-activa: rgba(242, 242, 240, .45);   /* borde de la flecha con hover */
   --texto-hover: #fff;             /* el título de un servicio "se aclara apenas" con hover */
-  --palabra-fondo: rgba(242, 242, 240, .04);   /* AVORA gigante detrás del título de la portada */
+  --palabra-fondo: rgba(242, 242, 240, .14);   /* contorno de CRECER, gigante detrás del título de la portada */
+
+  /* Dos fuentes: Space Grotesk (500, 600, 700) en títulos e Inter (400, 500, 600) en textos */
+  --fuente-titulos: "Space Grotesk", "Helvetica Neue", system-ui, sans-serif;
+  --fuente-textos: "Inter", "Helvetica Neue", system-ui, sans-serif;
 
   --gutter: clamp(20px, 5vw, 80px);
   --panel-gap: clamp(8px, 1.2vw, 16px);   /* 8px en celular, 16px en computadora */
@@ -27,6 +31,7 @@
 
   /* Movimiento: calmado, editorial */
   --ease: cubic-bezier(.22, 1, .36, 1);
+  --ease-cortina: cubic-bezier(.76, 0, .24, 1);   /* arranca y frena suave: solo la cortina de idioma */
   --t-press: 150ms;
   --t-hover: 200ms;
   --t-aparecer: 800ms;
@@ -64,7 +69,7 @@ html {
 
 body {
   margin: 0;
-  font-family: "Hanken Grotesk", "Helvetica Neue", system-ui, sans-serif;
+  font-family: var(--fuente-textos);
   font-size: 1rem;
   line-height: 1.6;
   background: var(--fondo);
@@ -74,6 +79,8 @@ body {
 }
 
 h1, h2, h3, p, ul, ol, figure, blockquote { margin: 0; }
+/* Títulos (también el del chat de Avo), precios y el nombre de la marca: Space Grotesk */
+h1, h2, h3, .hero__palabra, .plan__monto, .marca__nombre { font-family: var(--fuente-titulos); }
 ul, ol { padding: 0; list-style: none; }
 img, svg { display: block; max-width: 100%; }
 a { color: inherit; }
@@ -376,8 +383,44 @@ html.lenis, html.lenis body { height: auto; }
 .marca__logo { width: 33px; height: 28px; color: var(--texto); }
 .marca__nombre { font-weight: 700; font-size: 19px; letter-spacing: .02em; }
 
+/* Selector de idioma: un solo botón "ES | EN" que alterna (js/idioma.js). El idioma activo
+   va en --texto y el otro en --texto-2. Sin JavaScript no haría nada, así que no se muestra. */
+.idioma {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-left: auto;               /* en celular queda pegado al botón de contacto */
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--texto-2);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.js .idioma { display: inline-flex; }
+.idioma__op { transition: color var(--t-hover) var(--ease); }
+html:not([lang="en"]) .idioma__op[data-idioma="es"],
+html[lang="en"] .idioma__op[data-idioma="en"] { color: var(--texto); }
+
+/* En celular el botón del header va sin el círculo de la flecha: así cabe el selector */
+.site-header .btn__circulo { display: none; }
+.site-header .btn--primary { padding: 12px 18px; }
+/* Única excepción al breakpoint de 900px: en pantallas muy angostas (320px) no caben el
+   nombre, el selector y el botón, así que queda solo el logo */
+@media (max-width: 349px) {
+  .marca__nombre { display: none; }
+}
+
 .site-nav { display: none; }
 @media (min-width: 900px) {
+  .idioma { margin-left: 0; }
+  .site-header .btn__circulo { display: inline-flex; }
+  .site-header .btn--primary { padding: 12px 12px 12px 20px; }
   .site-nav {
     display: flex;
     gap: 28px;
@@ -401,22 +444,29 @@ html.lenis, html.lenis body { height: auto; }
   width: 1px;
   height: 40px;
 }
-/* AVORA gigante, rellena y casi invisible, cortada por el borde inferior del panel.
-   El exterior se mueve más lento que el scroll en computadora (main.js, con Lenis). */
+/* CRECER gigante y solo en contorno, centrada detrás del título. Se centra con flex y
+   no con transform: el transform del exterior lo usa main.js para moverla más lento que
+   el scroll en computadora (con Lenis). Si no cabe, la recorta el overflow del panel. */
+.hero__titular { position: relative; }
 .hero__palabra {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -.38em;                  /* casi la mitad queda bajo el borde del panel */
-  z-index: 0;
-  font-size: 28vw;
-  font-weight: 800;
-  line-height: .8;
+  inset: 0;
+  z-index: -1;                     /* detrás de todo el contenido de .hero__cuerpo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(88px, 25vw, 360px);
+  font-weight: 700;                /* el peso más alto de Space Grotesk */
+  line-height: 1;
   letter-spacing: -.04em;
-  text-align: center;
   white-space: nowrap;
-  color: var(--palabra-fondo);
+  /* El trazo mide 2px y el relleno, del color del panel, se pinta encima: tapa la mitad
+     interior (queda 1px) y los cruces que la fuente variable dibuja dentro de las letras */
+  color: var(--panel);
+  -webkit-text-stroke: 2px var(--palabra-fondo);
+  paint-order: stroke fill;
   pointer-events: none;
+  -webkit-user-select: none;
   user-select: none;
 }
 .hero__palabra-texto { display: block; }
@@ -440,9 +490,15 @@ html.lenis, html.lenis body { height: auto; }
 .hero__meta-claro { color: var(--texto); }
 .hero__title {
   font-weight: 600;
-  font-size: clamp(64px, 11vw, 168px);
+  font-size: clamp(40px, 14vw, 96px);   /* "que atienden" mide 5.72em y tiene que caber en una línea */
   line-height: .9;
   letter-spacing: -.055em;
+}
+/* En computadora "Creamos" y "sistemas" comparten fila (7.85em): cada una conserva su
+   máscara. El espacio entre las dos es el salto de línea que las separa en el HTML. */
+@media (min-width: 900px) {
+  .hero__title { font-size: clamp(88px, 10.2vw, 136px); }
+  .hero__title .linea--pareja { display: inline-block; vertical-align: top; }
 }
 .hero__pie {
   display: flex;
@@ -459,11 +515,15 @@ html.lenis, html.lenis body { height: auto; }
   line-height: 1.55;
   color: var(--texto-2);
 }
+/* En celular el enlace va debajo del botón: al lado quedaría bajo Avo al cargar la página */
 .hero__acciones {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 24px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+@media (min-width: 900px) {
+  .hero__acciones { flex-direction: row; align-items: center; gap: 24px; }
 }
 .hero__acciones .enlace { font-size: 16px; }
 
@@ -484,7 +544,7 @@ html.lenis, html.lenis body { height: auto; }
 .ribbon__track {
   display: flex;
   width: max-content;
-  animation: marquee 40s linear infinite;
+  animation: marquee 75s linear infinite;   /* media pista (3 listas, ~2630px) a unos 35 px por segundo */
 }
 .ribbon__list { display: flex; }
 .ribbon__list li {
@@ -495,7 +555,7 @@ html.lenis, html.lenis body { height: auto; }
   white-space: nowrap;
 }
 .ribbon__list li::after {
-  content: "/";
+  content: "·";
   margin-left: 28px;
   color: var(--texto-2);
 }
@@ -616,7 +676,8 @@ html.lenis, html.lenis body { height: auto; }
 }
 .plan__lista li::before { content: "—"; color: var(--texto-2); }
 .plan__nota { font-size: 15px; color: var(--texto-2); }
-.plan__accion { align-self: flex-start; }
+.plan__accion { align-self: flex-start; max-width: 100%; }
+.plan__accion .btn { white-space: normal; }   /* en pantallas muy angostas el texto baja de línea en vez de salirse de la tarjeta */
 
 /* A tu medida: tarjeta negra dentro de la franja clara. Vuelve a los tokens
    oscuros, así su texto, líneas, píldora y botón se invierten solos */
@@ -691,13 +752,74 @@ html.lenis, html.lenis body { height: auto; }
 }
 .site-footer a:focus-visible { color: var(--texto); }
 
+/* ---------- 8 · Cortina de idioma ---------- */
+/* Al cambiar de idioma (js/idioma.js), un panel claro cruza la pantalla de izquierda a
+   derecha y los textos cambian mientras la tapa. El script crea el panel, le pone la clase
+   .cortina--activa y le pasa la duración total en --t-cortina. Solo se animan transform
+   (el panel) y opacity (la marca). Usa los dos tokens de los botones: ningún color nuevo. */
+.cortina {
+  position: fixed;
+  inset: 0;
+  z-index: 90;                     /* encima de todo, también del chat de Avo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--texto);
+  color: var(--sobre-texto);
+  transform: translateX(-100%);
+  visibility: hidden;              /* mientras no se usa, no existe para nadie */
+  pointer-events: none;
+}
+.cortina--activa {
+  visibility: visible;
+  pointer-events: auto;            /* mientras cubre, nadie toca lo de abajo */
+  /* La curva vale para cada tramo: arranca y frena suave al entrar, y otra vez al salir */
+  animation: cortina-pasar var(--t-cortina, 800ms) var(--ease-cortina) both;
+  will-change: transform;
+}
+.cortina__marca {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: .02em;
+  opacity: 0;
+}
+.cortina__marca svg { width: 47px; height: 40px; }
+.cortina--activa .cortina__marca { animation: cortina-marca var(--t-cortina, 800ms) both; }
+
+/* Entra (0 → 42.5 %), cubre (hasta 57.5 %) y sale por el lado contrario. A la mitad,
+   con la pantalla cubierta, el script cambia los textos. */
+@keyframes cortina-pasar {
+  0%           { transform: translateX(-100%); }
+  42.5%, 57.5% { transform: none; }
+  100%         { transform: translateX(100%); }
+}
+@keyframes cortina-marca {
+  0%, 20%   { opacity: 0; }
+  45%, 100% { opacity: 1; }
+}
+/* Con movimiento reducido no hay cortina: la página se funde con su propio fondo y vuelve */
+@keyframes cortina-fundido {
+  0%, 100% { opacity: 0; }
+  50%      { opacity: 1; }
+}
+
+/* La portada repite su entrada después del cambio: para devolverla a su estado oculto de
+   golpe (bajo la cortina), el script apaga un instante sus transiciones con esta clase */
+.sin-transicion,
+.sin-transicion * { transition: none !important; }
+
 /* ==========================================================================
    Hover: solo con mouse real (en celular no se queda "pegado"). 200 ms, sutil.
    El movimiento, además, solo si el sistema no pide reducirlo.
    ========================================================================== */
 @media (hover: hover) and (pointer: fine) {
   .site-nav a:hover,
-  .site-footer a:hover { color: var(--texto); }
+  .site-footer a:hover,
+  .idioma:hover .idioma__op { color: var(--texto); }
   .enlace:hover { color: var(--texto-2); }
   .servicio:hover .flecha,
   .flecha:hover { border-color: var(--linea-activa); }
@@ -791,6 +913,10 @@ html.lenis, html.lenis body { height: auto; }
   }
   .ribbon__track { animation: none; }
   .btn__relleno::before { transform: none; opacity: 0; }
+  /* Cambio de idioma: sin cortina ni logo, solo un fundido de 150 ms al color del fondo */
+  .cortina { background: var(--fondo); transform: none; opacity: 0; }
+  .cortina--activa { animation-name: cortina-fundido; will-change: opacity; }
+  .cortina__marca { display: none; }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
   .btn--primary:hover .btn__relleno::before { transform: none; opacity: 1; }

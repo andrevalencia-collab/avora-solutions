@@ -7,8 +7,8 @@
 .avo {
   --avo-size: 64px;
   --avo-gap: 1rem;
-  --avo-px: 1.5px;          /* 1 pixel del dibujo (34px mostrados a 51px): todo se mueve en múltiplos */
-  font-family: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --avo-px: 1.5px;          /* paso de movimiento (pixel y medio del dibujo): todo se mueve en múltiplos */
+  font-family: var(--fuente-textos);
 }
 @media (min-width: 900px) { .avo { --avo-gap: 1.5rem; } }
 
@@ -72,10 +72,11 @@
 @media (prefers-reduced-motion: no-preference) {
   .avo-launcher:active { scale: .97; transition-duration: var(--t-press); }
 }
-/* 34px × 1.5: en pantallas de densidad 2 cada pixel del dibujo cae en 3 pixeles reales */
+/* El dibujo mide 48×48 y se muestra a su tamaño real: cada pixel del dibujo cae en
+   pixeles enteros de la pantalla (1 en densidad 1, 2 en densidad 2) y se ve nítido */
 .avo-launcher__img {
-  width: 51px;
-  height: 51px;
+  width: 48px;
+  height: 48px;
   margin-top: 4px;
 }
 
