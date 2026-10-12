@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es-PA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // Avisa al CSS que hay JavaScript. Esta página está solo en español: si el visitante
+    // venía navegando en inglés, se muestra un aviso corto (.legal__aviso)
+    document.documentElement.classList.add('js');
+    try { if (localStorage.getItem('avora-idioma') === 'en') document.documentElement.classList.add('viene-de-ingles'); } catch (e) {}
+  </script>
+
+  <title>Política de Privacidad | AVORA Solutions</title>
+  <meta name="description" content="Qué datos recibe AVORA Solutions, para qué los usa y cómo ejercer tus derechos según la Ley 81 de 2019 de Panamá.">
+  <!-- Dirección actual (Netlify): reemplazar https://avosolutions.netlify.app cuando haya dominio propio -->
+  <link rel="canonical" href="https://avosolutions.netlify.app/privacidad.html">
+  <meta name="theme-color" content="#0B0B0C">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <!-- HEADER: el mismo de index.html, sin el selector de idioma (esta página está solo en español) -->
+  <header class="site-header container" data-reveal="fundido">
+    <a class="marca" href="./" aria-label="AVORA Solutions, ir al inicio">
+      <svg class="marca__logo" viewBox="14 24 180 154" aria-hidden="true"><use href="#i-logo"/></svg>
+      <span class="marca__nombre" aria-hidden="true">AVORA</span>
+    </a>
+    <nav class="site-nav" aria-label="Principal">
+      <a href="./#servicios">Servicios</a>
+      <a href="./#proyectos">Proyectos</a>
+      <a href="./#planes">Planes</a>
+    </nav>
+    <a class="btn btn--primary btn--sm" href="https://wa.me/50766328271?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios." target="_blank" rel="noopener">
+      <span>Contáctanos</span><span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
+    </a>
+  </header>
+
+  <main id="contenido">
+    <article class="panel" aria-labelledby="legal-title" data-reveal="panel">
+      <span class="panel__marca" aria-hidden="true"></span>
+      <p class="panel__indice" aria-hidden="true">Legal · Privacidad</p>
+      <div class="container panel__cuerpo">
+        <header class="section-head">
+          <p class="section-head__etiqueta" data-reveal>Legal</p>
+          <h1 class="legal__titulo" id="legal-title" data-reveal="lineas">
+            <span class="linea"><span style="--n:0">Política de</span></span>
+            <span class="linea"><span style="--n:1">privacidad.</span></span>
+          </h1>
+        </header>
+
+        <div class="legal__texto" data-reveal>
+          <p class="legal__aviso" lang="en">This page is available in Spanish only for now.</p>
+          <p class="legal__fecha">Última actualización: 12 de octubre de 2026</p>
+
+          <h2>Quién es el responsable</h2>
+          <p>AVORA Solutions, en Panamá, es responsable de los datos personales que recibe a través de esta página. Puedes escribirnos por WhatsApp al <a href="https://wa.me/50766328271?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios." target="_blank" rel="noopener">+507 6632-8271</a>.</p>
+
+          <h2>Qué datos recibimos</h2>
+          <p>Solo los que tú nos das cuando nos escribes por WhatsApp o por correo: tu nombre, tu número y lo que nos cuentas en tus mensajes.</p>
+
+          <h2>Para qué los usamos</h2>
+          <p>Para responder tu consulta y preparar una propuesta para tu negocio.</p>
+
+          <h2>Con quién los compartimos</h2>
+          <p>No vendemos tus datos ni los compartimos con terceros con fines comerciales.</p>
+
+          <h2>Herramientas que usa esta página</h2>
+          <ul>
+            <li>Netlify aloja la página.</li>
+            <li>WhatsApp, de Meta, es el canal por el que nos escribes.</li>
+            <li>Google Fonts entrega las tipografías.</li>
+            <li>jsDelivr entrega un componente de la página en computadoras.</li>
+          </ul>
+          <p>Como en cualquier visita a un sitio web, estos servicios reciben datos técnicos de la conexión, por ejemplo tu dirección IP, y los tratan según sus propias políticas.</p>
+
+          <!-- Si la página agrega analítica, cookies o formularios, o el chat de Avo se conecta a una IA, este texto se actualiza -->
+          <h2>Cookies y analítica</h2>
+          <p>Esta página no usa cookies ni herramientas de analítica. Solo guarda en tu propio navegador el idioma que elegiste y si ya viste el saludo del asistente. Esos datos no salen de tu dispositivo.</p>
+
+          <h2>Tus derechos</h2>
+          <p>La Ley 81 de 2019 de la República de Panamá te da derecho a acceder a tus datos, corregirlos, eliminarlos y oponerte a que los usemos. Para ejercer cualquiera de ellos, escríbenos por WhatsApp al <a href="https://wa.me/50766328271?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios." target="_blank" rel="noopener">+507 6632-8271</a>.</p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- FOOTER: el mismo de index.html -->
+  <footer class="site-footer container" data-reveal="fundido">
+    <p class="site-footer__marca">
+      <svg class="site-footer__logo" viewBox="14 24 180 154" aria-hidden="true"><use href="#i-logo"/></svg>
+      <span class="claro">AVORA Solutions</span>
+    </p>
+    <p>Atrae. Convierte. Automatiza.</p>
+    <p><a href="https://wa.me/50766328271?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios." target="_blank" rel="noopener">WhatsApp +507 6632-8271</a> · <a href="mailto:avorasolution@gmail.com">avorasolution@gmail.com</a> · Panamá · © 2026</p>
+    <p class="site-footer__legal"><a href="privacidad.html" aria-current="page">Privacidad</a> · <a href="terminos.html">Términos</a></p>
+  </footer>
+
+  <!-- Íconos -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-logo" viewBox="14 24 180 154">
+      <path fill="currentColor" fill-rule="evenodd" d="M112.0 28.0 L88.0 28.0 L40.6 131.3 L81.2 111.1 L100.0 70.0 L111.8 95.7 L137.2 83.0 Z M18.4 173.8 L50.4 173.8 L65.1 141.8 L127.7 141.8 L142.4 173.8 L174.4 173.8 L136.1 90.3 L110.7 103.0 L118.4 119.8 L77.1 119.8 L33.1 141.8 Z"/>
+      <!-- La estela del logo: único uso del azul junto con la barrita de cada panel -->
+      <path style="fill: var(--azul)" d="M147.3 85.5 L144.0 78.8 L188.6 60.7 Z"/>
+    </symbol>
+    <symbol id="i-flecha" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
+    </symbol>
+  </svg>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>

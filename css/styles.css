@@ -1,49 +1,42 @@
 /* ==========================================================================
-   AVORA Solutions · Landing v3 · "Avo atiende. Tú vendes."
+   AVORA Solutions · Landing v2
    Monocromo y editorial: cada sección vive en un panel redondeado. Las franjas
    alternan tema oscuro y claro de lado a lado de la pantalla (Servicios y Planes
-   son claras). El azul solo aparece en la estela del logo, la barrita de cada
-   panel y la luz de Avo (dentro de sus SVG). Mobile-first, un breakpoint en 900px.
+   son claras). El azul solo aparece en la estela del logo y en la barrita de
+   cada panel. Mobile-first, un breakpoint en 900px.
    ========================================================================== */
 
 /* ---------- Tokens ---------- */
 :root {
   --fondo: #0b0b0c;
-  --panel: #0f0f11;
-  --superficie: #141416;           /* tarjetas dentro de un panel */
+  --panel: #111113;
+  --superficie: #141416;           /* tarjetas dentro de un panel (capturas, planes) */
   --texto: #f2f2f0;
-  --texto-2: #a3a3a8;              /* secundario: 7.6:1 sobre el panel */
-  --marca-chica: #8e8e93;          /* índices, firma y etiquetas en mayúsculas: 5.9:1 sobre el panel */
+  --texto-2: #8e8e93;              /* secundario: 5.8:1 sobre el panel */
   --linea: rgba(242, 242, 240, .12);
   --borde-panel: rgba(242, 242, 240, .20);
-  --azul: #4d5bff;                 /* solo la estela del logo, la barrita de cada panel y la luz de Avo */
+  --azul: #4d5bff;                 /* solo la estela del logo y la barrita de cada panel */
   --sobre-texto: #0b0b0c;          /* lo que va encima de --texto: botones y píldoras se invierten solos */
   --linea-activa: rgba(242, 242, 240, .45);   /* borde de la flecha con hover */
   --texto-hover: #fff;             /* el título de un servicio "se aclara apenas" con hover */
+  --palabra-fondo: rgba(242, 242, 240, .14);   /* contorno de CRECER, gigante detrás del título de la portada */
 
-  /* Firma de la marca en los paneles (arriba a la izquierda y en vertical en la portada).
-     Cambiarla aquí la cambia en toda la página. */
-  --marca-texto: "AVORA/2026";
+  /* Dos fuentes: Space Grotesk (500, 600, 700) en títulos e Inter (400, 500, 600) en textos */
+  --fuente-titulos: "Space Grotesk", "Helvetica Neue", system-ui, sans-serif;
+  --fuente-textos: "Inter", "Helvetica Neue", system-ui, sans-serif;
 
   --gutter: clamp(20px, 5vw, 80px);
-  --panel-gap: 8px;                /* separación de los paneles: 8px en celular, 16px en computadora */
-  --radio-panel: 24px;             /* esquinas: 24px en celular, 28px en computadora */
-  --header-h: 64px;                /* 64px en celular, 76px en computadora; css/avo.css lo usa */
+  --panel-gap: clamp(8px, 1.2vw, 16px);   /* 8px en celular, 16px en computadora */
+  --header-h: 98px;                /* lo usa css/avo.css para el alto del chat */
 
   /* Movimiento: calmado, editorial */
   --ease: cubic-bezier(.22, 1, .36, 1);
+  --ease-cortina: cubic-bezier(.76, 0, .24, 1);   /* arranca y frena suave: solo la cortina de idioma */
   --t-press: 150ms;
   --t-hover: 200ms;
   --t-aparecer: 800ms;
   --t-linea: 900ms;
   --escalon: 120ms;
-}
-@media (min-width: 900px) {
-  :root {
-    --panel-gap: 16px;
-    --radio-panel: 28px;
-    --header-h: 76px;
-  }
 }
 
 /* Tema claro: Servicios y Planes. Solo redefine variables; los componentes leen
@@ -54,7 +47,6 @@
   --superficie: #f7f6f3;           /* tarjetas */
   --texto: #0b0b0c;
   --texto-2: #55555b;
-  --marca-chica: #55555b;
   --linea: rgba(11, 11, 12, .12);
   --borde-panel: rgba(11, 11, 12, .18);
   --sobre-texto: #f2f2f0;
@@ -77,7 +69,7 @@ html {
 
 body {
   margin: 0;
-  font-family: "Hanken Grotesk", "Helvetica Neue", system-ui, sans-serif;
+  font-family: var(--fuente-textos);
   font-size: 1rem;
   line-height: 1.6;
   background: var(--fondo);
@@ -87,6 +79,8 @@ body {
 }
 
 h1, h2, h3, p, ul, ol, figure, blockquote { margin: 0; }
+/* Títulos (también el del chat de Avo), precios y el nombre de la marca: Space Grotesk */
+h1, h2, h3, .hero__palabra, .plan__monto, .marca__nombre { font-family: var(--fuente-titulos); }
 ul, ol { padding: 0; list-style: none; }
 img, svg { display: block; max-width: 100%; }
 a { color: inherit; }
@@ -153,7 +147,7 @@ html.lenis, html.lenis body { height: auto; }
   position: relative;
   margin: 0 var(--panel-gap) var(--panel-gap);
   border: 1px solid var(--borde-panel);
-  border-radius: var(--radio-panel);
+  border-radius: 28px;
   background: var(--panel);
   overflow: hidden;
 }
@@ -163,11 +157,10 @@ html.lenis, html.lenis body { height: auto; }
    pieza para que la línea recorra el contorno en 900 ms con la curva --ease. */
 .js .panel { border-color: transparent; }
 .panel__borde {
-  --r: calc(var(--radio-panel) - 1px);   /* radio interior: el borde mide 1px */
   position: absolute;
   inset: 0;
-  z-index: 3;
-  border-radius: var(--r);
+  z-index: 2;
+  border-radius: 27px;
   pointer-events: none;
 }
 .panel__borde > span {
@@ -175,50 +168,32 @@ html.lenis, html.lenis body { height: auto; }
   transition: transform var(--dur, 0ms) linear var(--ret, 0ms), opacity var(--dur, 0ms) linear var(--ret, 0ms);
 }
 .borde-tramo { background: var(--borde-panel); }
-.borde-arriba    { top: 0; left: var(--r); right: var(--r); height: 1px; transform: scaleX(0); transform-origin: left; }
-.borde-derecha   { right: 0; top: var(--r); bottom: var(--r); width: 1px; transform: scaleY(0); transform-origin: top; }
-.borde-abajo     { bottom: 0; left: var(--r); right: var(--r); height: 1px; transform: scaleX(0); transform-origin: right; }
-.borde-izquierda { left: 0; top: var(--r); bottom: var(--r); width: 1px; transform: scaleY(0); transform-origin: bottom; }
-.borde-esquina { width: var(--r); height: var(--r); border: 0 solid var(--borde-panel); opacity: 0; }
-.borde-esquina--1 { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; border-top-left-radius: var(--r); }
-.borde-esquina--2 { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; border-top-right-radius: var(--r); }
-.borde-esquina--3 { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; border-bottom-right-radius: var(--r); }
-.borde-esquina--4 { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; border-bottom-left-radius: var(--r); }
+.borde-arriba    { top: 0; left: 27px; right: 27px; height: 1px; transform: scaleX(0); transform-origin: left; }
+.borde-derecha   { right: 0; top: 27px; bottom: 27px; width: 1px; transform: scaleY(0); transform-origin: top; }
+.borde-abajo     { bottom: 0; left: 27px; right: 27px; height: 1px; transform: scaleX(0); transform-origin: right; }
+.borde-izquierda { left: 0; top: 27px; bottom: 27px; width: 1px; transform: scaleY(0); transform-origin: bottom; }
+.borde-esquina { width: 27px; height: 27px; border: 0 solid var(--borde-panel); opacity: 0; }
+.borde-esquina--1 { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; border-top-left-radius: 27px; }
+.borde-esquina--2 { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; border-top-right-radius: 27px; }
+.borde-esquina--3 { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; border-bottom-right-radius: 27px; }
+.borde-esquina--4 { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; border-bottom-left-radius: 27px; }
 .panel.is-visible .panel__borde > span { transform: none; opacity: 1; }
 
 .panel__marca {
   position: absolute;
-  z-index: 2;
-  top: 23px;
-  left: 20px;
-  width: 14px;
+  top: 30px;
+  left: 30px;
+  width: 16px;
   height: 2px;
   background: var(--azul);
   transform: rotate(-26.6deg);
 }
-/* Firma y número de sección: mayúsculas pequeñas y espaciadas, en --marca-chica */
-.panel__firma,
-.panel__indice,
-.hero__firma-vertical {
+.panel__indice {
   position: absolute;
-  z-index: 2;
-  font-size: 10px;
-  line-height: 1.6;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--marca-chica);
-}
-.panel__firma { top: 16px; left: 44px; }
-.panel__firma::before,
-.hero__firma-vertical::before { content: var(--marca-texto); }
-.panel__indice { top: 16px; right: 20px; }
-@media (min-width: 900px) {
-  .panel__marca { top: 33px; left: 30px; width: 16px; }
-  .panel__firma,
-  .panel__indice { top: 24px; font-size: 12px; letter-spacing: .22em; }
-  .panel__firma { left: 58px; }
-  .panel__indice { right: 34px; }
+  top: 22px;
+  right: 28px;
+  font-size: 13px;
+  color: var(--texto-2);
 }
 .panel__cuerpo {
   display: flex;
@@ -340,6 +315,7 @@ html.lenis, html.lenis body { height: auto; }
   color: var(--texto);
 }
 .btn__circulo svg { width: 16px; height: 16px; transition: transform var(--t-hover) var(--ease); }
+.btn .icon { width: 1.2em; height: 1.2em; flex-shrink: 0; }   /* ícono del botón del chat de Avo */
 
 /* Flecha en círculo (filas de servicios) */
 .flecha {
@@ -372,35 +348,6 @@ html.lenis, html.lenis body { height: auto; }
 .enlace--flecha { gap: 10px; }
 .enlace--flecha svg { width: 16px; height: 16px; transition: transform var(--t-hover) var(--ease); }
 
-/* Llamado a la acción (portada y cierre): botón "Agenda una llamada", debajo el enlace
-   para escribir por WhatsApp y una nota pequeña que explica qué pasa al tocar */
-.cta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-.cta__whatsapp {                   /* enlace de texto, sin forma de botón: subrayado solo con hover */
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;                /* área de toque cómoda */
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--texto);
-  text-decoration: underline;
-  text-decoration-color: transparent;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 6px;
-  -webkit-tap-highlight-color: transparent;
-  transition: text-decoration-color var(--t-hover) var(--ease);
-}
-.cta__whatsapp:focus-visible { text-decoration-color: var(--texto-2); }
-.cta__nota {
-  max-width: 36ch;
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--texto-2);
-}
-
 /* Píldoras de texto */
 .pildoras { display: flex; flex-wrap: wrap; gap: 8px; }
 .pildora {
@@ -424,41 +371,61 @@ html.lenis, html.lenis body { height: auto; }
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  height: var(--header-h);
-  padding-inline: 20px;
+  padding-block: 28px;
 }
 .marca {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   min-height: 44px;
   text-decoration: none;
 }
-.marca__logo { width: 28px; height: 24px; color: var(--texto); }
-.marca__nombre { font-weight: 700; font-size: 17px; letter-spacing: .02em; }
-/* Botón del header: en celular solo "Llamada", sin círculo; en computadora "Agenda una llamada" */
-.btn--sm { padding: 0 18px; font-size: 14px; }
-.btn--sm .btn__circulo { display: none; }
+.marca__logo { width: 33px; height: 28px; color: var(--texto); }
+.marca__nombre { font-weight: 700; font-size: 19px; letter-spacing: .02em; }
 
-.solo-computadora { display: none; }
-@media (min-width: 900px) {
-  .solo-celular { display: none; }
-  .solo-computadora { display: inline; }
+/* Selector de idioma: un solo botón "ES | EN" que alterna (js/idioma.js). El idioma activo
+   va en --texto y el otro en --texto-2. Sin JavaScript no haría nada, así que no se muestra. */
+.idioma {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-left: auto;               /* en celular queda pegado al botón de contacto */
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--texto-2);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.js .idioma { display: inline-flex; }
+.idioma__op { transition: color var(--t-hover) var(--ease); }
+html:not([lang="en"]) .idioma__op[data-idioma="es"],
+html[lang="en"] .idioma__op[data-idioma="en"] { color: var(--texto); }
+
+/* En celular el botón del header va sin el círculo de la flecha: así cabe el selector */
+.site-header .btn__circulo { display: none; }
+.site-header .btn--primary { padding: 12px 18px; }
+/* Única excepción al breakpoint de 900px: en pantallas muy angostas (320px) no caben el
+   nombre, el selector y el botón, así que queda solo el logo */
+@media (max-width: 349px) {
+  .marca__nombre { display: none; }
 }
 
 .site-nav { display: none; }
 @media (min-width: 900px) {
-  .site-header { padding-inline: 44px; }
-  .marca { gap: 10px; }
-  .marca__logo { width: 33px; height: 28px; }
-  .marca__nombre { font-size: 19px; }
-  .btn--sm { padding: 10px 10px 10px 18px; }
-  .btn--sm .btn__circulo { display: inline-flex; width: 32px; height: 32px; }
+  .idioma { margin-left: 0; }
+  .site-header .btn__circulo { display: inline-flex; }
+  .site-header .btn--primary { padding: 12px 12px 12px 20px; }
   .site-nav {
     display: flex;
-    gap: 32px;
+    gap: 28px;
     margin-left: auto;
-    margin-right: 16px;
+    margin-right: 12px;
     font-size: 15px;
   }
   .site-nav a {
@@ -469,202 +436,100 @@ html.lenis, html.lenis body { height: auto; }
   .site-nav a:focus-visible { color: var(--texto); }
 }
 
-/* ---------- 1 · Portada ----------
-   Avo gigante al fondo, cortado por el borde inferior del panel, con un velo que
-   oscurece su lado del texto. Medidas de docs/referencia-portada-*.html:
-   computadora (1440 × 940): Avo de 800px, a 32px de la derecha y 140px bajo el borde;
-   celular (390 × 844): Avo de 420px, 50px fuera por la derecha y 64px bajo el borde.
-   --avo-tam escala todo lo que depende de Avo (la burbuja va sobre su cabeza). */
-.hero {
-  --avo-tam: min(420px, 108vw);
-  min-height: max(680px, calc(100vh - var(--header-h) - 2 * var(--panel-gap)));
-  min-height: max(680px, calc(100svh - var(--header-h) - 2 * var(--panel-gap)));
-}
-.hero__avo-capa {
+/* ---------- 1 · Portada ---------- */
+.hero__sentinel {                  /* js/avo.js sabe con él si la página está arriba del todo */
   position: absolute;
-  z-index: 0;
-  right: calc(var(--avo-tam) * -.119);
-  bottom: calc(var(--avo-tam) * -.152);
-  width: var(--avo-tam);
-  height: var(--avo-tam);
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 40px;
 }
-.hero__avo {
-  width: 100%;
-  height: 100%;
-  image-rendering: pixelated;
-  user-select: none;
-}
-/* Velo fijo (no animado) para que el texto se lea sobre Avo */
-.hero__velo {
+/* CRECER gigante y solo en contorno, centrada detrás del título. Se centra con flex y
+   no con transform: el transform del exterior lo usa main.js para moverla más lento que
+   el scroll en computadora (con Lenis). Si no cabe, la recorta el overflow del panel. */
+.hero__titular { position: relative; }
+.hero__palabra {
   position: absolute;
   inset: 0;
-  z-index: 1;
-  background: linear-gradient(180deg,
-    color-mix(in srgb, var(--panel) 96%, transparent) 0%,
-    color-mix(in srgb, var(--panel) 86%, transparent) 46%,
-    transparent 62%);
+  z-index: -1;                     /* detrás de todo el contenido de .hero__cuerpo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(88px, 25vw, 360px);
+  font-weight: 700;                /* el peso más alto de Space Grotesk */
+  line-height: 1;
+  letter-spacing: -.04em;
+  white-space: nowrap;
+  /* El trazo mide 2px y el relleno, del color del panel, se pinta encima: tapa la mitad
+     interior (queda 1px) y los cruces que la fuente variable dibuja dentro de las letras */
+  color: var(--panel);
+  -webkit-text-stroke: 2px var(--palabra-fondo);
+  paint-order: stroke fill;
   pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
+.hero__palabra-texto { display: block; }
 .hero__cuerpo {
   position: relative;
-  z-index: 2;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  max-width: 374px;
-  padding: 58px 20px 0;
+  gap: 40px;
+  padding-top: clamp(48px, 8vw, 120px);
+  padding-bottom: 72px;
 }
-.hero__etiqueta { display: none; }   /* en celular no cabe: la referencia no la muestra */
-.hero__title {
-  font-weight: 600;
-  font-size: clamp(46px, 7.2vw, 104px);
-  line-height: .96;
-  letter-spacing: -.05em;
-}
-.hero__pie { display: flex; flex-direction: column; gap: 18px; }
-.hero__lead {
-  font-size: 16px;
-  line-height: 1.5;
+.hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 15px;
   color: var(--texto-2);
 }
+.hero__meta-claro { color: var(--texto); }
+.hero__title {
+  font-weight: 600;
+  font-size: clamp(40px, 14vw, 96px);   /* "que atienden" mide 5.72em y tiene que caber en una línea */
+  line-height: .9;
+  letter-spacing: -.055em;
+}
+/* En computadora "Creamos" y "sistemas" comparten fila (7.85em): cada una conserva su
+   máscara. El espacio entre las dos es el salto de línea que las separa en el HTML. */
+@media (min-width: 900px) {
+  .hero__title { font-size: clamp(88px, 10.2vw, 136px); }
+  .hero__title .linea--pareja { display: inline-block; vertical-align: top; }
+}
+.hero__pie {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 32px;
+  position: relative;
+  padding-top: 32px;
+}
+.hero__lead {
+  max-width: 520px;
+  font-size: 20px;
+  line-height: 1.55;
+  color: var(--texto-2);
+}
+/* En celular el enlace va debajo del botón: al lado quedaría bajo Avo al cargar la página */
 .hero__acciones {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: 8px;
 }
-.hero .btn--lg { padding: 12px 12px 12px 22px; font-size: 16px; gap: 12px; }
-.hero .btn--lg .btn__circulo { width: 36px; height: 36px; }
-.hero .cta__whatsapp { min-height: 44px; font-size: 15px; font-weight: 600; }
-.hero .cta__nota { margin-top: 6px; color: var(--marca-chica); }
-
-/* Burbuja de Avo: una píldora clara sobre su cabeza; abre el asistente */
-.hero__burbuja-capa {
-  position: absolute;
-  z-index: 2;
-  right: 18px;
-  bottom: calc(var(--avo-tam) * .605);
-}
-/* Con el chat de Avo abierto (html.avo-open) la burbuja se va de inmediato; al cerrarlo
-   vuelve con el mismo retraso de su aparición */
-html.avo-open .hero__burbuja.is-visible { opacity: 0; transition-delay: 0s; pointer-events: none; }
-.hero__burbuja {
-  min-height: 44px;
-  padding: 10px 14px;
-  border: 0;
-  border-radius: 14px 14px 4px 14px;   /* la esquina más cerrada apunta a Avo */
-  background: var(--texto);
-  color: var(--sobre-texto);
-  font: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.4;
-  white-space: nowrap;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Franja de los 4 pilares, abajo del panel (por debajo del borde dibujado) */
-.hero__pilares {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  display: flex;
-  height: 52px;
-  border-top: 1px solid var(--linea);
-  background: color-mix(in srgb, var(--panel) 94%, transparent);
-}
-.hero__pilares-etiqueta { display: none; }
-.hero__pilares ul { flex: 1; display: flex; }
-.hero__pilares li {
-  flex: 1 1 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-left: 1px solid var(--linea);
-  font-size: 13px;
-  font-weight: 500;
-}
-.hero__pilares li:first-child { border-left: 0; }
-.hero__firma-vertical { display: none; }
-
 @media (min-width: 900px) {
-  .hero {
-    --avo-tam: min(800px, 56vw);
-    min-height: max(760px, calc(100vh - var(--header-h) - var(--panel-gap)));
-    min-height: max(760px, calc(100svh - var(--header-h) - var(--panel-gap)));
-  }
-  .hero__avo-capa {
-    right: 32px;
-    bottom: calc(var(--avo-tam) * -.175);
-  }
-  .hero__velo {
-    background: linear-gradient(90deg,
-      color-mix(in srgb, var(--panel) 94%, transparent) 0%,
-      color-mix(in srgb, var(--panel) 78%, transparent) 36%,
-      transparent 62%);
-  }
-  .hero__cuerpo {
-    gap: 30px;
-    max-width: 772px;
-    padding: 92px 0 0 72px;
-  }
-  .hero__etiqueta {
-    display: block;
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--texto-2);
-  }
-  .hero__title { line-height: .95; letter-spacing: -.055em; }
-  .hero__pie { gap: 30px; }
-  .hero__lead { max-width: 470px; font-size: 19px; line-height: 1.55; }
-  .hero__acciones { flex-direction: row; align-items: center; gap: 28px; }
-  .hero .btn--lg { padding: 14px 14px 14px 26px; font-size: 17px; gap: 14px; }
-  .hero .btn--lg .btn__circulo { width: 38px; height: 38px; }
-  .hero .cta__whatsapp { font-size: 16px; }
-  .hero .cta__nota { margin-top: 16px; font-size: 14px; }
-
-  /* Sobre la oreja derecha de Avo (en 1440: x = 1120, como la referencia). Se ancla por
-     la derecha, con 40px de mínimo, para que en pantallas medianas no se salga del panel. */
-  .hero__burbuja-capa {
-    right: max(40px, calc(var(--avo-tam) * .32 - 200px));
-    bottom: calc(var(--avo-tam) * .7875);
-  }
-  .hero__burbuja {
-    padding: 12px 18px;
-    border-radius: 16px 16px 16px 4px;
-    font-size: 16px;
-  }
-
-  .hero__pilares { height: 64px; background: color-mix(in srgb, var(--panel) 92%, transparent); }
-  .hero__pilares-etiqueta {
-    display: flex;
-    align-items: center;
-    padding: 0 30px;
-    font-size: 12px;
-    letter-spacing: .22em;
-    text-transform: uppercase;
-    color: var(--marca-chica);
-  }
-  .hero__pilares li { font-size: 15px; }
-  .hero__pilares li:first-child { border-left: 1px solid var(--linea); }
-
-  /* La firma también va en vertical sobre los bordes izquierdo y derecho */
-  .hero__firma-vertical {
-    display: block;
-    top: 50%;
-    font-size: 11px;
-    letter-spacing: .22em;
-    writing-mode: vertical-rl;
-  }
-  .hero__firma-vertical--izq { left: 14px; transform: translateY(-50%) rotate(180deg); }
-  .hero__firma-vertical--der { right: 14px; transform: translateY(-50%); }
+  .hero__acciones { flex-direction: row; align-items: center; gap: 24px; }
 }
+.hero__acciones .enlace { font-size: 16px; }
 
 /* ---------- 2 · Cinta ---------- */
-/* Lineal y continua; nunca se pausa (salvo con movimiento reducido). */
+/* Lineal y continua; nunca se pausa (salvo con movimiento reducido). Avo usa
+   .ribbon__band para no taparla. */
 .ribbon {
   margin: 0 0 var(--panel-gap);
   padding: 20px 0;
@@ -679,7 +544,7 @@ html.avo-open .hero__burbuja.is-visible { opacity: 0; transition-delay: 0s; poin
 .ribbon__track {
   display: flex;
   width: max-content;
-  animation: marquee 40s linear infinite;
+  animation: marquee 75s linear infinite;   /* media pista (3 listas, ~2630px) a unos 35 px por segundo */
 }
 .ribbon__list { display: flex; }
 .ribbon__list li {
@@ -690,7 +555,7 @@ html.avo-open .hero__burbuja.is-visible { opacity: 0; transition-delay: 0s; poin
   white-space: nowrap;
 }
 .ribbon__list li::after {
-  content: "/";
+  content: "·";
   margin-left: 28px;
   color: var(--texto-2);
 }
@@ -811,7 +676,8 @@ html.avo-open .hero__burbuja.is-visible { opacity: 0; transition-delay: 0s; poin
 }
 .plan__lista li::before { content: "—"; color: var(--texto-2); }
 .plan__nota { font-size: 15px; color: var(--texto-2); }
-.plan__accion { align-self: flex-start; }
+.plan__accion { align-self: flex-start; max-width: 100%; }
+.plan__accion .btn { white-space: normal; }   /* en pantallas muy angostas el texto baja de línea en vez de salirse de la tarjeta */
 
 /* A tu medida: tarjeta negra dentro de la franja clara. Vuelve a los tokens
    oscuros, así su texto, líneas, píldora y botón se invierten solos */
@@ -886,15 +752,128 @@ html.avo-open .hero__burbuja.is-visible { opacity: 0; transition-delay: 0s; poin
 }
 .site-footer a:focus-visible { color: var(--texto); }
 
+.site-footer a[aria-current="page"] { color: var(--texto); }   /* la página legal en la que ya estás */
+/* Privacidad · Términos: 44px de área de toque sin cambiar cómo se ven */
+.site-footer__legal a { display: inline-block; padding-block: 14px; }
+
+/* ---------- 7b · Páginas legales (privacidad.html y terminos.html) ---------- */
+/* Un solo panel con el texto en una columna de lectura. Solo en español: el aviso en
+   inglés aparece si el visitante venía navegando en inglés (script del <head>). */
+.legal__titulo {
+  font-weight: 600;
+  font-size: clamp(40px, 13vw, 96px);   /* "condiciones." es la línea más larga y tiene que caber en celular */
+  line-height: .95;
+  letter-spacing: -.045em;
+}
+.legal__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 68ch;
+  font-size: 17px;
+  line-height: 1.65;
+}
+/* En computadora el texto arranca donde arranca el título: después de la columna de la
+   etiqueta (200px) y su separación (64px) */
+@media (min-width: 900px) {
+  .legal__texto { margin-left: 264px; }
+}
+.legal__texto h2 {
+  margin-top: 26px;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+}
+.legal__texto li {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--linea);
+}
+.legal__texto li::before { content: "—"; color: var(--texto-2); }
+.legal__texto a { text-underline-offset: 4px; white-space: nowrap; }   /* el número de WhatsApp no se parte en dos renglones */
+.legal__fecha { font-size: 14px; color: var(--texto-2); }
+.legal__aviso {
+  display: none;
+  align-self: flex-start;
+  padding: 8px 14px;
+  border: 1px solid var(--linea);
+  border-radius: 999px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.viene-de-ingles .legal__aviso { display: block; }
+
+/* ---------- 8 · Cortina de idioma ---------- */
+/* Al cambiar de idioma (js/idioma.js), un panel claro cruza la pantalla de izquierda a
+   derecha y los textos cambian mientras la tapa. El script crea el panel, le pone la clase
+   .cortina--activa y le pasa la duración total en --t-cortina. Solo se animan transform
+   (el panel) y opacity (la marca). Usa los dos tokens de los botones: ningún color nuevo. */
+.cortina {
+  position: fixed;
+  inset: 0;
+  z-index: 90;                     /* encima de todo, también del chat de Avo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--texto);
+  color: var(--sobre-texto);
+  transform: translateX(-100%);
+  visibility: hidden;              /* mientras no se usa, no existe para nadie */
+  pointer-events: none;
+}
+.cortina--activa {
+  visibility: visible;
+  pointer-events: auto;            /* mientras cubre, nadie toca lo de abajo */
+  /* La curva vale para cada tramo: arranca y frena suave al entrar, y otra vez al salir */
+  animation: cortina-pasar var(--t-cortina, 800ms) var(--ease-cortina) both;
+  will-change: transform;
+}
+.cortina__marca {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: .02em;
+  opacity: 0;
+}
+.cortina__marca svg { width: 47px; height: 40px; }
+.cortina--activa .cortina__marca { animation: cortina-marca var(--t-cortina, 800ms) both; }
+
+/* Entra (0 → 42.5 %), cubre (hasta 57.5 %) y sale por el lado contrario. A la mitad,
+   con la pantalla cubierta, el script cambia los textos. */
+@keyframes cortina-pasar {
+  0%           { transform: translateX(-100%); }
+  42.5%, 57.5% { transform: none; }
+  100%         { transform: translateX(100%); }
+}
+@keyframes cortina-marca {
+  0%, 20%   { opacity: 0; }
+  45%, 100% { opacity: 1; }
+}
+/* Con movimiento reducido no hay cortina: la página se funde con su propio fondo y vuelve */
+@keyframes cortina-fundido {
+  0%, 100% { opacity: 0; }
+  50%      { opacity: 1; }
+}
+
+/* La portada repite su entrada después del cambio: para devolverla a su estado oculto de
+   golpe (bajo la cortina), el script apaga un instante sus transiciones con esta clase */
+.sin-transicion,
+.sin-transicion * { transition: none !important; }
+
 /* ==========================================================================
    Hover: solo con mouse real (en celular no se queda "pegado"). 200 ms, sutil.
    El movimiento, además, solo si el sistema no pide reducirlo.
    ========================================================================== */
 @media (hover: hover) and (pointer: fine) {
   .site-nav a:hover,
-  .site-footer a:hover { color: var(--texto); }
+  .site-footer a:hover,
+  .idioma:hover .idioma__op { color: var(--texto); }
   .enlace:hover { color: var(--texto-2); }
-  .cta__whatsapp:hover { text-decoration-color: var(--texto-2); }
   .servicio:hover .flecha,
   .flecha:hover { border-color: var(--linea-activa); }
   .servicio:hover .servicio__nombre > span { color: var(--texto-hover); }
@@ -929,13 +908,6 @@ html.avo-open .hero__burbuja.is-visible { opacity: 0; transition-delay: 0s; poin
   opacity: 0;
   transform: scale(.98);
   transition: opacity var(--t-linea) var(--ease), transform var(--t-linea) var(--ease);
-}
-/* Avo de la portada: fundido y sube 16px (es lo primero que aparece después del panel) */
-.js [data-reveal="avo"] {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity var(--t-linea) var(--ease), transform var(--t-linea) var(--ease);
-  transition-delay: var(--d, 0ms);
 }
 .js [data-reveal="fundido"] {
   opacity: 0;
@@ -980,12 +952,6 @@ html.avo-open .hero__burbuja.is-visible { opacity: 0; transition-delay: 0s; poin
 .js [data-reveal="grupo"].is-visible,
 .js [data-reveal="grupo"].is-visible [data-paso] { opacity: 1; transform: none; }
 
-/* Avo de la portada respira: sube 1px y vuelve, en pasos (como pixel art) */
-@media (prefers-reduced-motion: no-preference) {
-  .hero__avo { animation: avo-respira-portada 3s steps(1, end) infinite; }
-}
-@keyframes avo-respira-portada { 50% { transform: translateY(-1px); } }
-
 /* ==========================================================================
    Movimiento reducido: todo aparece de inmediato y la cinta queda quieta
    ========================================================================== */
@@ -1000,7 +966,10 @@ html.avo-open .hero__burbuja.is-visible { opacity: 0; transition-delay: 0s; poin
   }
   .ribbon__track { animation: none; }
   .btn__relleno::before { transform: none; opacity: 0; }
-  html.avo-open .hero__burbuja { opacity: 0 !important; }
+  /* Cambio de idioma: sin cortina ni logo, solo un fundido de 150 ms al color del fondo */
+  .cortina { background: var(--fondo); transform: none; opacity: 0; }
+  .cortina--activa { animation-name: cortina-fundido; will-change: opacity; }
+  .cortina__marca { display: none; }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
   .btn--primary:hover .btn__relleno::before { transform: none; opacity: 1; }
