@@ -68,9 +68,20 @@ Botón "ES | EN" en el header (`.idioma`): un solo botón que alterna. El españ
 - **Al cargar** con inglés guardado no hay cortina.
 - **Movimiento reducido:** sin cortina ni logo. El mismo elemento hace un fundido de 150 ms al color del fondo (`--fondo`) y vuelve, y la portada no repite su entrada.
 
+## Páginas legales
+
+`privacidad.html` (Política de Privacidad) y `terminos.html` (Términos y Condiciones), en la raíz. Mismo diseño que la landing: `css/styles.css` (sección 7b, `.legal__*`), el mismo header y footer, y el texto dentro de un solo panel.
+
+- **Solo en español.** No cargan `idioma.js` ni `avo.js` (sin botón ES | EN y sin chat); sí cargan `main.js`. Si el visitante tenía guardado el inglés, el script del `<head>` agrega `.viene-de-ingles` y aparece el aviso `.legal__aviso` ("This page is available in Spanish only for now.").
+- **Enlaces:** "Privacidad · Términos" en el footer de las tres páginas (`.site-footer__legal`). En `index.html` llevan `data-i18n` ("Privacy", "Terms"). En las legales, el menú del header apunta a `./#servicios`, `./#proyectos` y `./#planes`.
+- **No hay plantillas:** el header, el footer, los íconos y el número de WhatsApp están **copiados en las tres páginas**. Si cambia uno, se cambia en las tres.
+- **El texto dice lo que la página hace de verdad.** Hay que actualizar `privacidad.html` (y su fecha) si se agrega analítica, cookies o formularios, si se carga otro servicio externo, o si el chat de Avo se conecta a una IA: ahí lo que escribe el visitante sí saldría de su navegador. Hoy nombra Netlify, WhatsApp (Meta), Google Fonts y jsDelivr, y dice que no hay cookies ni analítica.
+- **Derechos:** los cuatro que yo indiqué (acceso, corrección, eliminación y oposición, Ley 81 de 2019). La ley también incluye portabilidad y la vigila la ANTAI; decidí no nombrarlas. No se agregan plazos, tiempos de conservación ni medidas de seguridad que yo no haya dado.
+- El texto no lo revisó un abogado.
+
 ## Stack
 
-Sitio estático simple: `index.html` + `css/styles.css` + `js/main.js`, más el idioma (`js/idioma.js`) y el asistente Avo en archivos aparte (`css/avo.css` + `js/avo.js`). Los scripts se cargan en este orden: `idioma.js`, `main.js`, `avo.js`. Sin framework, sin bundler (herramienta que empaqueta código), sin `package.json`, sin tests ni linter (revisor automático de estilo). La única librería externa es **Lenis** (scroll con inercia), que `main.js` descarga desde jsDelivr solo en computadora con mouse (ver Movimiento).
+Sitio estático simple: `index.html` (más `privacidad.html` y `terminos.html`) + `css/styles.css` + `js/main.js`, más el idioma (`js/idioma.js`) y el asistente Avo en archivos aparte (`css/avo.css` + `js/avo.js`). Los scripts se cargan en este orden: `idioma.js`, `main.js`, `avo.js`. Sin framework, sin bundler (herramienta que empaqueta código), sin `package.json`, sin tests ni linter (revisor automático de estilo). La única librería externa es **Lenis** (scroll con inercia), que `main.js` descarga desde jsDelivr solo en computadora con mouse (ver Movimiento).
 
 ## Cómo verlo
 

@@ -752,6 +752,59 @@ html[lang="en"] .idioma__op[data-idioma="en"] { color: var(--texto); }
 }
 .site-footer a:focus-visible { color: var(--texto); }
 
+.site-footer a[aria-current="page"] { color: var(--texto); }   /* la página legal en la que ya estás */
+/* Privacidad · Términos: 44px de área de toque sin cambiar cómo se ven */
+.site-footer__legal a { display: inline-block; padding-block: 14px; }
+
+/* ---------- 7b · Páginas legales (privacidad.html y terminos.html) ---------- */
+/* Un solo panel con el texto en una columna de lectura. Solo en español: el aviso en
+   inglés aparece si el visitante venía navegando en inglés (script del <head>). */
+.legal__titulo {
+  font-weight: 600;
+  font-size: clamp(40px, 13vw, 96px);   /* "condiciones." es la línea más larga y tiene que caber en celular */
+  line-height: .95;
+  letter-spacing: -.045em;
+}
+.legal__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 68ch;
+  font-size: 17px;
+  line-height: 1.65;
+}
+/* En computadora el texto arranca donde arranca el título: después de la columna de la
+   etiqueta (200px) y su separación (64px) */
+@media (min-width: 900px) {
+  .legal__texto { margin-left: 264px; }
+}
+.legal__texto h2 {
+  margin-top: 26px;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+}
+.legal__texto li {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--linea);
+}
+.legal__texto li::before { content: "—"; color: var(--texto-2); }
+.legal__texto a { text-underline-offset: 4px; white-space: nowrap; }   /* el número de WhatsApp no se parte en dos renglones */
+.legal__fecha { font-size: 14px; color: var(--texto-2); }
+.legal__aviso {
+  display: none;
+  align-self: flex-start;
+  padding: 8px 14px;
+  border: 1px solid var(--linea);
+  border-radius: 999px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.viene-de-ingles .legal__aviso { display: block; }
+
 /* ---------- 8 · Cortina de idioma ---------- */
 /* Al cambiar de idioma (js/idioma.js), un panel claro cruza la pantalla de izquierda a
    derecha y los textos cambian mientras la tapa. El script crea el panel, le pone la clase

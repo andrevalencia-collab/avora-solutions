@@ -117,6 +117,8 @@
 
     'footer.lema': 'Attract. Convert. Automate.',
     'footer.pais': 'Panama',
+    'footer.privacidad': 'Privacy',
+    'footer.terminos': 'Terms',
   };
 
   // Mensajes prellenados de WhatsApp en inglés, por tema (data-wa). Los de español están en el HTML.
