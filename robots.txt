@@ -3,4 +3,4 @@ Allow: /
 Disallow: /_referencias/
 Disallow: /_herramientas/
 
-Sitemap: https://avosolutions.netlify.app/sitemap.xml
+Sitemap: https://avora-solutions.andre-valencia204.workers.dev/sitemap.xml

@@ -75,7 +75,7 @@ Botón "ES | EN" en el header (`.idioma`): un solo botón que alterna. El españ
 - **Solo en español.** No cargan `idioma.js` ni `avo.js` (sin botón ES | EN y sin chat); sí cargan `main.js`. Si el visitante tenía guardado el inglés, el script del `<head>` agrega `.viene-de-ingles` y aparece el aviso `.legal__aviso` ("This page is available in Spanish only for now.").
 - **Enlaces:** "Privacidad · Términos" en el footer de las tres páginas (`.site-footer__legal`). En `index.html` llevan `data-i18n` ("Privacy", "Terms"). En las legales, el menú del header apunta a `./#servicios`, `./#proyectos` y `./#planes`.
 - **No hay plantillas:** el header, el footer, los íconos y el número de WhatsApp están **copiados en las tres páginas**. Si cambia uno, se cambia en las tres.
-- **El texto dice lo que la página hace de verdad.** Hay que actualizar `privacidad.html` (y su fecha) si se agrega analítica, cookies o formularios, si se carga otro servicio externo, o si el chat de Avo se conecta a una IA: ahí lo que escribe el visitante sí saldría de su navegador. Hoy nombra Netlify, WhatsApp (Meta), Google Fonts y jsDelivr, y dice que no hay cookies ni analítica.
+- **El texto dice lo que la página hace de verdad.** Hay que actualizar `privacidad.html` (y su fecha) si se agrega analítica, cookies o formularios, si se carga otro servicio externo, o si el chat de Avo se conecta a una IA: ahí lo que escribe el visitante sí saldría de su navegador. Hoy nombra Cloudflare (aloja la página), WhatsApp (Meta), Google Fonts y jsDelivr, y dice que no hay cookies ni analítica.
 - **Derechos:** los cuatro que yo indiqué (acceso, corrección, eliminación y oposición, Ley 81 de 2019). La ley también incluye portabilidad y la vigila la ANTAI; decidí no nombrarlas. No se agregan plazos, tiempos de conservación ni medidas de seguridad que yo no haya dado.
 - El texto no lo revisó un abogado.
 
@@ -167,8 +167,19 @@ Mascota en pixel art que reemplaza al antiguo botón flotante de WhatsApp. Todo 
 - `_herramientas/og-image.html` es la plantilla de 1200×630 para `img/og-image.jpg` (la imagen que se ve al compartir el link). Ya tiene la identidad v2 y el título de la portada. Para regenerar el JPG: servir la carpeta, capturar la plantilla con Edge headless (`--headless=new --window-size=1200,630 --screenshot=…`) y convertir el PNG a JPG. Si cambia el título de la portada, se actualizan la plantilla y el JPG.
 - `_referencias/` guarda capturas y la referencia del rediseño. Ambas carpetas con `_` están excluidas en `robots.txt` y no forman parte del sitio (`_referencias/` además está en `.gitignore`).
 
+## Cloudflare (dónde se publica)
+
+El sitio se publica en Cloudflare como un **Worker con archivos estáticos** llamado `avora-solutions`, conectado a este repositorio desde el panel de Cloudflare: cada cambio en `main` se publica solo. No hay paso de compilación.
+
+- **`wrangler.jsonc`** (raíz): la configuración del Worker. `"directory": "."` significa que Cloudflare publica **la carpeta entera del proyecto**. `"name"` tiene que ser el nombre del Worker; si se cambia, se publica en otro. `"not_found_handling": "404-page"` hace que una dirección que no existe muestre `404.html`.
+- **`.assetsignore`** (raíz, mismo formato que `.gitignore`): lo que está en esa lista **no se publica**. Hoy deja fuera `.git`, `.github`, la configuración (`wrangler.jsonc`, `package.json`, `.gitignore`…), `_herramientas/`, `_referencias/`, `.claude/`, `.impeccable/`, `CLAUDE.md`, cualquier `*.md` y el PDF de precios. **Regla: todo archivo nuevo en la raíz queda público salvo que se agregue ahí.**
+- **Qué queda público:** `index.html`, `privacidad.html`, `terminos.html`, `404.html`, `robots.txt`, `sitemap.xml`, `css/`, `js/` e `img/` (incluidas las imágenes que ya no se usan).
+- **Direcciones sin `.html`:** Cloudflare redirige `/privacidad.html` a `/privacidad`. Los enlaces internos siguen escritos con `.html` para que también funcionen en local.
+- **`404.html`:** mismo diseño, con el botón "Volver al inicio". Sus rutas empiezan con `/` (`/css/styles.css`), porque Cloudflare la muestra en cualquier dirección, también dentro de carpetas que no existen. Si el visitante venía en inglés, el texto sale en inglés (`.solo-es` / `.solo-en`, con la misma clase `.viene-de-ingles` de las páginas legales). En local se ve abriendo `/404.html`; el servidor de Python no la usa para direcciones inventadas.
+- **Comprobar después de publicar:** `/.git/config`, `/CLAUDE.md`, `/wrangler.jsonc` y `/_herramientas/og-image.html` deben dar 404; una dirección inventada debe mostrar la página 404.
+
 ## SEO
 
-**Dirección actual del sitio: https://avosolutions.netlify.app. Nunca usar avorasolutions.com, que pertenece a otra empresa.**
+**Dirección actual del sitio: https://avora-solutions.andre-valencia204.workers.dev (Cloudflare). Nunca usar avorasolutions.com, que pertenece a otra empresa, ni avora.solutions mientras no esté comprado.**
 
-El dominio propio todavía **no está comprado**. La dirección actual se repite en `canonical`, `og:url`, `og:image`, el bloque JSON-LD, `robots.txt` y `sitemap.xml`: cuando se defina el dominio real, se actualizan todos juntos. Los datos de contacto (teléfono, email) también aparecen en el JSON-LD, el footer y los CTA. `theme-color` es `#0B0B0C`.
+El dominio propio todavía **no está comprado** (la idea es `avora.solutions`). La dirección actual se repite en 12 lugares: `canonical`, `og:url`, `og:image` y las 3 direcciones del JSON-LD en `index.html`; el `canonical` de `privacidad.html` y de `terminos.html`; las 3 de `sitemap.xml`; y la línea del sitemap en `robots.txt`. Cuando exista el dominio real, se actualizan todos juntos. Las páginas legales van **sin `.html`** en `canonical` y en el sitemap (`…/privacidad`, `…/terminos`), porque en Cloudflare esa es la dirección final. El sitio anterior en Netlify (`avosolutions.netlify.app`) ya no es la dirección oficial. Los datos de contacto (teléfono, email) también aparecen en el JSON-LD, el footer y los CTA. `theme-color` es `#0B0B0C`.
