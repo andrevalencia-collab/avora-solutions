@@ -49,11 +49,11 @@
   };
 
   // Textos basados solo en lo que ya dice la landing: sin cifras ni clientes inventados.
-  // Los precios salen solo de la sección Planes (si cambian allí, se cambian aquí).
+  // La landing no muestra precios: la respuesta de precio describe los planes y lleva a WhatsApp.
   const RESPUESTAS = {
     saludo: '¡Hola! Cuéntame qué necesitas para tu negocio, o elige una de las opciones de abajo.',
     general: [
-      'Somos un solo equipo para todo lo digital de tu negocio, en tres pilares:',
+      'Trabajamos con negocios automotrices (talleres, detailing, chapistería, lubricentros) en tres pilares:',
       '• Atrae: manejamos tus redes sociales con contenido orgánico y campañas de ads.',
       '• Convierte: landing pages y sitios web pensados para que quien te visita te escriba.',
       '• Automatiza: automatizaciones que responden por ti.',
@@ -61,11 +61,12 @@
     ].join('\n'),
     atrae: 'Para que te conozcan, manejamos tus redes sociales: contenido orgánico y campañas de ads, para que las personas correctas sepan que existes.',
     convierte: 'Hacemos landing pages y sitios web pensados para una sola cosa: que quien te visita te escriba. Puedes empezar con tu página y, cuando estés listo, sumamos lo demás.',
-    automatiza: 'Creamos automatizaciones que responden por ti, e integraciones que conectan tus herramientas para que trabajes menos. Así nadie se queda sin respuesta.',
+    automatiza: 'Tu WhatsApp responde precios y horarios, agenda la cita y le recuerda al cliente cuando le toca volver. Así ningún cliente se queda sin respuesta, aunque estés trabajando.',
     precio: [
       'Tenemos dos planes:',
-      '• Web + Automatización: $650 de instalación + $90/mes. Tu página a medida y una automatización que responde por ti. Si solo necesitas la página, desde $350.',
-      '• A tu medida: anuncios, página y WhatsApp automatizado trabajando juntos. El precio sale de una evaluación de tu negocio.',
+      '• Web + WhatsApp: tu página con trabajos, servicios y reseñas, y un WhatsApp que responde precios y horarios. Si solo necesitas la página, también la hacemos.',
+      '• Sistema completo: todo lo anterior, más agenda y recordatorios de mantenimiento y campañas en Meta.',
+      'El precio depende de tu negocio: escríbenos por WhatsApp y te enviamos una cotización sin compromiso.',
       'Clientes Fundadores: 30% de descuento en la instalación para los primeros 5 clientes.',
     ].join('\n'),
     proceso: [
@@ -81,11 +82,11 @@
     ].join('\n'),
     'no-entiende': 'Esa pregunta la vemos mejor juntos. Escríbenos por WhatsApp y te respondemos directo.',
   };
-  // Las mismas respuestas en inglés, con los mismos precios
+  // Las mismas respuestas en inglés
   const RESPUESTAS_EN = {
     saludo: 'Hi! Tell me what your business needs, or pick one of the options below.',
     general: [
-      'We\'re one team for everything digital in your business, built on three pillars:',
+      'We work with automotive businesses (garages, detailing, body shops, oil change) on three pillars:',
       '• Attract: we manage your social media with organic content and ad campaigns.',
       '• Convert: landing pages and websites built so visitors message you.',
       '• Automate: automations that reply for you.',
@@ -93,11 +94,12 @@
     ].join('\n'),
     atrae: 'To get you noticed, we manage your social media: organic content and ad campaigns, so the right people know you exist.',
     convierte: 'We build landing pages and websites designed for one thing: getting visitors to message you. You can start with your page and add the rest when you\'re ready.',
-    automatiza: 'We build automations that reply for you, and integrations that connect your tools so you work less. That way, no one is left without an answer.',
+    automatiza: 'Your WhatsApp answers prices and hours, books the appointment and reminds customers when it\'s time to come back. That way no customer is left without an answer, even while you work.',
     precio: [
       'We have two plans:',
-      '• Web + Automation: $650 setup + $90/mo. Your custom page plus an automation that replies for you. If you only need the page, from $350.',
-      '• Tailored: ads, website and automated WhatsApp working together. The price comes from an assessment of your business.',
+      '• Web + WhatsApp: your page with your work, services and reviews, plus a WhatsApp that answers prices and hours. If you only need the page, we do that too.',
+      '• Complete system: all of the above, plus booking, maintenance reminders and Meta ad campaigns.',
+      'The price depends on your business: message us on WhatsApp and we\'ll send you a free quote.',
       'Founding Clients: 30% off setup for the first 5 clients.',
     ].join('\n'),
     proceso: [

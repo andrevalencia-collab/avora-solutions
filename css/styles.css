@@ -544,7 +544,7 @@ html[lang="en"] .idioma__op[data-idioma="en"] { color: var(--texto); }
 .ribbon__track {
   display: flex;
   width: max-content;
-  animation: marquee 75s linear infinite;   /* media pista (3 listas, ~2630px) a unos 35 px por segundo */
+  animation: marquee 110s linear infinite;   /* media pista (3 listas, ~3850px) a unos 35 px por segundo */
 }
 .ribbon__list { display: flex; }
 .ribbon__list li {
@@ -560,6 +560,95 @@ html[lang="en"] .idioma__op[data-idioma="en"] { color: var(--texto); }
   color: var(--texto-2);
 }
 @keyframes marquee { to { transform: translateX(-50%); } }
+
+/* ---------- 2b · Cómo funciona (el viaje del cliente) ----------
+   Una carretera con 5 paradas. En celular va de arriba a abajo (a la izquierda de las
+   paradas); desde 900px, de izquierda a derecha (encima). El carro es monocromo
+   (--texto) y la recorre una vez al aparecer, solo con transform. */
+.viaje__intro {
+  max-width: 560px;
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.45;
+  color: var(--texto-2);
+}
+.viaje__intro .claro { color: var(--texto); }
+.viaje__ruta {
+  --carro-w: 72px;
+  --carro-h: 27px;
+  position: relative;
+  padding-left: 64px;
+}
+.viaje__carretera {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 23px;
+  width: 2px;
+  background: var(--linea);
+}
+.viaje__pista {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 24px;
+  width: 0;
+}
+/* El envoltorio mide lo mismo que la pista, así translateY(100%) es su largo completo */
+.viaje__auto {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: calc(100% - var(--carro-w));
+  width: 0;
+}
+.viaje__carro {          /* en celular, girado para que mire hacia abajo */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--carro-w);
+  height: var(--carro-h);
+  max-width: none;          /* la base limita los svg al 100 % de su padre, que aquí mide 0 */
+  color: var(--texto);
+  transform-origin: 0 0;
+  transform: translateX(calc(var(--carro-h) / 2)) rotate(90deg);
+}
+.paradas { display: grid; gap: 36px; }
+.parada { position: relative; display: grid; align-content: start; gap: 6px; }
+.parada::before {          /* la parada sobre la carretera */
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: -46px;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--panel);
+  border: 2px solid var(--texto-2);
+}
+.parada__num { font-size: 13px; color: var(--texto-2); letter-spacing: .04em; }
+.parada__nombre {
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1.1;
+  letter-spacing: -.03em;
+}
+.parada p { font-size: 16px; color: var(--texto-2); }
+.parada .parada__salida {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--borde-panel);
+  font-size: 14px;
+}
+
+@media (min-width: 900px) {
+  .viaje__ruta { --carro-w: 96px; --carro-h: 35px; padding-left: 0; padding-top: 88px; }
+  .viaje__carretera { top: 54px; bottom: auto; left: 0; right: 0; width: auto; height: 2px; }
+  .viaje__pista { top: calc(54px - var(--carro-h) + 4px); bottom: auto; left: 0; right: 0; width: auto; height: var(--carro-h); }
+  .viaje__auto { width: calc(100% - var(--carro-w)); height: 100%; }
+  .viaje__carro { transform: none; }
+  .paradas { grid-template-columns: repeat(5, 1fr); gap: 28px; }
+  .parada::before { top: -40px; left: 0; }
+}
 
 /* ---------- 3 · Servicios ---------- */
 .servicio {
@@ -665,7 +754,7 @@ html[lang="en"] .idioma__op[data-idioma="en"] { color: var(--texto); }
   line-height: 1;
   letter-spacing: -.04em;
 }
-.plan__monto--texto { font-size: clamp(36px, 4vw, 44px); letter-spacing: -.03em; }
+.plan__monto--texto { font-size: clamp(30px, 3vw, 38px); letter-spacing: -.03em; }
 .plan__terminos { font-size: 16px; color: var(--texto-2); }
 .plan__lista li {
   display: flex;
@@ -957,6 +1046,15 @@ html[lang="en"] .idioma__op[data-idioma="en"] { color: var(--texto); }
 .js [data-reveal="grupo"].is-visible,
 .js [data-reveal="grupo"].is-visible [data-paso] { opacity: 1; transform: none; }
 
+
+/* El carro recorre la carretera una vez, cuando aparecen las paradas
+   (.viaje__auto mide la pista menos el carro: moverlo un 100 % lo deja en la última parada) */
+.js .viaje__auto { transition: transform 2600ms var(--ease) 400ms; }
+.js .viaje__ruta.is-visible .viaje__auto { transform: translateY(100%); }
+@media (min-width: 900px) {
+  .js .viaje__ruta.is-visible .viaje__auto { transform: translateX(100%); }
+}
+
 /* ==========================================================================
    Movimiento reducido: todo aparece de inmediato y la cinta queda quieta
    ========================================================================== */
@@ -970,6 +1068,7 @@ html[lang="en"] .idioma__op[data-idioma="en"] { color: var(--texto); }
     transition: none !important;
   }
   .ribbon__track { animation: none; }
+  .js .viaje__auto { transition: none !important; }
   .btn__relleno::before { transform: none; opacity: 0; }
   /* Cambio de idioma: sin cortina ni logo, solo un fundido de 150 ms al color del fondo */
   .cortina { background: var(--fondo); transform: none; opacity: 0; }
