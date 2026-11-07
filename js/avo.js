@@ -49,7 +49,7 @@
   };
 
   // Textos basados solo en lo que ya dice la landing: sin cifras ni clientes inventados.
-  // La landing no muestra precios: la respuesta de precio describe los planes y lleva a WhatsApp.
+  // Los precios salen del panel Planes de index.html (si cambian allí, se cambian aquí y en idioma.js).
   const RESPUESTAS = {
     saludo: '¡Hola! Cuéntame qué necesitas para tu negocio, o elige una de las opciones de abajo.',
     general: [
@@ -64,9 +64,9 @@
     automatiza: 'Tu WhatsApp responde precios y horarios, agenda la cita y le recuerda al cliente cuando le toca volver. Así ningún cliente se queda sin respuesta, aunque estés trabajando.',
     precio: [
       'Tenemos dos planes:',
-      '• Web + WhatsApp: tu página con trabajos, servicios y reseñas, y un WhatsApp que responde precios y horarios. Si solo necesitas la página, también la hacemos.',
-      '• Sistema completo: todo lo anterior, más agenda y recordatorios de mantenimiento y campañas en Meta.',
-      'El precio depende de tu negocio: escríbenos por WhatsApp y te enviamos una cotización sin compromiso.',
+      '• Web + WhatsApp: $550 de instalación + $120/mes. Tu página con trabajos, servicios y reseñas, y un WhatsApp que responde precios y horarios.',
+      '• Sistema completo: $950 de instalación + $397/mes. Todo lo anterior, más agenda, recordatorios de mantenimiento, campañas en Meta y contenido. La pauta se paga aparte, directo a Meta.',
+      '¿Lo estás pensando? Hay un piloto de 30 días por $150: si no te llega ningún cliente por el sistema, te devolvemos el dinero.',
       'Clientes Fundadores: 30% de descuento en la instalación para los primeros 5 clientes.',
     ].join('\n'),
     proceso: [
@@ -97,9 +97,9 @@
     automatiza: 'Your WhatsApp answers prices and hours, books the appointment and reminds customers when it\'s time to come back. That way no customer is left without an answer, even while you work.',
     precio: [
       'We have two plans:',
-      '• Web + WhatsApp: your page with your work, services and reviews, plus a WhatsApp that answers prices and hours. If you only need the page, we do that too.',
-      '• Complete system: all of the above, plus booking, maintenance reminders and Meta ad campaigns.',
-      'The price depends on your business: message us on WhatsApp and we\'ll send you a free quote.',
+      '• Web + WhatsApp: $550 setup + $120/mo. Your page with your work, services and reviews, plus a WhatsApp that answers prices and hours.',
+      '• Complete system: $950 setup + $397/mo. All of the above, plus booking, maintenance reminders, Meta campaigns and content. Ad spend is paid separately, directly to Meta.',
+      'Still thinking it over? There\'s a 30-day pilot for $150: if no customer reaches you through the system, we refund your money.',
       'Founding Clients: 30% off setup for the first 5 clients.',
     ].join('\n'),
     proceso: [
