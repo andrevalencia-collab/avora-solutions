@@ -19,7 +19,7 @@
   --sobre-texto: #0b0b0c;          /* lo que va encima de --texto: botones y píldoras se invierten solos */
   --linea-activa: rgba(242, 242, 240, .45);   /* borde de la flecha con hover */
   --texto-hover: #fff;             /* el título de un servicio "se aclara apenas" con hover */
-  --palabra-fondo: rgba(242, 242, 240, .14);   /* contorno de CRECER, gigante detrás del título de la portada */
+  --palabra-fondo: rgba(242, 242, 240, .14);   /* contorno de SISTEMA, gigante detrás del título de la portada */
 
   /* Dos fuentes: Space Grotesk (500, 600, 700) en títulos e Inter (400, 500, 600) en textos */
   --fuente-titulos: "Space Grotesk", "Helvetica Neue", system-ui, sans-serif;
@@ -444,7 +444,7 @@ html[lang="en"] .idioma__op[data-idioma="en"] { color: var(--texto); }
   width: 1px;
   height: 40px;
 }
-/* CRECER gigante y solo en contorno, centrada detrás del título. Se centra con flex y
+/* SISTEMA gigante y solo en contorno, centrada detrás del título. Se centra con flex y
    no con transform: el transform del exterior lo usa main.js para moverla más lento que
    el scroll en computadora (con Lenis). Si no cabe, la recorta el overflow del panel. */
 .hero__titular { position: relative; }
@@ -455,7 +455,7 @@ html[lang="en"] .idioma__op[data-idioma="en"] { color: var(--texto); }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(88px, 25vw, 360px);
+  font-size: clamp(76px, 21vw, 300px);
   font-weight: 700;                /* el peso más alto de Space Grotesk */
   line-height: 1;
   letter-spacing: -.04em;

@@ -30,7 +30,7 @@
 
     'hero.meta1': 'Automotive businesses · Panama',
     'hero.meta2': 'Garages, detailing and body shops.',
-    'hero.palabra': 'GROW',
+    'hero.palabra': 'SYSTEM',
     'hero.t1': 'No customer',
     'hero.t2': 'left',
     'hero.t3': 'without',

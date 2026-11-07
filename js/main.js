@@ -100,7 +100,7 @@
   /* ---------- Scroll con inercia y profundidad ----------
      Lenis, suave y ligero, SOLO en computadora con mouse: en celular, en pantallas
      táctiles y con movimiento reducido ni siquiera se descarga. Cuando existe, también
-     mueve la palabra CRECER de la portada más lento que el scroll (efecto de profundidad),
+     mueve la palabra SISTEMA de la portada más lento que el scroll (efecto de profundidad),
      solo mientras la portada está en pantalla. En celular la palabra queda fija. */
   if (conMouse && !tactil && !reduceMotion) {
     const script = document.createElement('script');
