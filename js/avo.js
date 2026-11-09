@@ -66,7 +66,7 @@
       'Tenemos dos planes:',
       '• Web + WhatsApp: $550 de instalación + $120/mes. Tu página con trabajos, servicios y reseñas, y un WhatsApp que responde precios y horarios.',
       '• Sistema completo: $950 de instalación + $397/mes. Todo lo anterior, más agenda, recordatorios de mantenimiento, campañas en Meta y contenido. La pauta se paga aparte, directo a Meta.',
-      '¿Lo estás pensando? Hay un piloto de 30 días por $150: si no te llega ningún cliente por el sistema, te devolvemos el dinero.',
+      '¿Lo estás pensando? Hay un piloto de 30 días por $150: tu WhatsApp responde al instante y agenda citas solo. Si no funciona así, te devolvemos el dinero.',
       'Clientes Fundadores: 30% de descuento en la instalación para los primeros 5 clientes.',
     ].join('\n'),
     proceso: [
@@ -99,7 +99,7 @@
       'We have two plans:',
       '• Web + WhatsApp: $550 setup + $120/mo. Your page with your work, services and reviews, plus a WhatsApp that answers prices and hours.',
       '• Complete system: $950 setup + $397/mo. All of the above, plus booking, maintenance reminders, Meta campaigns and content. Ad spend is paid separately, directly to Meta.',
-      'Still thinking it over? There\'s a 30-day pilot for $150: if no customer reaches you through the system, we refund your money.',
+      'Still thinking it over? There\'s a 30-day pilot for $150: your WhatsApp replies instantly and books appointments on its own. If it doesn\'t work that way, we refund your money.',
       'Founding Clients: 30% off setup for the first 5 clients.',
     ].join('\n'),
     proceso: [

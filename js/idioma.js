@@ -125,7 +125,7 @@
     'plan2.boton': 'I want this plan',
     'piloto.pildora': 'Still thinking it over?',
     'piloto.nombre': '30-day pilot for $150',
-    'piloto.desc': 'Your WhatsApp with automatic replies and the booking button on your Instagram. <span class="claro">If no customer reaches you through the system in 30 days, we refund the $150.</span> If you continue, it comes off the setup fee.',
+    'piloto.desc': 'Your WhatsApp replies instantly, at any hour, and your customers book their own appointments. <span class="claro">If it doesn\'t work that way within 30 days, we refund the $150.</span> If you continue, it comes off the setup fee.',
     'piloto.boton': 'I want the pilot',
     'planes.fundadores': '<span class="claro">Founding Clients:</span> 30% off setup for our first 5 clients. Prices in USD; the monthly fee has a 3-month minimum.',
 
