@@ -26,7 +26,7 @@
     convierte: 'Hola AVORA, me interesa una landing page para mi negocio. ¿Me dan más información?',
     automatiza: 'Hola AVORA, quiero automatizar la atención de mi negocio. ¿Me dan más información?',
     caso: 'Hola AVORA, vi sus proyectos y quiero algo así para mi negocio.',
-    precio: 'Hola AVORA, vi los planes y quiero saber cuál le conviene a mi negocio. ¿Me dan más información?',
+    precio: 'Hola, vi su página y quiero saber cómo sería el plan para mi negocio. ¿Me dan más información?',
   };
   const WHATSAPP_EN = {
     general: 'Hi, I saw your website and I\'d like information about your services.',
@@ -34,7 +34,7 @@
     convierte: 'Hi AVORA, I\'m interested in a landing page for my business. Could you send me more information?',
     automatiza: 'Hi AVORA, I\'d like to automate my customer service. Could you send me more information?',
     caso: 'Hi AVORA, I saw your projects and I\'d like something like that for my business.',
-    precio: 'Hi AVORA, I saw the plans and I\'d like to know which one fits my business. Could you send me more information?',
+    precio: 'Hi, I saw your page and I\'d like to know what the plan would look like for my business. Could you send me more information?',
   };
   const waLink = (tema) => {
     const mensajes = segunIdioma(WHATSAPP, WHATSAPP_EN);
@@ -44,12 +44,12 @@
   // Enlaces a secciones de la página según el tema. Salen del tema y no del texto,
   // así getReply sigue devolviendo solo { texto, tema } aunque luego responda la IA.
   const ENLACES = {
-    precio: { href: '#planes', texto: 'Ver los planes', textoEn: 'See the plans' },
+    precio: { href: '#planes', texto: 'Ver el plan', textoEn: 'See the plan' },
     caso: { href: '#proyectos', texto: 'Ver los proyectos', textoEn: 'See the projects' },
   };
 
   // Textos basados solo en lo que ya dice la landing: sin cifras ni clientes inventados.
-  // Los precios salen del panel Planes de index.html (si cambian allí, se cambian aquí y en idioma.js).
+  // La respuesta de precio sale del panel Plan de index.html (si cambia allí, se cambia aquí y en idioma.js).
   const RESPUESTAS = {
     saludo: '¡Hola! Cuéntame qué necesitas para tu negocio, o elige una de las opciones de abajo.',
     general: [
@@ -63,11 +63,8 @@
     convierte: 'Hacemos landing pages y sitios web pensados para una sola cosa: que quien te visita te escriba. Puedes empezar con tu página y, cuando estés listo, sumamos lo demás.',
     automatiza: 'Tu WhatsApp responde precios y horarios, agenda la cita y le recuerda al cliente cuando le toca volver. Así ningún cliente se queda sin respuesta, aunque estés trabajando.',
     precio: [
-      'Tenemos dos planes:',
-      '• Web + WhatsApp: $550 de instalación + $120/mes. Tu página con trabajos, servicios y reseñas, y un WhatsApp que responde precios y horarios.',
-      '• Sistema completo: $950 de instalación + $397/mes. Todo lo anterior, más agenda, recordatorios de mantenimiento, campañas en Meta y contenido. La pauta se paga aparte, directo a Meta.',
-      '¿Lo estás pensando? Hay un piloto de 30 días por $150: tu WhatsApp responde al instante y agenda citas solo. Si no funciona así, te devolvemos el dinero.',
-      'Clientes Fundadores: 30% de descuento en la instalación para los primeros 5 clientes.',
+      'Trabajamos con un solo plan, armado a la medida de tu negocio: anuncios en Meta, una landing page hecha para que te escriban y un WhatsApp automatizado que recibe a tus clientes listos para cotizar.',
+      'El precio depende de tu negocio y te lo damos por escrito después de conocerlo. La inversión en anuncios la pagas tú, directo a Meta; nosotros cobramos solo por el trabajo.',
     ].join('\n'),
     proceso: [
       'Trabajamos en tres pasos, sin complicaciones:',
@@ -96,11 +93,8 @@
     convierte: 'We build landing pages and websites designed for one thing: getting visitors to message you. You can start with your page and add the rest when you\'re ready.',
     automatiza: 'Your WhatsApp answers prices and hours, books the appointment and reminds customers when it\'s time to come back. That way no customer is left without an answer, even while you work.',
     precio: [
-      'We have two plans:',
-      '• Web + WhatsApp: $550 setup + $120/mo. Your page with your work, services and reviews, plus a WhatsApp that answers prices and hours.',
-      '• Complete system: $950 setup + $397/mo. All of the above, plus booking, maintenance reminders, Meta campaigns and content. Ad spend is paid separately, directly to Meta.',
-      'Still thinking it over? There\'s a 30-day pilot for $150: your WhatsApp replies instantly and books appointments on its own. If it doesn\'t work that way, we refund your money.',
-      'Founding Clients: 30% off setup for the first 5 clients.',
+      'We work with a single plan, built around your business: Meta ads, a landing page designed to get you messages and an automated WhatsApp that receives your customers ready for a quote.',
+      'The price depends on your business, and we send it in writing once we know it. You pay the ad spend yourself, directly to Meta; we only charge for the work.',
     ].join('\n'),
     proceso: [
       'We work in three simple steps:',

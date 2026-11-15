@@ -66,7 +66,7 @@
     <nav class="site-nav" aria-label="Principal" data-i18n-aria="nav.aria">
       <a href="#servicios" data-i18n="nav.servicios">Servicios</a>
       <a href="#proyectos" data-i18n="nav.proyectos">Proyectos</a>
-      <a href="#planes" data-i18n="nav.planes">Planes</a>
+      <a href="#planes" data-i18n="nav.planes">Plan</a>
     </nav>
     <!-- Idioma: un solo botón que alterna. js/idioma.js cambia los textos; sin JavaScript no se muestra -->
     <button class="idioma" type="button" aria-label="Cambiar idioma a inglés">
@@ -109,7 +109,7 @@
             <a class="btn btn--primary btn--lg" href="https://wa.me/50766328271?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios." target="_blank" rel="noopener" data-wa="general">
               <span data-i18n="cta">Contáctanos</span><span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
             </a>
-            <a class="enlace" href="#planes" data-i18n="hero.planes">Ver planes</a>
+            <a class="enlace" href="#planes" data-i18n="hero.planes">Ver el plan</a>
           </div>
         </div>
       </div>
@@ -318,70 +318,41 @@
       </div>
     </section>
 
-    <!-- 5 · PLANES (franja clara de lado a lado). Sin precios: cada plan dice qué incluye. Las tarjetas suben con 150 ms de diferencia -->
+    <!-- 5 · PLAN (franja clara de lado a lado). Un solo plan a medida, sin precios: dice qué incluye y que la pauta la paga el cliente -->
     <div class="franja tema-claro">
     <section class="panel" id="planes" aria-labelledby="planes-title" data-reveal="panel">
       <span class="panel__marca" aria-hidden="true"></span>
-      <p class="panel__indice" aria-hidden="true">05 / 06 · <span data-i18n="indice.planes">Planes</span></p>
+      <p class="panel__indice" aria-hidden="true">05 / 06 · <span data-i18n="indice.planes">Plan</span></p>
       <div class="container panel__cuerpo">
         <header class="section-head">
           <p class="section-head__etiqueta" data-reveal data-i18n="planes.etiqueta">Inversión</p>
           <h2 class="section-title" id="planes-title" data-reveal="lineas">
-            <span class="linea"><span style="--n:0" data-i18n="planes.titulo">Planes.</span></span>
+            <span class="linea"><span style="--n:0" data-i18n="planes.titulo">Tu plan.</span></span>
           </h2>
         </header>
 
         <div class="planes">
-          <article class="plan" data-reveal="grupo" data-sube style="--d:0ms" aria-labelledby="plan1-title">
-            <p class="pildora" data-paso style="--i:0" data-i18n="plan1.pildora">Para empezar</p>
-            <h3 class="plan__nombre" id="plan1-title" data-paso style="--i:1" data-i18n="plan1.nombre">Web + WhatsApp</h3>
-            <p class="plan__desc" data-paso style="--i:2" data-i18n="plan1.desc">Tu página y tu WhatsApp trabajando juntos. Para negocios que pierden clientes por no responder a tiempo.</p>
-            <p class="plan__precio" data-paso="enfasis" style="--i:6"><span class="plan__monto">$550</span><span class="plan__terminos" data-i18n="plan1.terminos">instalación + $120/mes</span></p>
+          <article class="plan plan--oscuro plan--unico" data-reveal="grupo" data-sube aria-labelledby="plan-title">
+            <p class="pildora" data-paso style="--i:0" data-i18n="plan.pildora">Un solo plan, a tu medida</p>
+            <h3 class="plan__nombre" id="plan-title" data-paso style="--i:1" data-i18n="plan.nombre">Plan de crecimiento</h3>
+            <p class="plan__desc" data-paso style="--i:2" data-i18n="plan.desc">Anuncios que atraen clientes, una página que los convence y un WhatsApp que los recibe listos para cotizar. La meta: que tu facturación mensual pase de donde está hoy a donde quieres llegar.</p>
+            <p class="plan__precio" data-paso="enfasis" style="--i:6"><span class="plan__monto plan__monto--texto" data-i18n="plan.monto">Precio a medida</span><span class="plan__terminos" data-i18n="plan.terminos">Te lo damos por escrito después de conocer tu negocio.</span></p>
             <ul class="plan__lista" data-paso style="--i:3">
-              <li data-i18n="plan1.l1">Página con tus trabajos, servicios y reseñas</li>
-              <li data-i18n="plan1.l2">WhatsApp que responde precios y horarios</li>
-              <li data-i18n="plan1.l3">Botón para agendar la cita</li>
-              <li data-i18n="plan1.l4">Google Maps (SEO local) y mantenimiento</li>
+              <li data-i18n="plan.l1">Campañas de anuncios en Meta (Facebook e Instagram)</li>
+              <li data-i18n="plan.l2">Landing page hecha para que te escriban</li>
+              <li data-i18n="plan.l3">WhatsApp automatizado que responde y agenda</li>
+              <li data-i18n="plan.l4">Clientes que llegan listos para cotizar</li>
+              <li data-i18n="plan.l5">Reporte mensual de resultados</li>
+              <li data-i18n="plan.l6">Hosting y mantenimiento incluidos</li>
             </ul>
-            <p class="plan__nota" data-paso data-i18n-html="plan1.nota" style="--i:4">Incluye hosting, mantenimiento y <span class="claro">2 cambios al mes</span> en tu página.</p>
+            <p class="plan__nota" data-paso style="--i:4" data-i18n="plan.nota">La inversión en anuncios la pagas tú, directo a Meta. Nosotros cobramos solo por el trabajo.</p>
             <div class="plan__accion" data-paso style="--i:5">
-              <a class="btn btn--primary" href="https://wa.me/50766328271?text=Hola%20AVORA%2C%20me%20interesa%20el%20plan%20Web%20%2B%20WhatsApp.%20%C2%BFMe%20dan%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank" rel="noopener" data-wa="plan1">
-                <span data-i18n="plan1.boton">Quiero este plan</span><span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
-              </a>
-            </div>
-          </article>
-
-          <article class="plan plan--oscuro" data-reveal="grupo" data-sube style="--d:150ms" aria-labelledby="plan2-title">
-            <p class="pildora" data-paso style="--i:0" data-i18n="plan2.pildora">Para crecer</p>
-            <h3 class="plan__nombre" id="plan2-title" data-paso style="--i:1" data-i18n="plan2.nombre">Sistema completo</h3>
-            <p class="plan__desc" data-paso style="--i:2" data-i18n="plan2.desc">Todo trabajando para crecer: anuncios, página y WhatsApp automatizado, con clientes que vuelven solos.</p>
-            <p class="plan__precio" data-paso="enfasis" style="--i:6"><span class="plan__monto">$950</span><span class="plan__terminos" data-i18n="plan2.terminos">instalación + $397/mes</span></p>
-            <ul class="plan__lista" data-paso style="--i:3">
-              <li data-i18n="plan2.l1">Todo lo del plan Web + WhatsApp</li>
-              <li data-i18n="plan2.l2">Agenda y recordatorios de mantenimiento</li>
-              <li data-i18n="plan2.l3">Campañas en Meta y 8 piezas de contenido al mes</li>
-              <li data-i18n="plan2.l4">Reporte mensual de resultados</li>
-            </ul>
-            <p class="plan__nota" data-paso style="--i:4" data-i18n="plan2.nota">La pauta de Meta la pagas tú directo a Meta (recomendamos desde $150/mes).</p>
-            <div class="plan__accion" data-paso style="--i:5">
-              <a class="btn btn--primary" href="https://wa.me/50766328271?text=Hola%20AVORA%2C%20me%20interesa%20el%20Sistema%20completo.%20%C2%BFMe%20dan%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank" rel="noopener" data-wa="plan2">
-                <span data-i18n="plan2.boton">Quiero este plan</span><span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
+              <a class="btn btn--primary" href="https://wa.me/50766328271?text=Hola%2C%20vi%20su%20p%C3%A1gina%20y%20quiero%20saber%20c%C3%B3mo%20ser%C3%ADa%20el%20plan%20para%20mi%20negocio.%20%C2%BFMe%20dan%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank" rel="noopener" data-wa="plan">
+                <span data-i18n="plan.boton">Quiero mi plan</span><span class="btn__circulo" aria-hidden="true"><svg><use href="#i-flecha"/></svg></span>
               </a>
             </div>
           </article>
         </div>
-
-        <!-- Piloto: la entrada fácil para el que todavía duda -->
-        <div class="piloto" data-reveal="grupo" data-sube>
-          <div class="piloto__texto">
-            <p class="pildora pildora--contorno" data-paso style="--i:0" data-i18n="piloto.pildora">¿Todavía lo estás pensando?</p>
-            <h3 class="piloto__nombre" data-paso style="--i:1" data-i18n="piloto.nombre">Piloto de 30 días por $150</h3>
-            <p class="piloto__desc" data-paso style="--i:2" data-i18n-html="piloto.desc">Tu WhatsApp responde al instante, a cualquier hora, y tus clientes agendan su cita solos. <span class="claro">Si en 30 días no funciona así, te devolvemos los $150.</span> Si sigues, se descuentan de la instalación.</p>
-          </div>
-          <div class="piloto__accion" data-paso style="--i:3"><a class="enlace enlace--flecha" href="https://wa.me/50766328271?text=Hola%20AVORA%2C%20me%20interesa%20el%20piloto%20de%2030%20d%C3%ADas.%20%C2%BFMe%20dan%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank" rel="noopener" data-wa="piloto"><span data-i18n="piloto.boton">Quiero el piloto</span><svg aria-hidden="true"><use href="#i-flecha"/></svg></a></div>
-        </div>
-
-        <p class="planes__fundadores" data-reveal data-i18n-html="planes.fundadores"><span class="claro">Clientes Fundadores:</span> 30% de descuento en la instalación para nuestros primeros 5 clientes. Precios en USD; la mensualidad tiene permanencia mínima de 3 meses.</p>
       </div>
     </section>
     </div>
